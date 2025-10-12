@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Manicure - Beleza & Estilo (Versão Compartilhada)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase -->
+    <script type="module" src="firebase-config.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">💅</span>
+                <h1>Beleza & Estilo</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#services">Serviços</a></li>
+                    <li><a href="#booking">Agendar</a></li>
+                    <li><a href="admin-firebase.html" class="admin-link">Área da Manicure</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Transforme suas unhas em obras de arte</h2>
+                <p>Agende seu horário com facilidade e praticidade</p>
+                <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 15px; margin-top: 1rem; display: inline-block;">
+                    <p style="color: #4CAF50; font-weight: 600; margin: 0;">🌐 Versão Compartilhada - Dados sincronizados em tempo real!</p>
+                </div>
+                <a href="#booking" class="btn btn-primary">Agendar Agora</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <div class="services-grid">
+                <div class="service-card" data-service="Manicure Básica" data-price="35" data-duration="45">
+                    <div class="service-icon">💅</div>
+                    <h3>Manicure Básica</h3>
+                    <p class="service-duration">45 minutos</p>
+                    <p class="service-description">Corte, lixamento, cutículas e esmaltação tradicional</p>
+                    <p class="service-price">R$ 35,00</p>
+                    <button class="btn btn-secondary" onclick="selectService('Manicure Básica', 35, 45)">Selecionar</button>
+                </div>
+                <div class="service-card" data-service="Manicure com Gel" data-price="65" data-duration="60">
+                    <div class="service-icon">✨</div>
+                    <h3>Manicure com Gel</h3>
+                    <p class="service-duration">60 minutos</p>
+                    <p class="service-description">Unha em gel com acabamento profissional e duradouro</p>
+                    <p class="service-price">R$ 65,00</p>
+                    <button class="btn btn-secondary" onclick="selectService('Manicure com Gel', 65, 60)">Selecionar</button>
+                </div>
+                <div class="service-card" data-service="Pedicure" data-price="40" data-duration="60">
+                    <div class="service-icon">🦶</div>
+                    <h3>Pedicure</h3>
+                    <p class="service-duration">60 minutos</p>
+                    <p class="service-description">Cuidados completos para os pés com hidratação</p>
+                    <p class="service-price">R$ 40,00</p>
+                    <button class="btn btn-secondary" onclick="selectService('Pedicure', 40, 60)">Selecionar</button>
+                </div>
+                <div class="service-card" data-service="Mão e Pé" data-price="70" data-duration="90">
+                    <div class="service-icon">💎</div>
+                    <h3>Mão e Pé</h3>
+                    <p class="service-duration">90 minutos</p>
+                    <p class="service-description">Pacote completo com manicure e pedicure</p>
+                    <p class="service-price">R$ 70,00</p>
+                    <button class="btn btn-secondary" onclick="selectService('Mão e Pé', 70, 90)">Selecionar</button>
+                </div>
+                <div class="service-card" data-service="Alongamento de Unhas" data-price="120" data-duration="120">
+                    <div class="service-icon">🎨</div>
+                    <h3>Alongamento de Unhas</h3>
+                    <p class="service-duration">120 minutos</p>
+                    <p class="service-description">Alongamento em gel ou fibra de vidro</p>
+                    <p class="service-price">R$ 120,00</p>
+                    <button class="btn btn-secondary" onclick="selectService('Alongamento de Unhas', 120, 120)">Selecionar</button>
+                </div>
+                <div class="service-card" data-service="Nail Art" data-price="50" data-duration="45">
+                    <div class="service-icon">🌸</div>
+                    <h3>Nail Art</h3>
+                    <p class="service-duration">45 minutos</p>
+                    <p class="service-description">Decoração personalizada e criativa</p>
+                    <p class="service-price">A partir de R$ 50,00</p>
+                    <button class="btn btn-secondary" onclick="selectService('Nail Art', 50, 45)">Selecionar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking">
+        <div class="container">
+            <h2 class="section-title">Agendar Horário</h2>
+            <div class="booking-form-container">
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="clientName">Nome Completo *</label>
+                        <input type="text" id="clientName" required placeholder="Digite seu nome">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientPhone">Telefone *</label>
+                        <input type="tel" id="clientPhone" required placeholder="(00) 00000-0000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientEmail">E-mail *</label>
+                        <input type="email" id="clientEmail" required placeholder="seu@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serviceSelect">Serviço Desejado *</label>
+                        <select id="serviceSelect" required>
+                            <option value="">Selecione um serviço</option>
+                            <option value="Manicure Básica">Manicure Básica - R$ 35,00</option>
+                            <option value="Manicure com Gel">Manicure com Gel - R$ 65,00</option>
+                            <option value="Pedicure">Pedicure - R$ 40,00</option>
+                            <option value="Mão e Pé">Mão e Pé - R$ 70,00</option>
+                            <option value="Alongamento de Unhas">Alongamento de Unhas - R$ 120,00</option>
+                            <option value="Nail Art">Nail Art - A partir de R$ 50,00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appointmentDate">Data *</label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appointmentTime">Horário Disponível *</label>
+                        <select id="appointmentTime" required>
+                            <option value="">Selecione um horário</option>
+                        </select>
+                        <small style="color: #666; margin-top: 5px; display: block;">Selecione uma data para ver os horários disponíveis</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Confirmar Agendamento</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p>📞 (00) 00000-0000</p>
+                    <p>📧 contato@belezaestilo.com</p>
+                    <p>📍 Rua das Flores, 123 - Centro</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Horário de Funcionamento</h3>
+                    <p>Segunda a Sexta: 9h às 19h</p>
+                    <p>Sábado: 9h às 17h</p>
+                    <p>Domingo: Fechado</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Redes Sociais</h3>
+                    <p>📱 Instagram: @belezaestilo</p>
+                    <p>📘 Facebook: /belezaestilo</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Beleza & Estilo. Todos os direitos reservados.</p>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem;">🌐 Versão Compartilhada com Firebase</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-icon">✅</div>
+            <h2>Agendamento Confirmado!</h2>
+            <p>Seu horário foi agendado com sucesso.</p>
+            <p id="modalDetails"></p>
+            <button class="btn btn-primary" onclick="closeModal()">Fechar</button>
+        </div>
+    </div>
+
+    <script type="module" src="script-firebase.js"></script>
+</body>
+</html>

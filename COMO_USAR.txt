@@ -1,0 +1,180 @@
+═══════════════════════════════════════════════════════════════
+    💅 SISTEMA DE AGENDAMENTO PARA MANICURE - GUIA RÁPIDO
+═══════════════════════════════════════════════════════════════
+
+🚀 COMEÇAR A USAR (3 PASSOS):
+────────────────────────────────────────────────────────────────
+1. Abra o arquivo "index.html" no navegador
+2. Para área administrativa, clique em "Área da Manicure"
+3. Senha padrão: admin123
+
+═══════════════════════════════════════════════════════════════
+👥 PARA CLIENTES:
+═══════════════════════════════════════════════════════════════
+✓ Abrir index.html
+✓ Preencher nome, telefone e e-mail
+✓ Escolher serviço desejado
+✓ Selecionar data
+✓ Escolher horário disponível
+✓ Confirmar agendamento
+
+═══════════════════════════════════════════════════════════════
+👩‍💼 PARA A MANICURE (PAINEL ADMIN):
+═══════════════════════════════════════════════════════════════
+
+ACESSAR:
+• Clicar em "Área da Manicure" no site
+• OU abrir diretamente "admin.html"
+• Senha: admin123
+
+O QUE VOCÊ PODE FAZER:
+✓ ADICIONAR AGENDAMENTOS MANUALMENTE (telefone, WhatsApp, pessoal)
+✓ Ver todos os agendamentos
+✓ Filtrar por período (hoje, próximos, realizados)
+✓ Ver dados dos clientes (nome, telefone, email)
+✓ Ver qual serviço foi agendado
+✓ Marcar agendamento como concluído (✓ Concluir)
+✓ Excluir agendamentos cancelados (🗑️ Excluir)
+✓ Ver estatísticas (total, hoje, próximos, receita)
+✓ Exportar dados (Ctrl+E para backup)
+
+═══════════════════════════════════════════════════════════════
+📊 PAINEL ADMINISTRATIVO MOSTRA:
+═══════════════════════════════════════════════────────────────
+• Nome do cliente
+• Telefone para contato
+• E-mail
+• Serviço escolhido
+• Data e horário
+• Valor do serviço
+• Duração prevista
+• Status (pendente ou realizado)
+
+═══════════════════════════════════════════════════════════════
+⚙️ PERSONALIZAR O SISTEMA:
+═══════════════════════════════════════════════════════────════
+
+ALTERAR SENHA:
+• Abrir "admin.js"
+• Linha 7: this.adminPassword = 'SUA_NOVA_SENHA';
+
+ALTERAR HORÁRIOS:
+• Abrir "script.js"
+• Linha 5: this.availableHours = ['09:00', '10:00', ...];
+
+ALTERAR PREÇOS:
+• Abrir "script.js" (linha 6-13)
+• Abrir "admin.js" (linha 138-146)
+• Manter os dois arquivos iguais!
+
+═══════════════════════════════════════════════════════════════
+💾 BACKUP DOS DADOS:
+═══════════════════════════════════════════════════════════════
+1. Acessar painel administrativo
+2. Pressionar Ctrl+E
+3. Arquivo JSON será baixado automaticamente
+
+IMPORTANTE: Fazer backup regularmente! Os dados ficam apenas
+no navegador usado.
+
+═══════════════════════════════════════════════════════════════
+➕ COMO ADICIONAR AGENDAMENTO MANUALMENTE:
+═══════════════════════════════════════════════════════════════
+Perfeito para quando clientes ligam, mandam WhatsApp ou chegam!
+
+1. No painel admin, clicar em "➕ Adicionar Agendamento"
+2. Preencher dados do cliente:
+   • Nome completo
+   • Telefone (formata sozinho)
+   • E-mail (opcional)
+   • Serviço desejado
+   • Data
+   • Horário (mostra quais estão livres)
+3. Clicar em "Confirmar Agendamento"
+4. Pronto! Aparece na lista automaticamente
+
+O SISTEMA MOSTRA:
+✓ Quantos horários estão disponíveis
+✓ Quais horários já estão ocupados
+✓ Não deixa marcar horário já agendado
+
+═══════════════════════════════════════════════════════════════
+📋 SERVIÇOS E PREÇOS PADRÃO:
+═══════════════════════════════════════════════════════════════
+• Manicure Básica       → R$ 35,00  (45 min)
+• Manicure com Gel      → R$ 65,00  (60 min)
+• Pedicure              → R$ 40,00  (60 min)
+• Mão e Pé             → R$ 70,00  (90 min)
+• Alongamento de Unhas  → R$ 120,00 (120 min)
+• Nail Art              → R$ 50,00  (45 min)
+
+═══════════════════════════════════════════════════════════════
+⏰ HORÁRIOS DISPONÍVEIS PADRÃO:
+═══════════════════════════════════════════════════════════════
+09:00 | 10:00 | 11:00 | 12:00 | 14:00 | 15:00 | 16:00 | 17:00 | 18:00
+
+═══════════════════════════════════════════════════════════════
+🔒 SEGURANÇA:
+═══════════════════════════════════════════════════════════════
+• Senha padrão: admin123 (ALTERE IMEDIATAMENTE!)
+• Acesso ao painel protegido por senha
+• Sessão expira ao fechar navegador
+• Dados salvos localmente no navegador
+
+═══════════════════════════════════════════════════════════════
+❓ PROBLEMAS COMUNS:
+═══════════════════════════════════════════════════════────────
+
+HORÁRIOS NÃO APARECEM?
+→ Selecione uma data primeiro
+
+NÃO CONSIGO ENTRAR NO PAINEL?
+→ Senha: admin123 (tudo minúsculo)
+
+COMO ADICIONO AGENDAMENTO POR TELEFONE?
+→ Entre no painel admin
+→ Clique em "➕ Adicionar Agendamento"
+→ Preencha os dados do cliente
+→ Escolha horário disponível
+
+AGENDAMENTOS SUMIRAM?
+→ Use sempre o mesmo navegador
+→ Não limpe dados do navegador
+→ Faça backups regulares
+
+SITE NÃO ABRE?
+→ Certifique que todos arquivos estão na mesma pasta
+→ Use um navegador atualizado (Chrome recomendado)
+
+═══════════════════════════════════════════════════════════════
+📁 ARQUIVOS DO SISTEMA:
+═══════════════════════════════════════════════════════════════
+index.html      → Página principal (clientes)
+admin.html      → Painel administrativo (manicure)
+script.js       → Funcionalidades do cliente
+admin.js        → Funcionalidades do painel admin
+styles.css      → Design e cores
+README.md       → Documentação completa
+COMO_USAR.txt   → Este arquivo
+
+═══════════════════════════════════════════════════════════════
+✨ DICAS:
+═══════════════════════════════════════════════════════════════
+✓ Altere a senha antes de usar
+✓ Faça backup semanalmente (Ctrl+E)
+✓ Teste antes de divulgar aos clientes
+✓ Personalize cores e preços
+✓ Use sempre o mesmo navegador
+✓ Marque serviços como concluídos para controlar receita
+
+═══════════════════════════════════════════════════════════════
+
+Para documentação completa, consulte o arquivo README.md
+
+Desenvolvido com 💖 para profissionais de beleza
+Versão 2.1.0 - Outubro 2025
+NOVO: Agenda Virtual - Adicione agendamentos manualmente!
+
+═══════════════════════════════════════════════════════════════
+
+

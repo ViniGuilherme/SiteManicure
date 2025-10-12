@@ -1,0 +1,248 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║         ✨ NOVA FUNCIONALIDADE: AGENDA VIRTUAL! ✨            ║
+║                                                               ║
+║              Versão 2.1.0 - Outubro 2025                      ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+┌───────────────────────────────────────────────────────────────┐
+│  🎉 O QUE HÁ DE NOVO?                                         │
+└───────────────────────────────────────────────────────────────┘
+
+Agora a MANICURE pode ADICIONAR AGENDAMENTOS MANUALMENTE
+diretamente pelo painel administrativo!
+
+Perfeito para quando clientes:
+  • 📞 Ligam para agendar
+  • 📱 Mandam WhatsApp
+  • 🚶 Chegam pessoalmente na loja
+  • 📧 Enviam e-mail
+
+┌───────────────────────────────────────────────────────────────┐
+│  🚀 COMO USAR - PASSO A PASSO                                 │
+└───────────────────────────────────────────────────────────────┘
+
+1️⃣ ENTRAR NO PAINEL ADMIN
+   • Abrir admin.html
+   • Digitar senha: admin123
+
+2️⃣ CLICAR NO BOTÃO "➕ ADICIONAR AGENDAMENTO"
+   • Fica no canto superior direito
+   • Logo acima das estatísticas
+
+3️⃣ PREENCHER OS DADOS DO CLIENTE
+   ✓ Nome completo
+   ✓ Telefone (formata automaticamente)
+   ✓ E-mail (opcional)
+   ✓ Serviço desejado
+   ✓ Data
+   ✓ Horário
+
+4️⃣ ESCOLHER HORÁRIO DISPONÍVEL
+   • Sistema mostra horários livres
+   • Horários ocupados aparecem como "Ocupado"
+   • Contador mostra quantos horários estão disponíveis
+
+5️⃣ CONFIRMAR AGENDAMENTO
+   • Clicar em "Confirmar Agendamento"
+   • Pronto! Aparece na lista automaticamente
+
+┌───────────────────────────────────────────────────────────────┐
+│  💡 RECURSOS INTELIGENTES                                     │
+└───────────────────────────────────────────────────────────────┘
+
+✅ VERIFICAÇÃO AUTOMÁTICA DE DISPONIBILIDADE
+   → Sistema mostra em tempo real quais horários estão livres
+
+✅ CONTADOR DE HORÁRIOS
+   → "✓ 7 horário(s) disponível(is)"
+   → "⚠️ Todos os horários estão ocupados nesta data"
+
+✅ PREVENÇÃO DE CONFLITOS
+   → Não deixa agendar em horário já ocupado
+
+✅ FORMATAÇÃO AUTOMÁTICA
+   → Telefone é formatado enquanto digita
+   → (11) 98765-4321
+
+✅ DATA MÍNIMA
+   → Não permite agendar em datas passadas
+
+✅ INTEGRAÇÃO TOTAL
+   → Agendamentos manuais aparecem junto com os online
+   → Mesmas estatísticas e filtros
+   → Mesmo controle de conclusão e exclusão
+
+┌───────────────────────────────────────────────────────────────┐
+│  🎯 EXEMPLO DE USO REAL                                       │
+└───────────────────────────────────────────────────────────────┘
+
+CENÁRIO: Cliente liga querendo agendar
+
+1. Cliente: "Oi, queria agendar uma manicure para amanhã"
+
+2. Você: "Deixa eu ver os horários disponíveis..."
+   → Abre o painel admin
+   → Clica em "➕ Adicionar Agendamento"
+   → Seleciona amanhã no calendário
+
+3. Sistema mostra: "✓ 6 horário(s) disponível(is)"
+   → Horários ocupados: 10:00, 14:00, 16:00 (em cinza)
+   → Horários livres: 09:00, 11:00, 12:00, 15:00, 17:00, 18:00
+
+4. Você: "Tenho 09:00, 11:00, 12:00..."
+
+5. Cliente: "Prefiro às 15:00"
+
+6. Você: 
+   → Preenche nome: "Maria Silva"
+   → Telefone: "11987654321" → vira "(11) 98765-4321"
+   → E-mail: "maria@email.com"
+   → Serviço: "Manicure com Gel - R$ 65,00"
+   → Horário: "15:00"
+   → Confirma
+
+7. Sistema mostra: "✅ Agendamento criado com sucesso!"
+
+8. Pronto! Agendamento aparece na lista automaticamente
+
+┌───────────────────────────────────────────────────────────────┐
+│  ⚡ VANTAGENS                                                  │
+└───────────────────────────────────────────────────────────────┘
+
+✓ Não precisa do cliente entrar no site
+✓ Você tem controle total da agenda
+✓ Evita duplo agendamento automaticamente
+✓ Cliente não precisa ter internet/computador
+✓ Perfeito para clientes mais velhos ou sem acesso digital
+✓ Centraliza todos agendamentos em um só lugar
+✓ Mantém histórico completo
+
+┌───────────────────────────────────────────────────────────────┐
+│  🔍 DETALHES TÉCNICOS                                         │
+└───────────────────────────────────────────────────────────────┘
+
+• Modal elegante para adicionar agendamento
+• Validação de todos os campos
+• Mesma estrutura de dados dos agendamentos online
+• Marcador especial: createdBy: 'admin'
+• Salva automaticamente no localStorage
+• Atualiza estatísticas instantaneamente
+• Compatível com todos os filtros existentes
+
+┌───────────────────────────────────────────────────────────────┐
+│  📝 CAMPOS DO FORMULÁRIO                                      │
+└───────────────────────────────────────────────────────────────┘
+
+OBRIGATÓRIOS (*):
+  • Nome do Cliente *
+  • Telefone *
+  • Serviço *
+  • Data *
+  • Horário *
+
+OPCIONAIS:
+  • E-mail
+
+┌───────────────────────────────────────────────────────────────┐
+│  💾 ARMAZENAMENTO                                             │
+└───────────────────────────────────────────────────────────────┘
+
+Agendamentos criados manualmente:
+  ✓ São salvos junto com os agendamentos online
+  ✓ Aparecem na mesma lista
+  ✓ Contam para as estatísticas
+  ✓ Podem ser marcados como concluídos
+  ✓ Podem ser excluídos
+  ✓ São incluídos no backup (Ctrl+E)
+
+┌───────────────────────────────────────────────────────────────┐
+│  🎨 INTERFACE                                                 │
+└───────────────────────────────────────────────────────────────┘
+
+BOTÃO DE ADICIONAR:
+  • Localização: Canto superior direito do painel
+  • Cor: Rosa/roxo gradiente (mesma identidade visual)
+  • Ícone: ➕
+  • Texto: "Adicionar Agendamento"
+
+MODAL:
+  • Ícone: 📝
+  • Título: "Adicionar Agendamento"
+  • Subtítulo: "Preencha os dados do cliente"
+  • Botões: "Cancelar" e "Confirmar Agendamento"
+
+FEEDBACK VISUAL:
+  • Horários ocupados em cinza
+  • Mensagem verde quando há horários disponíveis
+  • Mensagem vermelha quando não há horários
+  • Confirmação após criar agendamento
+
+┌───────────────────────────────────────────────────────────────┐
+│  🎓 DICAS DE USO                                              │
+└───────────────────────────────────────────────────────────────┘
+
+1. Sempre verifique a data antes de selecionar o horário
+2. O sistema formata o telefone automaticamente
+3. E-mail é opcional, mas ajuda no contato
+4. Se todos horários estiverem ocupados, escolha outra data
+5. Pode criar quantos agendamentos quiser
+6. Lembre de marcar como concluído após realizar o serviço
+7. Faça backup regularmente (Ctrl+E)
+
+┌───────────────────────────────────────────────────────────────┐
+│  ❓ PERGUNTAS FREQUENTES                                      │
+└───────────────────────────────────────────────────────────────┘
+
+P: Posso adicionar agendamento em horário já ocupado?
+R: Não! O sistema não permite e mostra uma mensagem de erro.
+
+P: O cliente pode ver agendamentos que eu criei?
+R: Não. Apenas você no painel admin vê todos os agendamentos.
+
+P: Posso editar um agendamento depois de criar?
+R: Atualmente só pode excluir e criar novo. Edição virá em
+   próxima versão.
+
+P: Qual diferença entre agendamento online e manual?
+R: Nenhuma! Ambos aparecem na mesma lista e têm mesmas funções.
+   A única diferença é um marcador interno (createdBy).
+
+P: Posso adicionar agendamento para vários dias de uma vez?
+R: Não. Precisa adicionar um por vez. Mas é bem rápido!
+
+┌───────────────────────────────────────────────────────────────┐
+│  🚀 PRÓXIMOS PASSOS                                           │
+└───────────────────────────────────────────────────────────────┘
+
+Teste a nova funcionalidade:
+1. Entre no painel admin
+2. Clique em "➕ Adicionar Agendamento"
+3. Crie um agendamento de teste
+4. Veja ele aparecer na lista
+5. Marque como concluído ou exclua
+
+Funcionalidades futuras planejadas:
+  • Editar agendamentos existentes
+  • Reagendar (alterar data/hora)
+  • Enviar lembretes automáticos
+  • Adicionar múltiplos agendamentos de uma vez
+  • Bloquear horários (férias, almoço, etc)
+
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║  💖 Aproveite a nova funcionalidade de Agenda Virtual!        ║
+║                                                               ║
+║  Agora você tem controle total dos seus agendamentos!        ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Para mais informações, consulte:
+  • README.md - Documentação completa
+  • COMO_USAR.txt - Guia rápido
+  • Ou veja os comentários no código
+
+Versão 2.1.0 - Outubro 2025
+Desenvolvido com 💖 para profissionais de beleza
+
