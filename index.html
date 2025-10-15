@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento Manicure - Beleza & Estilo</title>
+    <title>Studio Laura Souza - Nail Designer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,14 +14,14 @@
     <header>
         <div class="container">
             <div class="logo">
-                <span class="logo-icon">💅</span>
-                <h1>Beleza & Estilo</h1>
+                <h1>Studio Laura Souza</h1>
             </div>
             <nav>
                 <ul>
                     <li><a href="#home">Início</a></li>
                     <li><a href="#services">Serviços</a></li>
                     <li><a href="#booking">Agendar</a></li>
+                    <li><a href="#myAppointments">Meus Agendamentos</a></li>
                     <li><a href="admin.html" class="admin-link">Área da Manicure</a></li>
                 </ul>
             </nav>
@@ -30,68 +30,14 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-background">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMTUwIiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjE1MCIgcj0iMTQwIiBmaWxsPSJub25lIiBzdHJva2U9IiNGRkRDMDAiIHN0cm9rZS13aWR0aD0iMiIvPgo8Y2lyY2xlIGN4PSIxNTAiIGN5PSIxNTAiIHI9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZEQzAwIiBzdHJva2Utd2lkdGg9IjEiLz4KPHRleHQgeD0iMTUwIiB5PSI5MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNjAwIiBmaWxsPSIjRkZEQzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB0cmFuc2Zvcm09InJvdGF0ZSgtMjAgMTUwIDkwKSI+U1RVRElPIExBVVJBIFNPVVpBPC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjIxMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNjAwIiBmaWxsPSIjRkZEQzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB0cmFuc2Zvcm09InJvdGF0ZSgyMCAxNTAgMjEwKSI+TkFJTCBERVNJR05FUjwvdGV4dD4KPHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI0ZGRENBMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxTPC90ZXh0Pgo8L3N2Zz4=" alt="Logo Studio Laura Souza" class="hero-logo">
+        </div>
         <div class="container">
             <div class="hero-content">
-                <h2>Transforme suas unhas em obras de arte</h2>
-                <p>Agende seu horário com facilidade e praticidade</p>
+                <h2>Studio Laura Souza</h2>
+                <p>Nail Designer Profissional - Transforme suas unhas em obras de arte</p>
                 <a href="#booking" class="btn btn-primary">Agendar Agora</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <h2 class="section-title">Nossos Serviços</h2>
-            <div class="services-grid">
-                <div class="service-card" data-service="Manicure Básica" data-price="35" data-duration="45">
-                    <div class="service-icon">💅</div>
-                    <h3>Manicure Básica</h3>
-                    <p class="service-duration">45 minutos</p>
-                    <p class="service-description">Corte, lixamento, cutículas e esmaltação tradicional</p>
-                    <p class="service-price">R$ 35,00</p>
-                    <button class="btn btn-secondary" onclick="selectService('Manicure Básica', 35, 45)">Selecionar</button>
-                </div>
-                <div class="service-card" data-service="Manicure com Gel" data-price="65" data-duration="60">
-                    <div class="service-icon">✨</div>
-                    <h3>Manicure com Gel</h3>
-                    <p class="service-duration">60 minutos</p>
-                    <p class="service-description">Unha em gel com acabamento profissional e duradouro</p>
-                    <p class="service-price">R$ 65,00</p>
-                    <button class="btn btn-secondary" onclick="selectService('Manicure com Gel', 65, 60)">Selecionar</button>
-                </div>
-                <div class="service-card" data-service="Pedicure" data-price="40" data-duration="60">
-                    <div class="service-icon">🦶</div>
-                    <h3>Pedicure</h3>
-                    <p class="service-duration">60 minutos</p>
-                    <p class="service-description">Cuidados completos para os pés com hidratação</p>
-                    <p class="service-price">R$ 40,00</p>
-                    <button class="btn btn-secondary" onclick="selectService('Pedicure', 40, 60)">Selecionar</button>
-                </div>
-                <div class="service-card" data-service="Mão e Pé" data-price="70" data-duration="90">
-                    <div class="service-icon">💎</div>
-                    <h3>Mão e Pé</h3>
-                    <p class="service-duration">90 minutos</p>
-                    <p class="service-description">Pacote completo com manicure e pedicure</p>
-                    <p class="service-price">R$ 70,00</p>
-                    <button class="btn btn-secondary" onclick="selectService('Mão e Pé', 70, 90)">Selecionar</button>
-                </div>
-                <div class="service-card" data-service="Alongamento de Unhas" data-price="120" data-duration="120">
-                    <div class="service-icon">🎨</div>
-                    <h3>Alongamento de Unhas</h3>
-                    <p class="service-duration">120 minutos</p>
-                    <p class="service-description">Alongamento em gel ou fibra de vidro</p>
-                    <p class="service-price">R$ 120,00</p>
-                    <button class="btn btn-secondary" onclick="selectService('Alongamento de Unhas', 120, 120)">Selecionar</button>
-                </div>
-                <div class="service-card" data-service="Nail Art" data-price="50" data-duration="45">
-                    <div class="service-icon">🌸</div>
-                    <h3>Nail Art</h3>
-                    <p class="service-duration">45 minutos</p>
-                    <p class="service-description">Decoração personalizada e criativa</p>
-                    <p class="service-price">A partir de R$ 50,00</p>
-                    <button class="btn btn-secondary" onclick="selectService('Nail Art', 50, 45)">Selecionar</button>
-                </div>
             </div>
         </div>
     </section>
@@ -113,21 +59,19 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="clientEmail">E-mail *</label>
-                        <input type="email" id="clientEmail" required placeholder="seu@email.com">
+                        <label for="clientEmail">E-mail</label>
+                        <input type="email" id="clientEmail" placeholder="seu@email.com">
                     </div>
                     
                     <div class="form-group">
-                        <label for="serviceSelect">Serviço Desejado *</label>
-                        <select id="serviceSelect" required>
-                            <option value="">Selecione um serviço</option>
-                            <option value="Manicure Básica">Manicure Básica - R$ 35,00</option>
-                            <option value="Manicure com Gel">Manicure com Gel - R$ 65,00</option>
-                            <option value="Pedicure">Pedicure - R$ 40,00</option>
-                            <option value="Mão e Pé">Mão e Pé - R$ 70,00</option>
-                            <option value="Alongamento de Unhas">Alongamento de Unhas - R$ 120,00</option>
-                            <option value="Nail Art">Nail Art - A partir de R$ 50,00</option>
-                        </select>
+                        <label for="servicesContainer">Serviços Desejados *</label>
+                        <div id="servicesContainer" style="background: #2A2A2A; padding: 1rem; border-radius: 10px; border: 2px solid var(--primary-color);">
+                            <!-- Serviços serão carregados dinamicamente como checkboxes -->
+                        </div>
+                        <div id="serviceSummary" style="margin-top: 1rem; padding: 1rem; background: #2A2A2A; border-radius: 10px; border: 2px solid var(--primary-color); display: none;">
+                            <strong style="color: var(--primary-color);">Resumo:</strong>
+                            <div id="summaryContent" style="margin-top: 0.5rem; color: var(--white);"></div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -149,6 +93,35 @@
         </div>
     </section>
 
+    <!-- My Appointments Section -->
+    <section id="myAppointments" class="appointments">
+        <div class="container">
+            <h2 class="section-title">Meus Agendamentos</h2>
+            <div class="appointments-container">
+                <div id="appointmentsList" class="appointments-grid">
+                    <!-- Agendamentos serão carregados dinamicamente -->
+                </div>
+                <div id="noAppointments" class="no-appointments" style="display: none;">
+                    <div style="text-align: center; padding: 3rem; color: #ccc;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">📅</div>
+                        <h3 style="color: var(--white); margin-bottom: 1rem;">Nenhum agendamento encontrado</h3>
+                        <p style="margin-bottom: 2rem;">Você ainda não fez nenhum agendamento.</p>
+                        <a href="#booking" class="btn btn-primary">Fazer Primeiro Agendamento</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <div class="services-grid">
+                <!-- Serviços serão carregados dinamicamente pelo JavaScript -->
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -156,9 +129,8 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Contato</h3>
-                    <p>📞 (00) 00000-0000</p>
-                    <p>📧 contato@belezaestilo.com</p>
-                    <p>📍 Rua das Flores, 123 - Centro</p>
+                    <p><a href="https://wa.me/5519990066532" target="_blank" style="color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 8px;">📱 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4xOTUtLjU0NS0xLjA1OC0uOTk3LTEuNTQ3LS4xMTgtLjE5NS4zNDQtLjU0NS40NDctLjgyNy43MzQtLjI4Mi4yODctLjM0NC41OTUtLjU4My44NzQtLjIzOS4yNzktLjQ4OS4zNDQtLjk5Ny4xMTgtMS41NTItLjE5NS0uNTQ1LS45OTctMi4wNjktMS4yOTctMi44NDktLjQ0Ny0uODc0LS45OTctLjE5NS0xLjI5Ny0uMzQ0LS4zNDQtLjE5NS0uOTk3LS44NzQtLjk5Ny0xLjI5Ny0uODc0LS4zNDQtLjE5NS0uNjgzLS4xOTUtMS4wMzEtLjE5NS0uMzQ0IDAtLjU0NS4xMTgtLjgyNy4zNDQtLjI4Mi4yODctMS4wNTggMi42NDYtLjgyNyA1Ljg0MyAxLjE5NyAyLjUxMSA0LjE3OCA0LjUyMyA3LjE1MiA1LjA2OC4zNDQuMDY5LjY4My4xMTggMS4wMzEuMTE4IDEuNTUyIDAgMi41MTEtLjg3NCAzLjQ0NC0xLjI5NyAxLjE5Ny0uNjgzIDEuNzY1LTEuNTUyIDEuNzY1LTIuNjQ2LS4wNjktLjM0NC0uMTE4LS42ODMtLjM0NC0uOTk3eiIgZmlsbD0iIzI1QzY0MiIvPgo8cGF0aCBkPSJNMTIgMEM1LjM3MyAwIDAgNS4zNzMgMCAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMlMxOC42MjcgMCAxMiAwem01LjE5NyAxNy4xOTdhNC4yNTQgNC4yNTQgMCAwIDEtNC4yNTQgNC4yNTRjLTEuMTk2IDAtMi4zOTItLjM5OC0zLjI5OC0xLjE5N2wtMi4zOTIgMi4zOTJhLjU5OS41OTkgMCAwIDEtLjg0Ny0uODQ3bDIuMzkyLTIuMzkyYy0uOC0uOTA2LTEuMTk3LTIuMTAyLTEuMTk3LTMuMjk4IDAtMi4zNDcgMS45MTEtNC4yNTQgNC4yNTQtNC4yNTRzNC4yNTQgMS45MDcgNC4yNTQgNC4yNTR6IiBmaWxsPSIjMjVDNjQyIi8+Cjwvc3ZnPg==" alt="WhatsApp" style="width: 20px; height: 20px;">+55 19 99006-6532</a></p>
+                    <p>📍 Rua Nathan Guilherme Costa 24, São José 1, Sala 1</p>
                 </div>
                 <div class="footer-section">
                     <h3>Horário de Funcionamento</h3>
@@ -168,12 +140,11 @@
                 </div>
                 <div class="footer-section">
                     <h3>Redes Sociais</h3>
-                    <p>📱 Instagram: @belezaestilo</p>
-                    <p>📘 Facebook: /belezaestilo</p>
+                    <p>📱 <a href="https://www.instagram.com/laurasouzanails_?igsh=aW90NXNkMWd4NzJl" target="_blank" style="color: var(--primary-color); text-decoration: none;">Instagram: @laurasouzanails_</a></p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Beleza & Estilo. Todos os direitos reservados.</p>
+                <p>&copy; 2025 Studio Laura Souza. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
