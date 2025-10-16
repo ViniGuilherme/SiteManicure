@@ -251,22 +251,25 @@ class AdminManager {
         const today = new Date().toISOString().split('T')[0];
         const now = new Date();
 
+        // Filtrar apenas agendamentos principais (não slots de bloqueio)
+        const mainAppointments = this.appointments.filter(apt => !apt.isBlockSlot);
+
         // Total de agendamentos
-        document.getElementById('totalAppointments').textContent = this.appointments.length;
+        document.getElementById('totalAppointments').textContent = mainAppointments.length;
 
         // Agendamentos de hoje
-        const todayCount = this.appointments.filter(apt => apt.date === today).length;
+        const todayCount = mainAppointments.filter(apt => apt.date === today).length;
         document.getElementById('todayAppointments').textContent = todayCount;
 
         // Agendamentos futuros
-        const upcomingCount = this.appointments.filter(apt => {
+        const upcomingCount = mainAppointments.filter(apt => {
             const aptDate = new Date(`${apt.date}T${apt.time}`);
             return aptDate > now && !apt.completed;
         }).length;
         document.getElementById('upcomingAppointments').textContent = upcomingCount;
 
         // Receita total
-        const totalRevenue = this.appointments
+        const totalRevenue = mainAppointments
             .filter(apt => apt.completed)
             .reduce((sum, apt) => sum + (apt.price || 0), 0);
         document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2)}`;

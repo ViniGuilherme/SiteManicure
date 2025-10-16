@@ -692,7 +692,10 @@ AppointmentSystem.prototype.displayAppointments = function() {
     
     if (!appointmentsList || !noAppointments) return;
 
-    if (this.appointments.length === 0) {
+    // Filtrar apenas agendamentos principais (não slots de bloqueio)
+    const mainAppointments = this.appointments.filter(appointment => !appointment.isBlockSlot);
+
+    if (mainAppointments.length === 0) {
         appointmentsList.style.display = 'none';
         noAppointments.style.display = 'block';
         return;
@@ -701,7 +704,7 @@ AppointmentSystem.prototype.displayAppointments = function() {
     appointmentsList.style.display = 'grid';
     noAppointments.style.display = 'none';
 
-    appointmentsList.innerHTML = this.appointments.map(appointment => `
+    appointmentsList.innerHTML = mainAppointments.map(appointment => `
         <div class="appointment-card">
             <div class="appointment-header">
                 <div class="appointment-info">
