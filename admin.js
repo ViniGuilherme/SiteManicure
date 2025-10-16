@@ -1303,7 +1303,7 @@ class FirebaseAdminManager {
             const serviceDoc = window.firestore.doc(window.db, 'services', serviceId);
             const serviceSnapshot = await window.firestore.getDoc(serviceDoc);
             
-            if (serviceSnapshot.exists()) {
+            if (serviceSnapshot.exists) {
                 // Serviço existe, atualizar
                 await window.firestore.updateDoc(serviceDoc, serviceData);
                 console.log('Serviço atualizado no Firebase');
