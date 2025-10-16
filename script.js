@@ -117,6 +117,20 @@ class FirebaseAppointmentSystem {
             this.updateAvailableHours(document.getElementById('appointmentDate')?.value || '', 0);
             this.displayAppointments();
         });
+        
+        // Listener para serviços em tempo real
+        const servicesQuery = window.firestore.collection(window.db, 'services');
+        
+        window.firestore.onSnapshot(servicesQuery, (querySnapshot) => {
+            this.services = [];
+            querySnapshot.forEach((doc) => {
+                this.services.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Re-renderizar serviços na interface
+            this.renderServicesCheckboxes();
+            this.updateServiceSummary();
+        });
     }
     
     initializeInterface() {

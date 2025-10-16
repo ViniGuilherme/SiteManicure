@@ -123,6 +123,22 @@ class FirebaseAdminManager {
             this.updateStatistics();
             this.displayAppointments();
         });
+        
+        // Listener para serviços em tempo real
+        const servicesQuery = window.firestore.collection(window.db, 'services');
+        
+        window.firestore.onSnapshot(servicesQuery, (querySnapshot) => {
+            this.services = [];
+            querySnapshot.forEach((doc) => {
+                this.services.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Re-renderizar serviços se estiver na aba de serviços
+            const servicesTab = document.getElementById('servicesTab');
+            if (servicesTab && servicesTab.classList.contains('active')) {
+                this.renderServices();
+            }
+        });
     }
     
     setupEventListeners() {
