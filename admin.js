@@ -86,6 +86,9 @@ class FirebaseAdminManager {
                 } else {
                     // Verificar se há serviços com IDs padrão que precisam ser migrados
                     await this.migrateDefaultServices();
+                    
+                    // Limpar serviços duplicados
+                    await this.cleanupDuplicateServices();
                 }
             }
             
@@ -592,29 +595,91 @@ class FirebaseAdminManager {
                 const defaultServices = this.getDefaultServices();
                 
                 for (const service of defaultServices) {
-                    // Criar serviço no Firebase com ID único
-                    const docRef = await window.firestore.addDoc(
-                        window.firestore.collection(window.db, 'services'),
-                        {
-                            name: service.name,
-                            icon: service.icon,
-                            description: service.description,
-                            price: service.price,
-                            duration: service.duration
-                        }
+                    // Verificar se já existe um serviço com o mesmo nome
+                    const existingServices = await window.firestore.getDocs(
+                        window.firestore.collection(window.db, 'services')
                     );
                     
-                    // Atualizar o ID local para o ID do Firebase
-                    service.id = docRef.id;
-                    console.log(`Serviço "${service.name}" criado com ID: ${docRef.id}`);
+                    let serviceExists = false;
+                    existingServices.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.name === service.name) {
+                            serviceExists = true;
+                            service.id = doc.id;
+                            console.log(`Serviço "${service.name}" já existe com ID: ${doc.id}`);
+                        }
+                    });
+                    
+                    if (!serviceExists) {
+                        // Criar serviço no Firebase com ID único
+                        const docRef = await window.firestore.addDoc(
+                            window.firestore.collection(window.db, 'services'),
+                            {
+                                name: service.name,
+                                icon: service.icon,
+                                description: service.description,
+                                price: service.price,
+                                duration: service.duration
+                            }
+                        );
+                        
+                        // Atualizar o ID local para o ID do Firebase
+                        service.id = docRef.id;
+                        console.log(`Serviço "${service.name}" criado com ID: ${docRef.id}`);
+                    }
                 }
                 
                 // Atualizar a lista local com os novos IDs
                 this.services = defaultServices;
-                console.log('Serviços padrão criados com sucesso!');
+                console.log('Serviços padrão processados com sucesso!');
             }
         } catch (error) {
             console.error('Erro ao garantir serviços no Firebase:', error);
+        }
+    }
+    
+    // Função para limpar serviços duplicados no Firebase
+    async cleanupDuplicateServices() {
+        try {
+            console.log('Verificando serviços duplicados...');
+            const servicesSnapshot = await window.firestore.getDocs(
+                window.firestore.collection(window.db, 'services')
+            );
+            
+            const servicesByName = {};
+            const duplicatesToDelete = [];
+            
+            servicesSnapshot.forEach((doc) => {
+                const data = doc.data();
+                const serviceName = data.name;
+                
+                if (servicesByName[serviceName]) {
+                    // Serviço duplicado encontrado
+                    duplicatesToDelete.push(doc.id);
+                    console.log(`Serviço duplicado encontrado: "${serviceName}" (ID: ${doc.id})`);
+                } else {
+                    servicesByName[serviceName] = doc.id;
+                }
+            });
+            
+            // Deletar serviços duplicados
+            for (const duplicateId of duplicatesToDelete) {
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'services', duplicateId)
+                );
+                console.log(`Serviço duplicado removido: ${duplicateId}`);
+            }
+            
+            if (duplicatesToDelete.length > 0) {
+                console.log(`${duplicatesToDelete.length} serviços duplicados removidos`);
+                // Recarregar serviços após limpeza
+                await this.loadDataFromFirebase();
+            } else {
+                console.log('Nenhum serviço duplicado encontrado');
+            }
+            
+        } catch (error) {
+            console.error('Erro ao limpar serviços duplicados:', error);
         }
     }
     
@@ -629,23 +694,44 @@ class FirebaseAdminManager {
                 console.log(`Migrando ${servicesToMigrate.length} serviços com IDs padrão...`);
                 
                 for (const service of servicesToMigrate) {
-                    // Criar novo documento no Firebase
-                    const docRef = await window.firestore.addDoc(
-                        window.firestore.collection(window.db, 'services'),
-                        {
-                            name: service.name,
-                            icon: service.icon,
-                            description: service.description,
-                            price: service.price,
-                            duration: service.duration
-                        }
+                    // Verificar se já existe um serviço com o mesmo nome no Firebase
+                    const existingServices = await window.firestore.getDocs(
+                        window.firestore.collection(window.db, 'services')
                     );
                     
-                    // Atualizar o ID local
-                    const serviceIndex = this.services.findIndex(s => s.id === service.id);
-                    if (serviceIndex !== -1) {
-                        this.services[serviceIndex].id = docRef.id;
-                        console.log(`Serviço "${service.name}" migrado para ID: ${docRef.id}`);
+                    let serviceExists = false;
+                    existingServices.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.name === service.name) {
+                            serviceExists = true;
+                            // Atualizar o ID local para o ID existente
+                            const serviceIndex = this.services.findIndex(s => s.id === service.id);
+                            if (serviceIndex !== -1) {
+                                this.services[serviceIndex].id = doc.id;
+                                console.log(`Serviço "${service.name}" já existe, usando ID: ${doc.id}`);
+                            }
+                        }
+                    });
+                    
+                    if (!serviceExists) {
+                        // Criar novo documento no Firebase
+                        const docRef = await window.firestore.addDoc(
+                            window.firestore.collection(window.db, 'services'),
+                            {
+                                name: service.name,
+                                icon: service.icon,
+                                description: service.description,
+                                price: service.price,
+                                duration: service.duration
+                            }
+                        );
+                        
+                        // Atualizar o ID local
+                        const serviceIndex = this.services.findIndex(s => s.id === service.id);
+                        if (serviceIndex !== -1) {
+                            this.services[serviceIndex].id = docRef.id;
+                            console.log(`Serviço "${service.name}" migrado para ID: ${docRef.id}`);
+                        }
                     }
                 }
                 
