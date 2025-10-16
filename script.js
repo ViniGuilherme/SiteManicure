@@ -204,6 +204,22 @@ class FirebaseAppointmentSystem {
         return phone.replace(/\D/g, '');
     }
     
+    // Gerar ID único para este navegador/dispositivo
+    generateBrowserId() {
+        let browserId = localStorage.getItem('browserId');
+        if (!browserId) {
+            // Gerar um ID único baseado em timestamp + random
+            browserId = 'browser_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('browserId', browserId);
+        }
+        return browserId;
+    }
+    
+    // Obter ID do navegador atual
+    getCurrentBrowserId() {
+        return this.generateBrowserId();
+    }
+    
     // Renderizar checkboxes de serviços
     renderServicesCheckboxes() {
         const container = document.getElementById('servicesContainer');
@@ -546,6 +562,7 @@ class FirebaseAppointmentSystem {
             duration: totalDuration,
             slotsNeeded,
             completed: false,
+            browserId: this.getCurrentBrowserId(), // ID único do navegador
             createdAt: new Date().toISOString()
         };
 
@@ -572,6 +589,7 @@ class FirebaseAppointmentSystem {
                         slotsNeeded: 1,
                         completed: false,
                         isBlockSlot: true,
+                        browserId: this.getCurrentBrowserId(), // ID único do navegador
                         createdAt: new Date().toISOString()
                     };
                     
@@ -698,10 +716,18 @@ class FirebaseAppointmentSystem {
         const currentClientPhone = document.getElementById('clientPhone')?.value?.trim() || '';
         const currentClientName = document.getElementById('clientName')?.value?.trim() || '';
         
-        // Filtrar apenas agendamentos principais (não slots de bloqueio)
-        let mainAppointments = this.appointments.filter(appointment => !appointment.isBlockSlot);
+        // Obter ID do navegador atual
+        const currentBrowserId = this.getCurrentBrowserId();
         
-        // Se há dados no formulário, filtrar para mostrar apenas os relevantes
+        // Filtrar apenas agendamentos principais (não slots de bloqueio) e do navegador atual
+        let mainAppointments = this.appointments.filter(appointment => {
+            if (appointment.isBlockSlot) return false;
+            
+            // Filtrar por browserId (agendamentos deste navegador)
+            return appointment.browserId === currentBrowserId;
+        });
+        
+        // Se há dados no formulário, filtrar ainda mais para mostrar apenas os relevantes
         if (currentClientPhone || currentClientName) {
             mainAppointments = mainAppointments.filter(appointment => {
                 let matches = false;
@@ -720,14 +746,6 @@ class FirebaseAppointmentSystem {
                 
                 return matches;
             });
-        } else {
-            // Se não há dados no formulário, mostrar todos os agendamentos (mas com dados limitados)
-            mainAppointments = mainAppointments.map(appointment => ({
-                ...appointment,
-                // Ocultar informações sensíveis quando não há identificação
-                phone: '***',
-                email: '***'
-            }));
         }
 
         if (mainAppointments.length === 0) {
@@ -740,14 +758,14 @@ class FirebaseAppointmentSystem {
                     <div style="text-align: center; padding: 2rem; color: #ccc;">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
                         <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento encontrado</p>
-                        <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Para ${currentClientName || 'este telefone'}</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Para ${currentClientName || 'este telefone'} neste navegador</p>
                     </div>
                 `;
             } else {
                 noAppointments.innerHTML = `
                     <div style="text-align: center; padding: 2rem; color: #ccc;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
-                        <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento disponível</p>
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💻</div>
+                        <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento neste navegador</p>
                         <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Faça seu agendamento na seção acima</p>
                     </div>
                 `;
