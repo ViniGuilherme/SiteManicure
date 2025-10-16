@@ -386,6 +386,362 @@ class FirebaseAdminManager {
         document.getElementById('settingsModal').style.display = 'none';
     }
     
+    // Funções do modal de reset
+    showResetModal() {
+        document.getElementById('resetModal').style.display = 'block';
+    }
+    
+    closeResetModal() {
+        document.getElementById('resetModal').style.display = 'none';
+    }
+    
+    async resetData(type) {
+        let confirmMessage = '';
+        let actionDescription = '';
+        
+        switch(type) {
+            case 'completed':
+                confirmMessage = 'Tem certeza que deseja excluir TODOS os agendamentos concluídos?\n\n⚠️ Esta ação não pode ser desfeita!';
+                actionDescription = 'agendamentos concluídos';
+                break;
+            case 'pending':
+                confirmMessage = 'Tem certeza que deseja excluir TODOS os agendamentos pendentes?\n\n⚠️ Esta ação não pode ser desfeita!';
+                actionDescription = 'agendamentos pendentes';
+                break;
+            case 'allAppointments':
+                confirmMessage = 'Tem certeza que deseja excluir TODOS os agendamentos?\n\n⚠️ Esta ação não pode ser desfeita!';
+                actionDescription = 'todos os agendamentos';
+                break;
+            case 'services':
+                confirmMessage = 'Tem certeza que deseja resetar os serviços para o padrão?\n\n⚠️ Todos os serviços personalizados serão perdidos!';
+                actionDescription = 'serviços';
+                break;
+            case 'hours':
+                confirmMessage = 'Tem certeza que deseja resetar os horários para o padrão?\n\n⚠️ Todos os horários personalizados serão perdidos!';
+                actionDescription = 'horários';
+                break;
+            case 'days':
+                confirmMessage = 'Tem certeza que deseja resetar os dias da semana para o padrão?\n\n⚠️ Todas as configurações de dias serão perdidas!';
+                actionDescription = 'dias da semana';
+                break;
+            case 'everything':
+                confirmMessage = '🚨 ATENÇÃO: Você está prestes a excluir TODOS os dados do sistema!\n\nIsso inclui:\n• Todos os agendamentos\n• Todos os serviços personalizados\n• Todos os horários personalizados\n• Todas as configurações\n\n⚠️ ESTA AÇÃO NÃO PODE SER DESFEITA!\n\nTem certeza absoluta?';
+                actionDescription = 'TODOS os dados';
+                break;
+        }
+        
+        if (confirm(confirmMessage)) {
+            try {
+                await this.performReset(type);
+                alert(`✅ ${actionDescription} foram resetados com sucesso!`);
+                this.closeResetModal();
+                
+                // Recarregar dados se necessário
+                if (type === 'services' || type === 'hours' || type === 'days' || type === 'everything') {
+                    await this.loadDataFromFirebase();
+                    this.displayAppointments();
+                    this.updateStatistics();
+                } else {
+                    this.displayAppointments();
+                    this.updateStatistics();
+                }
+                
+            } catch (error) {
+                console.error('Erro ao resetar dados:', error);
+                alert('❌ Erro ao resetar dados. Tente novamente.');
+            }
+        }
+    }
+    
+    async performReset(type) {
+        switch(type) {
+            case 'completed':
+                // Deletar agendamentos concluídos
+                const completedAppointments = this.appointments.filter(apt => apt.completed);
+                for (const appointment of completedAppointments) {
+                    await window.firestore.deleteDoc(window.firestore.doc(window.db, 'appointments', appointment.id));
+                }
+                break;
+                
+            case 'pending':
+                // Deletar agendamentos pendentes
+                const pendingAppointments = this.appointments.filter(apt => !apt.completed);
+                for (const appointment of pendingAppointments) {
+                    await window.firestore.deleteDoc(window.firestore.doc(window.db, 'appointments', appointment.id));
+                }
+                break;
+                
+            case 'allAppointments':
+                // Deletar todos os agendamentos
+                for (const appointment of this.appointments) {
+                    await window.firestore.deleteDoc(window.firestore.doc(window.db, 'appointments', appointment.id));
+                }
+                break;
+                
+            case 'services':
+                // Resetar serviços para padrão
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'services', 'default'),
+                    { services: this.getDefaultServices() }
+                );
+                break;
+                
+            case 'hours':
+                // Resetar horários para padrão
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'availableHours'),
+                    { hours: ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'] }
+                );
+                break;
+                
+            case 'days':
+                // Resetar dias para padrão
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'availableDays'),
+                    { 
+                        days: {
+                            'monday': true,
+                            'tuesday': true,
+                            'wednesday': true,
+                            'thursday': true,
+                            'friday': true,
+                            'saturday': true,
+                            'sunday': false
+                        }
+                    }
+                );
+                break;
+                
+            case 'everything':
+                // Deletar tudo
+                // Deletar todos os agendamentos
+                for (const appointment of this.appointments) {
+                    await window.firestore.deleteDoc(window.firestore.doc(window.db, 'appointments', appointment.id));
+                }
+                
+                // Resetar serviços
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'services', 'default'),
+                    { services: this.getDefaultServices() }
+                );
+                
+                // Resetar horários
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'availableHours'),
+                    { hours: ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'] }
+                );
+                
+                // Resetar dias
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'availableDays'),
+                    { 
+                        days: {
+                            'monday': true,
+                            'tuesday': true,
+                            'wednesday': true,
+                            'thursday': true,
+                            'friday': true,
+                            'saturday': true,
+                            'sunday': false
+                        }
+                    }
+                );
+                break;
+        }
+    }
+    
+    getDefaultServices() {
+        return [
+            { id: 1, name: 'Manicure Básica', icon: '💅', price: 35, duration: 45, description: 'Manicure tradicional com esmaltação' },
+            { id: 2, name: 'Manicure com Gel', icon: '✨', price: 65, duration: 60, description: 'Unha em gel com acabamento profissional e duradouro' },
+            { id: 3, name: 'Pedicure', icon: '🦶', price: 40, duration: 60, description: 'Cuidados completos para os pés com hidratação' },
+            { id: 4, name: 'Mão e Pé', icon: '💎', price: 70, duration: 90, description: 'Pacote completo com manicure e pedicure' },
+            { id: 5, name: 'Alongamento de Unhas', icon: '🎨', price: 120, duration: 120, description: 'Alongamento em gel ou fibra de vidro' },
+            { id: 6, name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
+        ];
+    }
+    
+    // Funções do modal de adicionar agendamento
+    showAddAppointmentModal() {
+        const modal = document.getElementById('addAppointmentModal');
+        modal.style.display = 'block';
+        
+        // Limpar formulário
+        document.getElementById('addAppointmentForm').reset();
+        
+        // Configurar data mínima para hoje
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('addAppointmentDate').value = today;
+        document.getElementById('addAppointmentDate').min = today;
+        
+        // Renderizar serviços
+        this.renderAddServicesCheckboxes();
+        
+        // Configurar event listeners
+        this.setupAddAppointmentListeners();
+        
+        // Configurar validação de dias da semana
+        this.setupAdminAvailableDays();
+        
+        // Abrir calendário automaticamente
+        document.getElementById('addAppointmentDate').addEventListener('click', function() {
+            this.showPicker();
+        });
+    }
+    
+    closeAddAppointmentModal() {
+        document.getElementById('addAppointmentModal').style.display = 'none';
+    }
+    
+    renderAddServicesCheckboxes() {
+        const container = document.getElementById('addServicesContainer');
+        if (!container) return;
+        
+        container.innerHTML = this.services.map(service => `
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.3s ease; color: var(--white);">
+                <input type="checkbox" class="add-service-checkbox" value="${service.name}" 
+                       data-price="${service.price}" data-duration="${service.duration}" style="margin: 0;">
+                <span style="color: var(--white);">${service.icon} ${service.name} - R$ ${service.price.toFixed(2)} (${service.duration} min)</span>
+            </label>
+        `).join('');
+    }
+    
+    setupAddAppointmentListeners() {
+        // Event listener para mudança de data
+        document.getElementById('addAppointmentDate').addEventListener('change', (e) => {
+            this.updateAvailableHoursInModal(e.target.value);
+        });
+        
+        // Event listeners para checkboxes de serviços
+        document.querySelectorAll('.add-service-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                this.updateAddServiceSummary();
+            });
+        });
+        
+        // Event listener para o formulário
+        document.getElementById('addAppointmentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.addAppointment();
+        });
+        
+        // Formatação de telefone
+        document.getElementById('addClientPhone').addEventListener('input', (e) => {
+            this.formatPhone(e);
+        });
+    }
+    
+    updateAvailableHoursInModal(selectedDate) {
+        const timeSelect = document.getElementById('addAppointmentTime');
+        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        
+        timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+        
+        this.availableHours.forEach(hour => {
+            const option = document.createElement('option');
+            option.value = hour;
+            option.textContent = hour;
+            
+            // Se for hoje, filtrar horários passados
+            if (selectedDate === today) {
+                const [hours, minutes] = hour.split(':').map(Number);
+                const timeInMinutes = hours * 60 + minutes;
+                if (timeInMinutes <= currentTime) {
+                    option.disabled = true;
+                    option.textContent += ' (Horário já passou)';
+                }
+            }
+            
+            timeSelect.appendChild(option);
+        });
+    }
+    
+    updateAddServiceSummary() {
+        const summaryContainer = document.getElementById('addServiceSummary');
+        const checkboxes = document.querySelectorAll('.add-service-checkbox:checked');
+        
+        if (checkboxes.length === 0) {
+            summaryContainer.innerHTML = '<p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>';
+            return;
+        }
+        
+        let totalPrice = 0;
+        let totalDuration = 0;
+        const selectedServices = [];
+        
+        checkboxes.forEach(checkbox => {
+            const serviceName = checkbox.value;
+            const price = parseFloat(checkbox.dataset.price);
+            const duration = parseInt(checkbox.dataset.duration);
+            
+            selectedServices.push(serviceName);
+            totalPrice += price;
+            totalDuration += duration;
+        });
+        
+        summaryContainer.innerHTML = `
+            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Resumo dos Serviços:</h4>
+            <p style="color: var(--white); margin-bottom: 0.5rem;"><strong>Serviços:</strong> ${selectedServices.join(', ')}</p>
+            <p style="color: var(--white); margin-bottom: 0.5rem;"><strong>Preço Total:</strong> <span style="color: var(--primary-color);">R$ ${totalPrice.toFixed(2)}</span></p>
+            <p style="color: var(--white);"><strong>Duração Total:</strong> <span style="color: var(--primary-color);">${totalDuration} minutos</span></p>
+        `;
+    }
+    
+    async addAppointment() {
+        const name = document.getElementById('addClientName').value;
+        const phone = document.getElementById('addClientPhone').value;
+        const email = document.getElementById('addClientEmail').value;
+        const date = document.getElementById('addAppointmentDate').value;
+        const time = document.getElementById('addAppointmentTime').value;
+        
+        const selectedServices = Array.from(document.querySelectorAll('.add-service-checkbox:checked'))
+            .map(checkbox => ({
+                name: checkbox.value,
+                price: parseFloat(checkbox.dataset.price),
+                duration: parseInt(checkbox.dataset.duration)
+            }));
+        
+        if (!name || !phone || !date || !time || selectedServices.length === 0) {
+            alert('❌ Por favor, preencha todos os campos obrigatórios e selecione pelo menos um serviço.');
+            return;
+        }
+        
+        try {
+            // Calcular preço e duração totais
+            const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0);
+            const totalDuration = selectedServices.reduce((sum, service) => sum + service.duration, 0);
+            
+            const appointmentData = {
+                name: name,
+                clientName: name,
+                phone: phone,
+                email: email || '',
+                date: date,
+                time: time,
+                services: selectedServices,
+                service: selectedServices.map(s => s.name).join(', '),
+                totalPrice: totalPrice,
+                price: totalPrice,
+                totalDuration: totalDuration,
+                duration: totalDuration,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Salvar no Firebase
+            await window.firestore.addDoc(window.firestore.collection(window.db, 'appointments'), appointmentData);
+            
+            alert('✅ Agendamento adicionado com sucesso!');
+            this.closeAddAppointmentModal();
+            
+        } catch (error) {
+            console.error('Erro ao adicionar agendamento:', error);
+            alert('❌ Erro ao adicionar agendamento. Tente novamente.');
+        }
+    }
+    
     // Mostrar aba de configurações
     showSettingsTab(tab) {
         // Esconder todas as abas

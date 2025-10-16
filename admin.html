@@ -167,19 +167,25 @@
         }
         
         .btn-delete {
-            background: #F44336;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border: 2px solid #F44336;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
         }
         
         .btn-delete:hover {
-            background: #d32f2f;
-            color: white;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         .appointment-status {
@@ -273,11 +279,45 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
-            border-radius: 10px;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, #ff4757, #ff6b7a);
+            border-radius: 15px;
             margin-bottom: 1rem;
-            border: 1px solid #444;
+            border: 2px solid #ff4757;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hour-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .hour-item:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+        }
+        
+        .hour-item:hover::before {
+            opacity: 1;
+        }
+        
+        .hour-item span {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
         
         .service-info {
@@ -351,6 +391,31 @@
         
         .day-item.active .day-status {
             color: var(--primary-color);
+        }
+        
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+            .hour-item {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .hour-item span {
+                font-size: 1.1rem;
+            }
+            
+            .btn-delete {
+                padding: 0.6rem 1rem;
+                font-size: 1rem;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 1.5rem;
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -452,7 +517,7 @@
 
             <!-- Services Tab -->
             <div id="servicesTab" class="settings-tab-content">
-                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Serviços Disponíveis</h3>
+                <h3 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center; font-size: 1.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">💅 Serviços Disponíveis</h3>
                 <div id="servicesList">
                     <!-- Serviços serão carregados dinamicamente -->
                 </div>
@@ -460,18 +525,18 @@
 
             <!-- Hours Tab -->
             <div id="hoursTab" class="settings-tab-content">
-                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Horários Disponíveis</h3>
+                <h3 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center; font-size: 1.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🕒 Horários Disponíveis</h3>
                 <div id="hoursList">
                     <!-- Horários serão carregados dinamicamente -->
                 </div>
-            </div>
-
+                </div>
+                
             <!-- Days Tab -->
             <div id="daysTab" class="settings-tab-content">
-                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Dias de Funcionamento</h3>
+                <h3 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center; font-size: 1.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">📅 Dias de Funcionamento</h3>
                 <div id="daysList">
                     <!-- Dias serão carregados dinamicamente -->
-                </div>
+                        </div>
                 <div id="daysSummary" style="text-align: center; margin-top: 1rem; color: var(--primary-color); font-weight: 600;"></div>
                 <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
                     <button onclick="adminManager.resetDaysToDefault()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Restaurar Padrão</button>
@@ -481,6 +546,97 @@
 
             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
                 <button onclick="adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Appointment Modal -->
+    <div id="addAppointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeAddAppointmentModal()">&times;</span>
+            <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 2rem;">➕ Adicionar Agendamento</h2>
+            
+            <form id="addAppointmentForm">
+                <div style="display: grid; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="addClientName" style="color: var(--white);">Nome Completo *</label>
+                        <input type="text" id="addClientName" required placeholder="Digite o nome completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addClientPhone" style="color: var(--white);">Telefone *</label>
+                        <input type="tel" id="addClientPhone" required placeholder="(00) 00000-0000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addClientEmail" style="color: var(--white);">E-mail (opcional)</label>
+                        <input type="email" id="addClientEmail" placeholder="Digite o e-mail">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addAppointmentDate" style="color: var(--white);">Data *</label>
+                        <input type="date" id="addAppointmentDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addAppointmentTime" style="color: var(--white);">Horário *</label>
+                        <select id="addAppointmentTime" required>
+                            <option value="">Selecione um horário</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: var(--white);">Serviços *</label>
+                        <div id="addServicesContainer" style="display: grid; gap: 0.5rem; max-height: 200px; overflow-y: auto;">
+                            <!-- Serviços serão carregados dinamicamente -->
+                        </div>
+                        <div id="addServiceSummary" style="margin-top: 1rem; padding: 1rem; background: #2A2A2A; border-radius: 10px; color: var(--white);">
+                            <p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">✅ Confirmar Agendamento</button>
+                    <button type="button" onclick="adminManager.closeAddAppointmentModal()" class="btn btn-secondary" style="background: #666; color: var(--white); border: 2px solid #666;">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Modal -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeResetModal()">&times;</span>
+            <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 2rem;">🗑️ Resetar Dados</h2>
+            <p style="color: #ccc; text-align: center; margin-bottom: 2rem;">Escolha quais dados deseja resetar:</p>
+            
+            <div style="display: grid; gap: 1rem;">
+                <button onclick="adminManager.resetData('completed')" class="btn btn-secondary">
+                    ✅ Agendamentos Concluídos
+                </button>
+                <button onclick="adminManager.resetData('pending')" class="btn btn-secondary">
+                    ⏳ Agendamentos Pendentes
+                </button>
+                <button onclick="adminManager.resetData('allAppointments')" class="btn btn-secondary">
+                    📅 Todos os Agendamentos
+                </button>
+                <button onclick="adminManager.resetData('services')" class="btn btn-secondary">
+                    💅 Serviços
+                </button>
+                <button onclick="adminManager.resetData('hours')" class="btn btn-secondary">
+                    🕒 Horários
+                </button>
+                <button onclick="adminManager.resetData('days')" class="btn btn-secondary">
+                    📅 Dias da Semana
+                </button>
+                <button onclick="adminManager.resetData('everything')" class="btn btn-secondary" style="background: #F44336; border-color: #F44336;">
+                    🗑️ TUDO (CUIDADO!)
+                </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button onclick="adminManager.closeResetModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Cancelar</button>
             </div>
         </div>
     </div>

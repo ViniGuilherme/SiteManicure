@@ -342,6 +342,208 @@ nav a:hover {
     margin-bottom: 1.5rem;
 }
 
+/* Botões de ação nos serviços */
+.service-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.service-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.service-btn-edit {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    border: 2px solid var(--primary-color);
+}
+
+.service-btn-edit:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 220, 0, 0.3);
+}
+
+.service-btn-delete {
+    background: #ff4757;
+    color: white;
+    border: 2px solid #ff4757;
+}
+
+.service-btn-delete:hover {
+    background: #ff3742;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+}
+
+.service-btn-select {
+    background: #2ed573;
+    color: white;
+    border: 2px solid #2ed573;
+}
+
+.service-btn-select:hover {
+    background: #26d065;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 213, 115, 0.3);
+}
+
+/* Melhorar o estilo do checkbox container */
+.service-checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.service-checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+.service-checkbox-container .service-btn-select {
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.service-checkbox-container input[type="checkbox"]:checked + .checkmark + .service-btn-select {
+    opacity: 1;
+    background: #26d065;
+    transform: scale(1.05);
+}
+
+.checkmark {
+    display: none;
+}
+
+/* Modal de edição de serviço */
+.edit-service-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.edit-service-modal-content {
+    background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    margin: 5% auto;
+    padding: 3rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    color: var(--white);
+    position: relative;
+}
+
+.edit-service-modal h2 {
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.edit-service-modal .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.edit-service-modal label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+    font-weight: 600;
+}
+
+.edit-service-modal input,
+.edit-service-modal textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #444;
+    border-radius: 10px;
+    background: #2A2A2A;
+    color: var(--white);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.edit-service-modal input:focus,
+.edit-service-modal textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 220, 0, 0.1);
+}
+
+.edit-service-modal textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.edit-service-modal .modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.edit-service-modal .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-service-modal .btn-save {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+}
+
+.edit-service-modal .btn-cancel {
+    background: #666;
+    color: var(--white);
+}
+
+.edit-service-modal .btn:hover {
+    transform: translateY(-2px);
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--primary-color);
+}
+
 /* Booking Section */
 .booking {
     padding: 100px 0;
@@ -870,6 +1072,16 @@ footer::before {
     .service-card {
         padding: 1.5rem;
         text-align: center;
+    }
+    
+    .service-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .service-btn {
+        width: 100%;
+        justify-content: center;
     }
     
     /* Formulário responsivo */
