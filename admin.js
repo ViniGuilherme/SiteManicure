@@ -1291,22 +1291,3 @@ window.deleteHour = function(hour) {
 window.addNewHour = function() {
     return adminManager.addNewHour();
 };
-
-window.testServiceFunctions = function() {
-    console.log('=== TESTE DE FUNÇÕES DE SERVIÇOS ===');
-    console.log('adminManager:', adminManager);
-    console.log('adminManager.services:', adminManager.services);
-    console.log('window.editService:', window.editService);
-    console.log('window.deleteService:', window.deleteService);
-    
-    if (adminManager.services && adminManager.services.length > 0) {
-        const firstService = adminManager.services[0];
-        console.log('Primeiro serviço:', firstService);
-        console.log('Testando editService com ID:', firstService.id);
-        // Não vamos chamar a função real para evitar abrir o modal
-        console.log('Função editService disponível:', typeof window.editService === 'function');
-        console.log('Função deleteService disponível:', typeof window.deleteService === 'function');
-    } else {
-        console.log('Nenhum serviço encontrado para testar');
-    }
-};

@@ -121,7 +121,17 @@ class FirebaseAppointmentSystem {
     
     initializeInterface() {
         // Formatação de telefone
-        document.getElementById('clientPhone')?.addEventListener('input', (e) => this.formatPhone(e));
+        document.getElementById('clientPhone')?.addEventListener('input', (e) => {
+            this.formatPhone(e);
+            // Atualizar lista de agendamentos quando telefone mudar
+            setTimeout(() => this.displayAppointments(), 100);
+        });
+        
+        // Atualizar lista de agendamentos quando nome mudar
+        document.getElementById('clientName')?.addEventListener('input', (e) => {
+            // Atualizar lista de agendamentos quando nome mudar
+            setTimeout(() => this.displayAppointments(), 100);
+        });
         
         // Listener para mudança de data
         document.getElementById('appointmentDate')?.addEventListener('change', (e) => {
@@ -184,9 +194,15 @@ class FirebaseAppointmentSystem {
                 value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
         } else if (value.length >= 3) {
             value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
-            }
-            e.target.value = value;
         }
+        e.target.value = value;
+    }
+    
+    // Normalizar telefone para comparação (remover formatação)
+    normalizePhone(phone) {
+        if (!phone) return '';
+        return phone.replace(/\D/g, '');
+    }
     
     // Renderizar checkboxes de serviços
     renderServicesCheckboxes() {
@@ -678,12 +694,52 @@ class FirebaseAppointmentSystem {
         
         if (!appointmentsList || !noAppointments) return;
 
-        // Filtrar apenas agendamentos principais (não slots de bloqueio)
-        const mainAppointments = this.appointments.filter(appointment => !appointment.isBlockSlot);
+        // Obter telefone do cliente atual do formulário
+        const currentClientPhone = document.getElementById('clientPhone')?.value?.trim() || '';
+        const currentClientName = document.getElementById('clientName')?.value?.trim() || '';
+        
+        // Filtrar apenas agendamentos principais (não slots de bloqueio) e do cliente atual
+        const mainAppointments = this.appointments.filter(appointment => {
+            if (appointment.isBlockSlot) return false;
+            
+            // Se há telefone no formulário, filtrar por telefone
+            if (currentClientPhone) {
+                const appointmentPhone = appointment.phone || '';
+                return this.normalizePhone(appointmentPhone) === this.normalizePhone(currentClientPhone);
+            }
+            
+            // Se há nome no formulário, filtrar por nome (fallback)
+            if (currentClientName) {
+                const appointmentName = appointment.name || appointment.clientName || '';
+                return appointmentName.toLowerCase().trim() === currentClientName.toLowerCase().trim();
+            }
+            
+            // Se não há dados no formulário, não mostrar nenhum agendamento
+            return false;
+        });
 
         if (mainAppointments.length === 0) {
             appointmentsList.style.display = 'none';
             noAppointments.style.display = 'block';
+            
+            // Atualizar mensagem baseada se há dados no formulário
+            if (currentClientPhone || currentClientName) {
+                noAppointments.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #ccc;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+                        <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento encontrado</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Para ${currentClientName || 'este telefone'}</p>
+                    </div>
+                `;
+            } else {
+                noAppointments.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #ccc;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                        <p style="font-size: 1.2rem; margin: 0;">Digite seus dados para ver seus agendamentos</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Seus agendamentos são privados e só você pode vê-los</p>
+                    </div>
+                `;
+            }
             return;
         }
 
