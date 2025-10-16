@@ -598,12 +598,80 @@ class FirebaseAdminManager {
         if (!container) return;
         
         container.innerHTML = this.services.map(service => `
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.3s ease; color: var(--white);">
-                <input type="checkbox" class="add-service-checkbox" value="${service.name}" 
-                       data-price="${service.price}" data-duration="${service.duration}" style="margin: 0;">
-                <span style="color: var(--white);">${service.icon} ${service.name} - R$ ${service.price.toFixed(2)} (${service.duration} min)</span>
-            </label>
+            <div class="add-service-card" style="background: linear-gradient(135deg, #1A1A1A, #2A2A2A); border: 2px solid #444; border-radius: 12px; padding: 1rem; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); opacity: 0; transition: opacity 0.3s ease; z-index: 0;"></div>
+                
+                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; position: relative; z-index: 1; color: var(--white);">
+                    <div style="position: relative;">
+                        <input type="checkbox" class="add-service-checkbox" value="${service.name}" 
+                               data-price="${service.price}" data-duration="${service.duration}" 
+                               style="width: 20px; height: 20px; margin: 0; accent-color: var(--primary-color);">
+                        <div class="checkmark-overlay" style="position: absolute; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--primary-color); border-radius: 4px; background: transparent; transition: all 0.3s ease; pointer-events: none;"></div>
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <span style="font-size: 1.5rem;">${service.icon}</span>
+                            <h4 style="margin: 0; color: var(--white); font-size: 1.1rem; font-weight: 600;">${service.name}</h4>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="color: var(--primary-color); font-weight: 700; font-size: 1.1rem;">R$ ${service.price.toFixed(2)}</span>
+                                <span style="color: #ccc; font-size: 0.9rem;">⏱️ ${service.duration} min</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin: 0.5rem 0 0 0; color: #ccc; font-size: 0.85rem; line-height: 1.3;">${service.description}</p>
+                    </div>
+                </label>
+            </div>
         `).join('');
+        
+        // Adicionar efeitos de hover e seleção
+        container.querySelectorAll('.add-service-card').forEach(card => {
+            const checkbox = card.querySelector('.add-service-checkbox');
+            const overlay = card.querySelector('.checkmark-overlay');
+            const backgroundOverlay = card.querySelector('div[style*="opacity: 0"]');
+            
+            card.addEventListener('mouseenter', () => {
+                if (!checkbox.checked) {
+                    backgroundOverlay.style.opacity = '0.05';
+                    card.style.borderColor = 'var(--primary-color)';
+                    card.style.transform = 'translateY(-2px)';
+                    card.style.boxShadow = '0 5px 15px rgba(255, 220, 0, 0.2)';
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (!checkbox.checked) {
+                    backgroundOverlay.style.opacity = '0';
+                    card.style.borderColor = '#444';
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = 'none';
+                }
+            });
+            
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    backgroundOverlay.style.opacity = '0.1';
+                    overlay.style.background = 'var(--primary-color)';
+                    overlay.style.borderColor = 'var(--primary-color)';
+                    card.style.borderColor = 'var(--primary-color)';
+                    card.style.boxShadow = '0 5px 15px rgba(255, 220, 0, 0.3)';
+                    
+                    // Adicionar checkmark
+                    overlay.innerHTML = '<span style="color: white; font-size: 12px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">✓</span>';
+                } else {
+                    backgroundOverlay.style.opacity = '0';
+                    overlay.style.background = 'transparent';
+                    overlay.style.borderColor = '#444';
+                    card.style.borderColor = '#444';
+                    card.style.boxShadow = 'none';
+                    overlay.innerHTML = '';
+                }
+            });
+        });
     }
     
     setupAddAppointmentListeners() {
@@ -663,7 +731,13 @@ class FirebaseAdminManager {
         const checkboxes = document.querySelectorAll('.add-service-checkbox:checked');
         
         if (checkboxes.length === 0) {
-            summaryContainer.innerHTML = '<p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>';
+            summaryContainer.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="font-size: 1.5rem;">📊</span>
+                    <h4 style="color: var(--primary-color); margin: 0; font-size: 1.2rem;">Resumo do Agendamento</h4>
+                </div>
+                <p style="color: #ccc; text-align: center; margin: 0; font-style: italic;">Nenhum serviço selecionado</p>
+            `;
             return;
         }
         
@@ -681,11 +755,41 @@ class FirebaseAdminManager {
             totalDuration += duration;
         });
         
+        // Calcular horas e minutos
+        const hours = Math.floor(totalDuration / 60);
+        const minutes = totalDuration % 60;
+        const durationText = hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`;
+        
         summaryContainer.innerHTML = `
-            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Resumo dos Serviços:</h4>
-            <p style="color: var(--white); margin-bottom: 0.5rem;"><strong>Serviços:</strong> ${selectedServices.join(', ')}</p>
-            <p style="color: var(--white); margin-bottom: 0.5rem;"><strong>Preço Total:</strong> <span style="color: var(--primary-color);">R$ ${totalPrice.toFixed(2)}</span></p>
-            <p style="color: var(--white);"><strong>Duração Total:</strong> <span style="color: var(--primary-color);">${totalDuration} minutos</span></p>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <span style="font-size: 1.5rem;">📊</span>
+                <h4 style="color: var(--primary-color); margin: 0; font-size: 1.2rem;">Resumo do Agendamento</h4>
+            </div>
+            
+            <div style="display: grid; gap: 1rem;">
+                <div style="background: rgba(255, 220, 0, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 220, 0, 0.2);">
+                    <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1rem;">💅 Serviços Selecionados:</h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${selectedServices.map(service => `
+                            <span style="background: var(--primary-color); color: var(--dark-bg); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; font-weight: 600;">
+                                ${service}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div style="background: rgba(255, 220, 0, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 220, 0, 0.2); text-align: center;">
+                        <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">💰 Preço Total</div>
+                        <div style="color: var(--primary-color); font-size: 1.5rem; font-weight: 700;">R$ ${totalPrice.toFixed(2)}</div>
+                    </div>
+                    
+                    <div style="background: rgba(255, 220, 0, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 220, 0, 0.2); text-align: center;">
+                        <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">⏱️ Duração Total</div>
+                        <div style="color: var(--primary-color); font-size: 1.5rem; font-weight: 700;">${durationText}</div>
+                    </div>
+                </div>
+            </div>
         `;
     }
     
