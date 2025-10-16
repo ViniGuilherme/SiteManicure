@@ -18,7 +18,7 @@ class FirebaseAdminManager {
         
         this.init();
     }
-
+    
     async init() {
         // Aguardar Firebase carregar
         await this.waitForFirebase();
@@ -105,7 +105,7 @@ class FirebaseAdminManager {
     setupEventListeners() {
     // Login
         document.getElementById('loginForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
+                e.preventDefault();
             this.login();
         });
         
@@ -272,12 +272,12 @@ class FirebaseAdminManager {
                     <span class="appointment-status ${appointment.completed ? 'completed' : 'pending'}">
                         ${appointment.completed ? '✅ Concluído' : '⏳ Pendente'}
                     </span>
-                </div>
+                            </div>
                 <div class="appointment-admin-details">
                     <div class="detail-row">
                                 <span>📅</span>
                         <span>${formattedDate}</span>
-                    </div>
+                            </div>
                     <div class="detail-row">
                         <span>🕒</span>
                         <span>${appointment.time}</span>
@@ -287,13 +287,13 @@ class FirebaseAdminManager {
                         <span>${servicesText}</span>
                             </div>
                     <div class="detail-row">
-                        <span>⏱️</span>
-                        <span>${totalDuration} minutos</span>
+                                <span>⏱️</span>
+                                <span>${totalDuration} minutos</span>
                             </div>
                     <div class="detail-row">
                                 <span>💰</span>
                         <span>R$ ${totalPrice.toFixed(2)}</span>
-                            </div>
+                        </div>
                     <div class="detail-row">
                                 <span>📱</span>
                         <span>${appointment.phone}</span>
@@ -312,12 +312,12 @@ class FirebaseAdminManager {
                             </button>
                         <button class="btn-delete" onclick="adminManager.deleteAppointment('${appointment.id}')">
                             🗑️ Cancelar Agendamento
-                        </button>
-                    ` : `
+                            </button>
+                        ` : `
                         <div style="text-align: center; color: #4CAF50; font-weight: 600; padding: 1rem; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border: 1px solid #4CAF50;">
                             ✅ Serviço Concluído
                     </div>
-                    `}
+                        `}
                 </div>
             </div>
         `;
@@ -368,7 +368,7 @@ class FirebaseAdminManager {
             }
         }
     }
-    
+
     // Formatar data
     formatDate(dateString) {
         const [year, month, day] = dateString.split('-');
@@ -440,9 +440,9 @@ class FirebaseAdminManager {
                 if (type === 'services' || type === 'hours' || type === 'days' || type === 'everything') {
                     await this.loadDataFromFirebase();
                     this.displayAppointments();
-                    this.updateStatistics();
+                this.updateStatistics();
                 } else {
-                    this.displayAppointments();
+                this.displayAppointments();
                     this.updateStatistics();
                 }
                 
@@ -708,16 +708,16 @@ class FirebaseAdminManager {
         timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
         
         this.availableHours.forEach(hour => {
-            const option = document.createElement('option');
-            option.value = hour;
-            option.textContent = hour;
+                const option = document.createElement('option');
+                option.value = hour;
+                option.textContent = hour;
             
             // Se for hoje, filtrar horários passados
             if (selectedDate === today) {
                 const [hours, minutes] = hour.split(':').map(Number);
                 const timeInMinutes = hours * 60 + minutes;
                 if (timeInMinutes <= currentTime) {
-                    option.disabled = true;
+            option.disabled = true;
                     option.textContent += ' (Horário já passou)';
                 }
             }
@@ -729,7 +729,7 @@ class FirebaseAdminManager {
     updateAddServiceSummary() {
         const summaryContainer = document.getElementById('addServiceSummary');
         const checkboxes = document.querySelectorAll('.add-service-checkbox:checked');
-        
+
         if (checkboxes.length === 0) {
             summaryContainer.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
@@ -740,7 +740,7 @@ class FirebaseAdminManager {
             `;
             return;
         }
-        
+
         let totalPrice = 0;
         let totalDuration = 0;
         const selectedServices = [];
@@ -811,7 +811,7 @@ class FirebaseAdminManager {
             alert('❌ Por favor, preencha todos os campos obrigatórios e selecione pelo menos um serviço.');
             return;
         }
-        
+
         try {
             // Calcular preço e duração totais
             const totalPrice = selectedServices.reduce((sum, service) => sum + service.price, 0);
@@ -824,13 +824,13 @@ class FirebaseAdminManager {
                 email: email || '',
                 date: date,
                 time: time,
-                services: selectedServices,
+            services: selectedServices,
                 service: selectedServices.map(s => s.name).join(', '),
                 totalPrice: totalPrice,
-                price: totalPrice,
+            price: totalPrice,
                 totalDuration: totalDuration,
-                duration: totalDuration,
-                completed: false,
+            duration: totalDuration,
+            completed: false,
                 createdAt: new Date().toISOString()
             };
             
@@ -838,8 +838,8 @@ class FirebaseAdminManager {
             await window.firestore.addDoc(window.firestore.collection(window.db, 'appointments'), appointmentData);
             
             alert('✅ Agendamento adicionado com sucesso!');
-            this.closeAddAppointmentModal();
-            
+        this.closeAddAppointmentModal();
+        
         } catch (error) {
             console.error('Erro ao adicionar agendamento:', error);
             alert('❌ Erro ao adicionar agendamento. Tente novamente.');
@@ -850,7 +850,7 @@ class FirebaseAdminManager {
     showSettingsTab(tab) {
         // Esconder todas as abas
         document.querySelectorAll('.settings-tab-content').forEach(content => {
-            content.style.display = 'none';
+            content.classList.remove('active');
         });
         
         // Remover classe ativa de todos os botões
@@ -859,8 +859,15 @@ class FirebaseAdminManager {
         });
         
         // Mostrar aba selecionada
-        document.getElementById(`${tab}Tab`).style.display = 'block';
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+        const selectedTab = document.getElementById(`${tab}Tab`);
+        if (selectedTab) {
+            selectedTab.classList.add('active');
+        }
+        
+        const selectedButton = document.querySelector(`[data-tab="${tab}"]`);
+        if (selectedButton) {
+            selectedButton.classList.add('active');
+        }
         
         // Renderizar conteúdo da aba
         switch (tab) {
@@ -879,15 +886,31 @@ class FirebaseAdminManager {
     // Renderizar serviços
     renderServices() {
         const container = document.getElementById('servicesList');
+        if (!container) return;
+        
         container.innerHTML = this.services.map(service => `
             <div class="service-item">
                 <div class="service-info">
-                    <span class="service-icon">${service.icon}</span>
-                    <span class="service-name">${service.name}</span>
-                    <span class="service-price">R$ ${service.price.toFixed(2)}</span>
-                    <span class="service-duration">${service.duration} min</span>
+                    <div class="service-icon">${service.icon}</div>
+                    <div class="service-details">
+                        <h4>${service.name}</h4>
+                        <p>${service.description}</p>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <span class="service-price">R$ ${service.price.toFixed(2)}</span>
+                            <span style="color: #ccc; font-size: 0.9rem;">⏱️ ${service.duration} min</span>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn-delete" onclick="adminManager.deleteService('${service.id}')">🗑️</button>
+                <div class="service-actions">
+                    <button class="service-btn service-btn-edit" onclick="adminManager.editService('${service.id}')">
+                        <span>✏️</span>
+                        Editar
+                    </button>
+                    <button class="service-btn service-btn-delete" onclick="adminManager.deleteService('${service.id}')">
+                        <span>🗑️</span>
+                        Excluir
+                    </button>
+                </div>
             </div>
         `).join('');
     }
@@ -895,12 +918,150 @@ class FirebaseAdminManager {
     // Renderizar horários
     renderHours() {
         const container = document.getElementById('hoursList');
+        if (!container) return;
+        
         container.innerHTML = this.availableHours.map(hour => `
             <div class="hour-item">
-                <span>${hour}</span>
-                <button class="btn-delete" onclick="adminManager.deleteHour('${hour}')">🗑️</button>
+                <span style="color: white; font-weight: 700; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">🕒 ${hour}</span>
+                <button class="btn-delete" onclick="adminManager.deleteHour('${hour}')">
+                    <span>🗑️</span>
+                    Excluir
+                </button>
             </div>
         `).join('');
+    }
+    
+    // Função para deletar horário
+    async deleteHour(hour) {
+        const confirmMessage = `Tem certeza que deseja excluir o horário "${hour}"?\n\n⚠️ Esta ação não pode ser desfeita!`;
+        
+        if (confirm(confirmMessage)) {
+            try {
+                // Remover do Firebase
+                const hoursRef = window.firestore.doc(window.db, 'settings', 'availableHours');
+                const updatedHours = this.availableHours.filter(h => h !== hour);
+                await window.firestore.setDoc(hoursRef, { hours: updatedHours });
+                
+                // Remover localmente
+                this.availableHours = this.availableHours.filter(h => h !== hour);
+                
+                // Re-renderizar os horários
+                this.renderHours();
+                
+                alert('✅ Horário excluído com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao excluir horário:', error);
+                alert('❌ Erro ao excluir horário. Tente novamente.');
+            }
+        }
+    }
+    
+    // Funções para gerenciar serviços
+    editService(serviceId) {
+        const service = this.services.find(s => s.id === serviceId);
+        if (!service) return;
+        
+        // Criar modal de edição temporário
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 500px;">
+                <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 2rem;">✏️ Editar Serviço</h2>
+                <form id="editServiceForm">
+                    <div class="form-group">
+                        <label for="editServiceName" style="color: var(--white);">Nome do Serviço</label>
+                        <input type="text" id="editServiceName" value="${service.name}" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                    </div>
+                    <div class="form-group">
+                        <label for="editServiceIcon" style="color: var(--white);">Ícone (emoji)</label>
+                        <input type="text" id="editServiceIcon" value="${service.icon}" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                    </div>
+                    <div class="form-group">
+                        <label for="editServiceDescription" style="color: var(--white);">Descrição</label>
+                        <textarea id="editServiceDescription" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; min-height: 80px; resize: vertical; box-sizing: border-box;">${service.description}</textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="editServicePrice" style="color: var(--white);">Preço (R$)</label>
+                            <input type="number" id="editServicePrice" value="${service.price}" required min="0" step="0.01" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                        </div>
+                        <div class="form-group">
+                            <label for="editServiceDuration" style="color: var(--white);">Duração (minutos)</label>
+                            <input type="number" id="editServiceDuration" value="${service.duration}" required min="15" step="15" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <button type="button" class="btn btn-primary" onclick="adminManager.saveEditedService('${serviceId}', this.parentElement.parentElement)" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600;">💾 Salvar</button>
+                        <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="background: #666; color: var(--white); border: 2px solid #666; padding: 12px 24px; border-radius: 10px; font-weight: 600;">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    async saveEditedService(serviceId, modal) {
+        const serviceData = {
+            name: document.getElementById('editServiceName').value,
+            icon: document.getElementById('editServiceIcon').value,
+            description: document.getElementById('editServiceDescription').value,
+            price: parseFloat(document.getElementById('editServicePrice').value),
+            duration: parseInt(document.getElementById('editServiceDuration').value)
+        };
+        
+        try {
+            // Atualizar no Firebase
+            await window.firestore.updateDoc(
+                window.firestore.doc(window.db, 'services', serviceId),
+                serviceData
+            );
+            
+            // Atualizar localmente
+            const serviceIndex = this.services.findIndex(s => s.id === serviceId);
+            if (serviceIndex !== -1) {
+                this.services[serviceIndex] = { ...this.services[serviceIndex], ...serviceData };
+            }
+            
+            // Re-renderizar os serviços
+            this.renderServices();
+            
+            alert('✅ Serviço atualizado com sucesso!');
+            modal.closest('.modal').remove();
+            
+        } catch (error) {
+            console.error('Erro ao atualizar serviço:', error);
+            alert('❌ Erro ao atualizar serviço. Tente novamente.');
+        }
+    }
+    
+    async deleteService(serviceId) {
+        const service = this.services.find(s => s.id === serviceId);
+        if (!service) return;
+        
+        const confirmMessage = `Tem certeza que deseja excluir o serviço "${service.name}"?\n\n⚠️ Esta ação não pode ser desfeita!`;
+        
+        if (confirm(confirmMessage)) {
+            try {
+                // Deletar do Firebase
+                await window.firestore.deleteDoc(window.firestore.doc(window.db, 'services', serviceId));
+                
+                // Remover localmente
+                this.services = this.services.filter(s => s.id !== serviceId);
+                
+                // Re-renderizar os serviços
+                this.renderServices();
+                
+                alert('✅ Serviço excluído com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao excluir serviço:', error);
+                alert('❌ Erro ao excluir serviço. Tente novamente.');
+            }
+        }
     }
     
     // Renderizar configuração de dias

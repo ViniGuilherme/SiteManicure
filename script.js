@@ -186,7 +186,7 @@ class FirebaseAppointmentSystem {
             value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
             }
             e.target.value = value;
-        }
+    }
     
     // Renderizar checkboxes de serviços
     renderServicesCheckboxes() {
@@ -201,20 +201,12 @@ class FirebaseAppointmentSystem {
                 <div class="service-price">R$ ${service.price.toFixed(2)}</div>
                 <div class="service-duration">${service.duration} minutos</div>
                 
-                <div class="service-actions">
-                    <label class="service-checkbox-container">
-                        <input type="checkbox" class="service-checkbox" value="${service.name}" 
-                               data-price="${service.price}" data-duration="${service.duration}">
-                        <span class="checkmark"></span>
-                        <button type="button" class="service-btn service-btn-select">✓ Selecionar</button>
-                    </label>
-                    <button type="button" class="service-btn service-btn-edit" onclick="editService('${service.id}')">
-                        ✏️ Editar
-                    </button>
-                    <button type="button" class="service-btn service-btn-delete" onclick="deleteService('${service.id}')">
-                        🗑️ Excluir
-                    </button>
-                </div>
+                <label class="service-checkbox-container">
+                    <input type="checkbox" class="service-checkbox" value="${service.name}" 
+                           data-price="${service.price}" data-duration="${service.duration}">
+                    <span class="checkmark"></span>
+                    <button type="button" class="service-btn service-btn-select">✓ Selecionar</button>
+                </label>
             </div>
         `).join('');
         
@@ -258,8 +250,8 @@ class FirebaseAppointmentSystem {
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #444;">
                     <span style="color: var(--white);">${checkbox.value}</span>
                     <span style="color: var(--primary-color); font-weight: 600;">R$ ${price.toFixed(2)}</span>
-                </div>
-            `;
+            </div>
+        `;
         });
         
         summaryContainer.innerHTML = `
@@ -814,99 +806,10 @@ function deleteAppointment(id) {
 }
 
 // Funções para gerenciar serviços
-let currentEditingServiceId = null;
 
-function editService(serviceId) {
-    const service = window.appointmentSystem.services.find(s => s.id === serviceId);
-    if (!service) return;
-    
-    currentEditingServiceId = serviceId;
-    
-    // Preencher o modal com os dados do serviço
-    document.getElementById('editServiceName').value = service.name;
-    document.getElementById('editServiceIcon').value = service.icon;
-    document.getElementById('editServiceDescription').value = service.description;
-    document.getElementById('editServicePrice').value = service.price;
-    document.getElementById('editServiceDuration').value = service.duration;
-    
-    // Mostrar o modal
-    document.getElementById('editServiceModal').style.display = 'block';
-}
 
-function closeEditServiceModal() {
-    document.getElementById('editServiceModal').style.display = 'none';
-    currentEditingServiceId = null;
-}
 
-async function saveEditedService() {
-    if (!currentEditingServiceId) return;
-    
-    const serviceData = {
-        name: document.getElementById('editServiceName').value,
-        icon: document.getElementById('editServiceIcon').value,
-        description: document.getElementById('editServiceDescription').value,
-        price: parseFloat(document.getElementById('editServicePrice').value),
-        duration: parseInt(document.getElementById('editServiceDuration').value)
-    };
-    
-    try {
-        // Atualizar no Firebase
-        await window.firestore.updateDoc(
-            window.firestore.doc(window.db, 'services', currentEditingServiceId),
-            serviceData
-        );
-        
-        // Atualizar localmente
-        const serviceIndex = window.appointmentSystem.services.findIndex(s => s.id === currentEditingServiceId);
-        if (serviceIndex !== -1) {
-            window.appointmentSystem.services[serviceIndex] = { ...window.appointmentSystem.services[serviceIndex], ...serviceData };
-        }
-        
-        // Re-renderizar os serviços
-        window.appointmentSystem.renderServicesCheckboxes();
-        
-        alert('✅ Serviço atualizado com sucesso!');
-        closeEditServiceModal();
-        
-    } catch (error) {
-        console.error('Erro ao atualizar serviço:', error);
-        alert('❌ Erro ao atualizar serviço. Tente novamente.');
-    }
-}
 
-async function deleteService(serviceId) {
-    const service = window.appointmentSystem.services.find(s => s.id === serviceId);
-    if (!service) return;
-    
-    const confirmMessage = `Tem certeza que deseja excluir o serviço "${service.name}"?\n\n⚠️ Esta ação não pode ser desfeita!`;
-    
-    if (confirm(confirmMessage)) {
-        try {
-            // Deletar do Firebase
-            await window.firestore.deleteDoc(window.firestore.doc(window.db, 'services', serviceId));
-            
-            // Remover localmente
-            window.appointmentSystem.services = window.appointmentSystem.services.filter(s => s.id !== serviceId);
-            
-            // Re-renderizar os serviços
-            window.appointmentSystem.renderServicesCheckboxes();
-            
-            alert('✅ Serviço excluído com sucesso!');
-            
-        } catch (error) {
-            console.error('Erro ao excluir serviço:', error);
-            alert('❌ Erro ao excluir serviço. Tente novamente.');
-        }
-    }
-}
-
-// Fechar modal ao clicar fora dele
-document.addEventListener('click', (e) => {
-    const modal = document.getElementById('editServiceModal');
-    if (e.target === modal) {
-        closeEditServiceModal();
-    }
-});
 
 // Inicializar sistema quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {

@@ -272,9 +272,140 @@
         
         .settings-tab-content {
             display: none;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+            border-radius: 20px;
+            margin-top: 1rem;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
-        .service-item,
+        .settings-tab-content.active {
+            display: block;
+        }
+        
+        .service-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border: 2px solid #444;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 220, 0, 0.2);
+        }
+        
+        .service-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+        
+        .service-item:hover::before {
+            opacity: 0.05;
+        }
+        
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .service-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 220, 0, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 220, 0, 0.2);
+        }
+        
+        .service-details h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--white);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .service-details p {
+            margin: 0 0 0.5rem 0;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .service-price {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .service-actions {
+            display: flex;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .service-btn {
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .service-btn-edit {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .service-btn-edit:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 220, 0, 0.3);
+        }
+        
+        .service-btn-delete {
+            background: #ff4757;
+            color: white;
+            border: 2px solid #ff4757;
+        }
+        
+        .service-btn-delete:hover {
+            background: #ff3742;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+        
         .hour-item {
             display: flex;
             justify-content: space-between;
@@ -452,6 +583,51 @@
             
             #addAppointmentModal .btn:last-child {
                 order: 1;
+            }
+            
+            /* Configurações responsivas */
+            .settings-tab-content {
+                padding: 1rem !important;
+            }
+            
+            .service-item {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+                text-align: center;
+            }
+            
+            .service-info {
+                flex-direction: column;
+                gap: 0.5rem !important;
+            }
+            
+            .service-details {
+                text-align: center;
+            }
+            
+            .service-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .service-btn {
+                padding: 0.6rem 1rem !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .hour-item {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .hour-item span {
+                font-size: 1.1rem !important;
+            }
+            
+            .btn-delete {
+                padding: 0.6rem 1rem;
+                font-size: 1rem;
             }
         }
     </style>
