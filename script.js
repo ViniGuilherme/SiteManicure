@@ -698,25 +698,37 @@ class FirebaseAppointmentSystem {
         const currentClientPhone = document.getElementById('clientPhone')?.value?.trim() || '';
         const currentClientName = document.getElementById('clientName')?.value?.trim() || '';
         
-        // Filtrar apenas agendamentos principais (não slots de bloqueio) e do cliente atual
-        const mainAppointments = this.appointments.filter(appointment => {
-            if (appointment.isBlockSlot) return false;
-            
-            // Se há telefone no formulário, filtrar por telefone
-            if (currentClientPhone) {
-                const appointmentPhone = appointment.phone || '';
-                return this.normalizePhone(appointmentPhone) === this.normalizePhone(currentClientPhone);
-            }
-            
-            // Se há nome no formulário, filtrar por nome (fallback)
-            if (currentClientName) {
-                const appointmentName = appointment.name || appointment.clientName || '';
-                return appointmentName.toLowerCase().trim() === currentClientName.toLowerCase().trim();
-            }
-            
-            // Se não há dados no formulário, não mostrar nenhum agendamento
-            return false;
-        });
+        // Filtrar apenas agendamentos principais (não slots de bloqueio)
+        let mainAppointments = this.appointments.filter(appointment => !appointment.isBlockSlot);
+        
+        // Se há dados no formulário, filtrar para mostrar apenas os relevantes
+        if (currentClientPhone || currentClientName) {
+            mainAppointments = mainAppointments.filter(appointment => {
+                let matches = false;
+                
+                // Verificar por telefone se disponível
+                if (currentClientPhone) {
+                    const appointmentPhone = appointment.phone || '';
+                    matches = matches || this.normalizePhone(appointmentPhone) === this.normalizePhone(currentClientPhone);
+                }
+                
+                // Verificar por nome se disponível
+                if (currentClientName) {
+                    const appointmentName = appointment.name || appointment.clientName || '';
+                    matches = matches || appointmentName.toLowerCase().trim() === currentClientName.toLowerCase().trim();
+                }
+                
+                return matches;
+            });
+        } else {
+            // Se não há dados no formulário, mostrar todos os agendamentos (mas com dados limitados)
+            mainAppointments = mainAppointments.map(appointment => ({
+                ...appointment,
+                // Ocultar informações sensíveis quando não há identificação
+                phone: '***',
+                email: '***'
+            }));
+        }
 
         if (mainAppointments.length === 0) {
             appointmentsList.style.display = 'none';
@@ -734,9 +746,9 @@ class FirebaseAppointmentSystem {
             } else {
                 noAppointments.innerHTML = `
                     <div style="text-align: center; padding: 2rem; color: #ccc;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
-                        <p style="font-size: 1.2rem; margin: 0;">Digite seus dados para ver seus agendamentos</p>
-                        <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Seus agendamentos são privados e só você pode vê-los</p>
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                        <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento disponível</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Faça seu agendamento na seção acima</p>
                     </div>
                 `;
             }
@@ -750,7 +762,9 @@ class FirebaseAppointmentSystem {
             <div class="appointment-card">
                 <div class="appointment-header">
                     <div class="appointment-info">
-                        <h3>${appointment.name || appointment.clientName || 'Cliente'}</h3>
+                        <h3>${(currentClientPhone || currentClientName) ? 
+                            (appointment.name || appointment.clientName || 'Cliente') : 
+                            'Cliente'}</h3>
                         <div class="appointment-status ${appointment.completed ? 'completed' : 'pending'}">
                             ${appointment.completed ? '✅ Concluído' : '⏳ Pendente'}
                         </div>
