@@ -58,14 +58,25 @@ class FirebaseAdminManager {
             });
             
             // Carregar serviços
+            await this.ensureServicesInFirebase(); // Garantir que os serviços existam
+            
             const servicesSnapshot = await window.firestore.getDocs(window.firestore.collection(window.db, 'services'));
-            if (!servicesSnapshot.empty) {
-                this.services = [];
-                servicesSnapshot.forEach((doc) => {
-                    this.services.push({ id: doc.id, ...doc.data() });
-                });
-            } else {
-                // Usar serviços padrão se não houver no Firebase
+            this.services = [];
+            
+            servicesSnapshot.forEach((doc) => {
+                const data = doc.data();
+                // Verificar se é um documento de serviços padrão ou um serviço individual
+                if (data.services && Array.isArray(data.services)) {
+                    // É um documento de serviços padrão
+                    this.services = data.services;
+                } else {
+                    // É um serviço individual
+                    this.services.push({ id: doc.id, ...data });
+                }
+            });
+            
+            // Se ainda não há serviços, usar os padrão
+            if (this.services.length === 0) {
                 this.services = this.getDefaultServices();
             }
             
@@ -559,6 +570,24 @@ class FirebaseAdminManager {
             { id: 'default-5', name: 'Alongamento de Unhas', icon: '🎨', price: 120, duration: 120, description: 'Alongamento em gel ou fibra de vidro' },
             { id: 'default-6', name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
         ];
+    }
+    
+    // Função para garantir que os serviços sejam salvos corretamente no Firebase
+    async ensureServicesInFirebase() {
+        try {
+            const servicesSnapshot = await window.firestore.getDocs(window.firestore.collection(window.db, 'services'));
+            
+            if (servicesSnapshot.empty) {
+                // Se não há serviços, criar os padrão
+                console.log('Criando serviços padrão no Firebase...');
+                for (const service of this.getDefaultServices()) {
+                    await window.firestore.addDoc(window.firestore.collection(window.db, 'services'), service);
+                }
+                console.log('Serviços padrão criados com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao garantir serviços no Firebase:', error);
+        }
     }
     
     // Funções do modal de adicionar agendamento
@@ -1176,15 +1205,34 @@ class FirebaseAdminManager {
     }
     
     async saveEditedService(serviceId, modal) {
+        // Validar campos obrigatórios
+        const name = document.getElementById('editServiceName').value.trim();
+        const icon = document.getElementById('editServiceIcon').value.trim();
+        const description = document.getElementById('editServiceDescription').value.trim();
+        const price = parseFloat(document.getElementById('editServicePrice').value);
+        const duration = parseInt(document.getElementById('editServiceDuration').value);
+        
+        if (!name || !icon || !description || isNaN(price) || isNaN(duration)) {
+            alert('❌ Por favor, preencha todos os campos corretamente.');
+            return;
+        }
+        
+        if (price < 0 || duration < 15) {
+            alert('❌ Preço deve ser maior que 0 e duração deve ser pelo menos 15 minutos.');
+            return;
+        }
+        
         const serviceData = {
-            name: document.getElementById('editServiceName').value,
-            icon: document.getElementById('editServiceIcon').value,
-            description: document.getElementById('editServiceDescription').value,
-            price: parseFloat(document.getElementById('editServicePrice').value),
-            duration: parseInt(document.getElementById('editServiceDuration').value)
+            name: name,
+            icon: icon,
+            description: description,
+            price: price,
+            duration: duration
         };
         
         try {
+            console.log('Atualizando serviço:', serviceId, serviceData);
+            
             // Atualizar no Firebase
             await window.firestore.updateDoc(
                 window.firestore.doc(window.db, 'services', serviceId),
@@ -1195,6 +1243,8 @@ class FirebaseAdminManager {
             const serviceIndex = this.services.findIndex(s => s.id === serviceId);
             if (serviceIndex !== -1) {
                 this.services[serviceIndex] = { ...this.services[serviceIndex], ...serviceData };
+            } else {
+                console.warn('Serviço não encontrado localmente:', serviceId);
             }
             
             // Re-renderizar os serviços
@@ -1205,7 +1255,8 @@ class FirebaseAdminManager {
             
         } catch (error) {
             console.error('Erro ao atualizar serviço:', error);
-            alert('❌ Erro ao atualizar serviço. Tente novamente.');
+            console.error('Detalhes do erro:', error.message);
+            alert(`❌ Erro ao atualizar serviço: ${error.message}`);
         }
     }
     
