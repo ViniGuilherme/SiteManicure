@@ -247,37 +247,54 @@
         
         .settings-tabs {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             margin-bottom: 2rem;
-            border-bottom: 2px solid #444;
-            padding-bottom: 1rem;
+            border-bottom: 3px solid #444;
+            padding-bottom: 1.5rem;
+            justify-content: center;
         }
         
         .settings-tab {
-            background: transparent;
-            color: var(--white);
-            border: 2px solid var(--primary-color);
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
+            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+            color: #ccc;
+            border: 2px solid #444;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 220px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
-        .settings-tab:hover,
+        .settings-tab:hover {
+            background: linear-gradient(135deg, #3A3A3A, #4A4A4A);
+            border-color: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 220, 0, 0.2);
+        }
+        
         .settings-tab.active {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
             color: var(--dark-bg);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 220, 0, 0.3);
         }
         
         .settings-tab-content {
             display: none;
-            padding: 2rem;
+            padding: 3rem;
             background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
             border-radius: 20px;
             margin-top: 1rem;
             border: 2px solid var(--primary-color);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            min-height: 400px;
         }
         
         .settings-tab-content.active {
@@ -587,7 +604,28 @@
             
             /* Configurações responsivas */
             .settings-tab-content {
-                padding: 1rem !important;
+                padding: 1.5rem !important;
+                min-height: 300px !important;
+            }
+            
+            .settings-tabs {
+                flex-direction: column;
+                gap: 1rem !important;
+            }
+            
+            .settings-tab {
+                min-width: auto !important;
+                padding: 1rem 1.5rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .settings-tab span:first-child {
+                font-size: 1.5rem !important;
+                margin-right: 0.5rem !important;
+            }
+            
+            .settings-tab span:last-child {
+                font-size: 1rem !important;
             }
             
             .service-item {
@@ -714,23 +752,35 @@
 
     <!-- Settings Modal -->
     <div id="settingsModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 1200px; max-height: 90vh; overflow-y: auto;">
             <span class="close" onclick="adminManager.closeSettingsModal()">&times;</span>
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚙️</div>
-                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">Configurações do Sistema</h2>
-                <p style="color: #ccc; font-size: 0.9rem;">Gerencie serviços, horários e dias de funcionamento</p>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">⚙️</div>
+                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem; font-size: 2.5rem;">Configurações do Sistema</h2>
+                <p style="color: #ccc; font-size: 1.1rem; margin-top: 0.5rem;">Gerencie serviços, horários e dias de funcionamento</p>
             </div>
 
-            <div class="settings-tabs">
-                <button class="settings-tab" onclick="adminManager.showSettingsTab('services')" data-tab="services">💅 Serviços</button>
-                <button class="settings-tab" onclick="adminManager.showSettingsTab('hours')" data-tab="hours">🕒 Horários</button>
-                <button class="settings-tab" onclick="adminManager.showSettingsTab('days')" data-tab="days">📅 Dias da Semana</button>
+            <div class="settings-tabs" style="margin-bottom: 2rem;">
+                <button class="settings-tab" onclick="adminManager.showSettingsTab('services')" data-tab="services">
+                    <span style="font-size: 1.8rem; margin-right: 0.8rem;">💅</span>
+                    <span style="font-size: 1.1rem; font-weight: 600;">Serviços Disponíveis</span>
+                </button>
+                <button class="settings-tab" onclick="adminManager.showSettingsTab('hours')" data-tab="hours">
+                    <span style="font-size: 1.8rem; margin-right: 0.8rem;">🕒</span>
+                    <span style="font-size: 1.1rem; font-weight: 600;">Horários Disponíveis</span>
+                </button>
+                <button class="settings-tab" onclick="adminManager.showSettingsTab('days')" data-tab="days">
+                    <span style="font-size: 1.8rem; margin-right: 0.8rem;">📅</span>
+                    <span style="font-size: 1.1rem; font-weight: 600;">Dias de Funcionamento</span>
+                </button>
             </div>
 
             <!-- Services Tab -->
             <div id="servicesTab" class="settings-tab-content">
-                <h3 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center; font-size: 1.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">💅 Serviços Disponíveis</h3>
+                <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                    <span style="font-size: 2.5rem;">💅</span>
+                    <span>Serviços Disponíveis</span>
+                </h3>
                 <div id="servicesList">
                     <!-- Serviços serão carregados dinamicamente -->
                 </div>
@@ -738,7 +788,10 @@
 
             <!-- Hours Tab -->
             <div id="hoursTab" class="settings-tab-content">
-                <h3 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center; font-size: 1.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🕒 Horários Disponíveis</h3>
+                <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                    <span style="font-size: 2.5rem;">🕒</span>
+                    <span>Horários Disponíveis</span>
+                </h3>
                 <div id="hoursList">
                     <!-- Horários serão carregados dinamicamente -->
                 </div>
@@ -746,7 +799,10 @@
                 
             <!-- Days Tab -->
             <div id="daysTab" class="settings-tab-content">
-                <h3 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center; font-size: 1.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">📅 Dias de Funcionamento</h3>
+                <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                    <span style="font-size: 2.5rem;">📅</span>
+                    <span>Dias de Funcionamento</span>
+                </h3>
                 <div id="daysList">
                     <!-- Dias serão carregados dinamicamente -->
                         </div>
@@ -760,8 +816,8 @@
             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
                 <button onclick="adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
             </div>
-        </div>
-    </div>
+                            </div>
+                            </div>
 
     <!-- Add Appointment Modal -->
     <div id="addAppointmentModal" class="modal">
@@ -771,7 +827,7 @@
                 <div style="font-size: 3rem; margin-bottom: 0.5rem;">📅</div>
                 <h2 style="color: var(--primary-color); margin: 0; font-size: 2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Adicionar Agendamento</h2>
                 <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;">Preencha os dados do cliente e selecione os serviços</p>
-            </div>
+                            </div>
             
             <form id="addAppointmentForm">
                 <!-- Seção de Dados do Cliente -->
@@ -780,7 +836,7 @@
                         👤 Dados do Cliente
                     </h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
+                            <div class="form-group">
                             <label for="addClientName" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Nome Completo *</label>
                             <input type="text" id="addClientName" required placeholder="Digite o nome completo" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
                         </div>
@@ -793,8 +849,8 @@
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label for="addClientEmail" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">E-mail (opcional)</label>
                             <input type="email" id="addClientEmail" placeholder="Digite o e-mail" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                        </div>
-                    </div>
+                </div>
+            </div>
                 </div>
                 
                 <!-- Seção de Data e Horário -->
@@ -881,7 +937,7 @@
                     🗑️ TUDO (CUIDADO!)
                 </button>
             </div>
-            
+
             <div style="text-align: center; margin-top: 2rem;">
                 <button onclick="adminManager.closeResetModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Cancelar</button>
             </div>

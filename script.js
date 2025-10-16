@@ -191,22 +191,29 @@ class FirebaseAppointmentSystem {
     // Renderizar checkboxes de serviços
     renderServicesCheckboxes() {
         const container = document.getElementById('servicesContainer');
-        if (!container) return;
+        if (!container) {
+            console.error('Container servicesContainer não encontrado');
+            return;
+        }
+        
+        console.log('Renderizando serviços:', this.services);
         
         container.innerHTML = this.services.map(service => `
-            <div class="service-card">
+            <div class="service-card" data-service-id="${service.id}">
                 <div class="service-icon">${service.icon}</div>
                 <h3>${service.name}</h3>
                 <p>${service.description}</p>
                 <div class="service-price">R$ ${service.price.toFixed(2)}</div>
                 <div class="service-duration">${service.duration} minutos</div>
                 
-                <label class="service-checkbox-container">
-                    <input type="checkbox" class="service-checkbox" value="${service.name}" 
-                           data-price="${service.price}" data-duration="${service.duration}">
-                    <span class="checkmark"></span>
-                    <button type="button" class="service-btn service-btn-select">✓ Selecionar</button>
-                </label>
+                <div class="service-selection">
+                    <input type="checkbox" class="service-checkbox" id="service-${service.id}" 
+                           value="${service.name}" data-price="${service.price}" data-duration="${service.duration}">
+                    <label for="service-${service.id}" class="service-btn service-btn-select">
+                        <span class="checkbox-icon">☐</span>
+                        <span class="btn-text">Selecionar</span>
+                    </label>
+                </div>
             </div>
         `).join('');
         
@@ -217,11 +224,34 @@ class FirebaseAppointmentSystem {
     // Configurar event listeners para os checkboxes de serviços
     setupServiceCheckboxes() {
         const checkboxes = document.querySelectorAll('.service-checkbox');
+        console.log('Configurando checkboxes:', checkboxes.length);
+        
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
+                console.log('Checkbox alterado:', checkbox.checked, checkbox.value);
                 this.updateServiceSummary();
+                this.updateCheckboxVisual(checkbox);
             });
         });
+    }
+    
+    // Atualizar visual do checkbox
+    updateCheckboxVisual(checkbox) {
+        const label = checkbox.nextElementSibling;
+        const icon = label.querySelector('.checkbox-icon');
+        const btnText = label.querySelector('.btn-text');
+        
+        if (checkbox.checked) {
+            icon.textContent = '☑';
+            btnText.textContent = 'Selecionado';
+            label.style.background = '#26d065';
+            label.style.color = 'white';
+        } else {
+            icon.textContent = '☐';
+            btnText.textContent = 'Selecionar';
+            label.style.background = 'var(--primary-color)';
+            label.style.color = 'var(--dark-bg)';
+        }
     }
     
     // Atualizar resumo de serviços

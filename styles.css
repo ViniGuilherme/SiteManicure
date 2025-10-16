@@ -393,37 +393,73 @@ nav a:hover {
     border: 2px solid #2ed573;
 }
 
-.service-btn-select:hover {
-    background: #26d065;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 213, 115, 0.3);
-}
+        .service-btn-select:hover {
+            background: #26d065;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 213, 115, 0.3);
+        }
+        
+        .service-selection {
+            margin-top: 1rem;
+        }
+        
+        .service-btn {
+            padding: 10px 20px;
+            font-size: 0.8rem;
+        }
 
 /* Melhorar o estilo do checkbox container */
-.service-checkbox-container {
+.service-selection {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.service-checkbox {
+    display: none;
+}
+
+.service-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
     cursor: pointer;
-}
-
-.service-checkbox-container input[type="checkbox"] {
-    display: none;
-}
-
-.service-checkbox-container .service-btn-select {
-    opacity: 0.7;
     transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    border: 2px solid var(--primary-color);
 }
 
-.service-checkbox-container input[type="checkbox"]:checked + .checkmark + .service-btn-select {
-    opacity: 1;
-    background: #26d065;
-    transform: scale(1.05);
+.service-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 220, 0, 0.3);
 }
 
-.checkmark {
-    display: none;
+.service-btn-select {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+}
+
+.service-btn-select:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 220, 0, 0.3);
+}
+
+.checkbox-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.btn-text {
+    font-weight: 600;
 }
 
 
