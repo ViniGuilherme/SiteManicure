@@ -58,26 +58,35 @@ class FirebaseAdminManager {
             });
             
             // Carregar serviços
-            await this.ensureServicesInFirebase(); // Garantir que os serviços existam
-            
             const servicesSnapshot = await window.firestore.getDocs(window.firestore.collection(window.db, 'services'));
-            this.services = [];
             
-            servicesSnapshot.forEach((doc) => {
-                const data = doc.data();
-                // Verificar se é um documento de serviços padrão ou um serviço individual
-                if (data.services && Array.isArray(data.services)) {
-                    // É um documento de serviços padrão
-                    this.services = data.services;
+            if (servicesSnapshot.empty) {
+                // Não há serviços no Firebase, criar os padrão
+                console.log('Nenhum serviço encontrado no Firebase, criando padrões...');
+                await this.ensureServicesInFirebase();
+            } else {
+                // Carregar serviços existentes
+                this.services = [];
+                servicesSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // Verificar se é um documento de serviços padrão ou um serviço individual
+                    if (data.services && Array.isArray(data.services)) {
+                        // É um documento de serviços padrão
+                        this.services = data.services;
+                    } else {
+                        // É um serviço individual
+                        this.services.push({ id: doc.id, ...data });
+                    }
+                });
+                
+                // Se ainda não há serviços, usar os padrão
+                if (this.services.length === 0) {
+                    console.log('Nenhum serviço válido encontrado, criando padrões...');
+                    await this.ensureServicesInFirebase();
                 } else {
-                    // É um serviço individual
-                    this.services.push({ id: doc.id, ...data });
+                    // Verificar se há serviços com IDs padrão que precisam ser migrados
+                    await this.migrateDefaultServices();
                 }
-            });
-            
-            // Se ainda não há serviços, usar os padrão
-            if (this.services.length === 0) {
-                this.services = this.getDefaultServices();
             }
             
             // Carregar horários disponíveis
@@ -580,13 +589,70 @@ class FirebaseAdminManager {
             if (servicesSnapshot.empty) {
                 // Se não há serviços, criar os padrão
                 console.log('Criando serviços padrão no Firebase...');
-                for (const service of this.getDefaultServices()) {
-                    await window.firestore.addDoc(window.firestore.collection(window.db, 'services'), service);
+                const defaultServices = this.getDefaultServices();
+                
+                for (const service of defaultServices) {
+                    // Criar serviço no Firebase com ID único
+                    const docRef = await window.firestore.addDoc(
+                        window.firestore.collection(window.db, 'services'),
+                        {
+                            name: service.name,
+                            icon: service.icon,
+                            description: service.description,
+                            price: service.price,
+                            duration: service.duration
+                        }
+                    );
+                    
+                    // Atualizar o ID local para o ID do Firebase
+                    service.id = docRef.id;
+                    console.log(`Serviço "${service.name}" criado com ID: ${docRef.id}`);
                 }
+                
+                // Atualizar a lista local com os novos IDs
+                this.services = defaultServices;
                 console.log('Serviços padrão criados com sucesso!');
             }
         } catch (error) {
             console.error('Erro ao garantir serviços no Firebase:', error);
+        }
+    }
+    
+    // Função para migrar serviços com IDs padrão para IDs únicos do Firebase
+    async migrateDefaultServices() {
+        try {
+            const servicesToMigrate = this.services.filter(service => 
+                service.id && service.id.startsWith('default-')
+            );
+            
+            if (servicesToMigrate.length > 0) {
+                console.log(`Migrando ${servicesToMigrate.length} serviços com IDs padrão...`);
+                
+                for (const service of servicesToMigrate) {
+                    // Criar novo documento no Firebase
+                    const docRef = await window.firestore.addDoc(
+                        window.firestore.collection(window.db, 'services'),
+                        {
+                            name: service.name,
+                            icon: service.icon,
+                            description: service.description,
+                            price: service.price,
+                            duration: service.duration
+                        }
+                    );
+                    
+                    // Atualizar o ID local
+                    const serviceIndex = this.services.findIndex(s => s.id === service.id);
+                    if (serviceIndex !== -1) {
+                        this.services[serviceIndex].id = docRef.id;
+                        console.log(`Serviço "${service.name}" migrado para ID: ${docRef.id}`);
+                    }
+                }
+                
+                console.log('Migração de serviços concluída!');
+            }
+        } catch (error) {
+            console.error('Erro ao migrar serviços:', error);
         }
     }
     
@@ -1233,11 +1299,26 @@ class FirebaseAdminManager {
         try {
             console.log('Atualizando serviço:', serviceId, serviceData);
             
-            // Atualizar no Firebase
-            await window.firestore.updateDoc(
-                window.firestore.doc(window.db, 'services', serviceId),
-                serviceData
-            );
+            // Verificar se o serviço existe no Firebase
+            const serviceDoc = window.firestore.doc(window.db, 'services', serviceId);
+            const serviceSnapshot = await window.firestore.getDoc(serviceDoc);
+            
+            if (serviceSnapshot.exists()) {
+                // Serviço existe, atualizar
+                await window.firestore.updateDoc(serviceDoc, serviceData);
+                console.log('Serviço atualizado no Firebase');
+            } else {
+                // Serviço não existe, criar novo
+                console.log('Serviço não existe, criando novo documento...');
+                const newDocRef = await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'services'),
+                    serviceData
+                );
+                console.log('Novo serviço criado com ID:', newDocRef.id);
+                
+                // Atualizar o ID local para o novo ID do Firebase
+                serviceData.id = newDocRef.id;
+            }
             
             // Atualizar localmente
             const serviceIndex = this.services.findIndex(s => s.id === serviceId);
