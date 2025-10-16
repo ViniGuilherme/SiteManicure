@@ -1,48 +1,17 @@
-// Sistema de Agendamento - Interface do Cliente
-class AppointmentSystem {
+// Sistema de Agendamento com Firebase
+class FirebaseAppointmentSystem {
     constructor() {
-        this.appointments = this.loadAppointments();
-        this.services = this.loadServices();
-        this.availableHours = this.loadAvailableHours();
-        this.servicesPrices = this.createServicesPricesObject();
-        this.init();
-    }
-    
-    // Carregar serviços do localStorage
-    loadServices() {
-        const saved = localStorage.getItem('services');
-        if (saved) {
-            return JSON.parse(saved);
-        }
-        // Serviços padrão (caso não tenha configurado ainda)
-        return [
-            { id: 1, name: 'Manicure Básica', icon: '💅', price: 35, duration: 45, description: 'Corte, lixamento, cutículas e esmaltação tradicional' },
+        this.services = [
+            { id: 1, name: 'Manicure Básica', icon: '💅', price: 35, duration: 45, description: 'Manicure tradicional com esmaltação' },
             { id: 2, name: 'Manicure com Gel', icon: '✨', price: 65, duration: 60, description: 'Unha em gel com acabamento profissional e duradouro' },
             { id: 3, name: 'Pedicure', icon: '🦶', price: 40, duration: 60, description: 'Cuidados completos para os pés com hidratação' },
             { id: 4, name: 'Mão e Pé', icon: '💎', price: 70, duration: 90, description: 'Pacote completo com manicure e pedicure' },
             { id: 5, name: 'Alongamento de Unhas', icon: '🎨', price: 120, duration: 120, description: 'Alongamento em gel ou fibra de vidro' },
             { id: 6, name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
         ];
-    }
-    
-    // Carregar horários do localStorage
-    loadAvailableHours() {
-        const saved = localStorage.getItem('availableHours');
-        if (saved) {
-            return JSON.parse(saved);
-        }
-        // Horários padrão
-        return ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-    }
-    
-    // Carregar dias disponíveis do localStorage
-    loadAvailableDays() {
-        const saved = localStorage.getItem('availableDays');
-        if (saved) {
-            return JSON.parse(saved);
-        }
-        // Dias padrão (Segunda a Sábado)
-        return {
+        
+        this.availableHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+        this.availableDays = {
             'monday': true,
             'tuesday': true,
             'wednesday': true,
@@ -51,217 +20,133 @@ class AppointmentSystem {
             'saturday': true,
             'sunday': false
         };
+        
+        this.appointments = [];
+        this.init();
+    }
+
+    async init() {
+        // Aguardar Firebase carregar
+        await this.waitForFirebase();
+        
+        // Carregar dados do Firebase
+        await this.loadServicesFromFirebase();
+        await this.loadAvailableHoursFromFirebase();
+        await this.loadAvailableDaysFromFirebase();
+        await this.loadAppointmentsFromFirebase();
+        
+        // Configurar listeners em tempo real
+        this.setupRealtimeListeners();
+        
+        // Inicializar interface
+        this.initializeInterface();
     }
     
-    // Configurar dias disponíveis no campo de data
-    setupAvailableDays() {
-        const dateInput = document.getElementById('appointmentDate');
-        const availableDays = this.loadAvailableDays();
-        
-        // Definir data mínima como hoje
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.min = today;
-        
-        // Configurar validação de dias da semana
-        dateInput.addEventListener('change', (e) => {
-            const selectedDate = e.target.value;
-            if (selectedDate) {
-                const dayOfWeek = this.getDayOfWeek(selectedDate);
-                if (!availableDays[dayOfWeek]) {
-                    alert(`⚠️ A manicure não atende aos ${this.getDayName(dayOfWeek)}s.\n\nPor favor, escolha outro dia da semana.`);
-                    e.target.value = '';
+    async waitForFirebase() {
+        return new Promise((resolve) => {
+            const checkFirebase = () => {
+                if (window.db && window.firestore) {
+                    resolve();
+                } else {
+                    setTimeout(checkFirebase, 100);
                 }
+            };
+            checkFirebase();
+        });
+    }
+
+    async loadServicesFromFirebase() {
+        try {
+            const querySnapshot = await window.firestore.getDocs(window.firestore.collection(window.db, 'services'));
+            if (!querySnapshot.empty) {
+                this.services = [];
+                querySnapshot.forEach((doc) => {
+                    this.services.push({ id: doc.id, ...doc.data() });
+                });
             }
-        });
-    }
-    
-    // Obter dia da semana de uma data
-    getDayOfWeek(dateString) {
-        const date = new Date(dateString);
-        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-        return days[date.getDay()];
-    }
-    
-    // Obter nome do dia em português
-    getDayName(dayOfWeek) {
-        const dayNames = {
-            'monday': 'Segunda-feira',
-            'tuesday': 'Terça-feira',
-            'wednesday': 'Quarta-feira',
-            'thursday': 'Quinta-feira',
-            'friday': 'Sexta-feira',
-            'saturday': 'Sábado',
-            'sunday': 'Domingo'
-        };
-        return dayNames[dayOfWeek] || dayOfWeek;
-    }
-    
-    // Criar objeto de preços para compatibilidade
-    createServicesPricesObject() {
-        const pricesObj = {};
-        this.services.forEach(service => {
-            pricesObj[service.name] = { price: service.price, duration: service.duration };
-        });
-        return pricesObj;
-    }
-
-    init() {
-        this.renderServicesGrid();
-        this.renderServicesCheckboxes();
-        this.initializeDateInput();
-        this.setupEventListeners();
-        this.displayAppointments();
-    }
-    
-    // Renderizar serviços na página
-    renderServicesGrid() {
-        const servicesGrid = document.querySelector('.services-grid');
-        if (!servicesGrid) return;
-        
-        servicesGrid.innerHTML = this.services.map(service => `
-            <div class="service-card" data-service="${service.name}" data-price="${service.price}" data-duration="${service.duration}">
-                <div class="service-icon">${service.icon}</div>
-                <h3>${service.name}</h3>
-                <p class="service-duration">${service.duration} minutos</p>
-                <p class="service-description">${service.description}</p>
-                <p class="service-price">R$ ${service.price.toFixed(2)}</p>
-                <button class="btn btn-secondary" onclick="appointmentSystem.selectServiceFromCard('${service.name}')">Selecionar</button>
-            </div>
-        `).join('');
-    }
-    
-    // Renderizar checkboxes de serviços
-    renderServicesCheckboxes() {
-        const container = document.getElementById('servicesContainer');
-        if (!container) return;
-        
-        container.innerHTML = this.services.map(service => `
-            <div style="margin-bottom: 0.8rem;">
-                <label style="display: flex; align-items: center; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.3s;">
-                    <input type="checkbox" 
-                           class="service-checkbox" 
-                           value="${service.name}" 
-                           data-price="${service.price}" 
-                           data-duration="${service.duration}"
-                           style="width: 18px; height: 18px; margin-right: 0.8rem; cursor: pointer;">
-                    <span style="flex: 1; color: white;">
-                        <strong style="color: white;">${service.icon} ${service.name}</strong>
-                        <span style="color: #ccc; font-size: 0.9rem; margin-left: 0.5rem;">
-                            (${service.duration} min - R$ ${service.price.toFixed(2)})
-                        </span>
-                    </span>
-                </label>
-            </div>
-        `).join('');
-        
-        // Adicionar event listeners aos checkboxes
-        container.querySelectorAll('.service-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', () => this.updateServiceSummary());
-        });
-    }
-    
-    // Atualizar resumo dos serviços selecionados
-    updateServiceSummary() {
-        const checkboxes = document.querySelectorAll('.service-checkbox:checked');
-        const summary = document.getElementById('serviceSummary');
-        const summaryContent = document.getElementById('summaryContent');
-        
-        if (checkboxes.length === 0) {
-            summary.style.display = 'none';
-            return;
-        }
-        
-        let totalPrice = 0;
-        let totalDuration = 0;
-        const services = [];
-        
-        checkboxes.forEach(checkbox => {
-            const price = parseFloat(checkbox.dataset.price);
-            const duration = parseInt(checkbox.dataset.duration);
-            totalPrice += price;
-            totalDuration += duration;
-            services.push(checkbox.value);
-        });
-        
-        summaryContent.innerHTML = `
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.5rem; font-size: 0.95rem;">
-                <span style="color: white;"><strong>Serviços:</strong></span>
-                <span style="color: #ccc;">${services.join(', ')}</span>
-                <span style="color: white;"><strong>Duração Total:</strong></span>
-                <span style="color: #ccc;">${totalDuration} minutos</span>
-                <span style="color: white;"><strong>Preço Total:</strong></span>
-                <span style="color: var(--primary-color); font-weight: 600; font-size: 1.1rem;">R$ ${totalPrice.toFixed(2)}</span>
-            </div>
-        `;
-        
-        summary.style.display = 'block';
-        
-        // Atualizar horários disponíveis se já tiver data selecionada
-        const dateInput = document.getElementById('appointmentDate');
-        if (dateInput && dateInput.value) {
-            this.updateAvailableHours(dateInput.value, totalDuration);
+        } catch (error) {
+            console.log('Usando serviços padrão:', error);
         }
     }
     
-    // Selecionar serviço a partir do card
-    selectServiceFromCard(serviceName) {
-        // Rolar para o formulário
-        document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-        
-        // Marcar o checkbox correspondente
-        const checkbox = document.querySelector(`.service-checkbox[value="${serviceName}"]`);
-        if (checkbox && !checkbox.checked) {
-            checkbox.checked = true;
-            this.updateServiceSummary();
+    async loadAvailableHoursFromFirebase() {
+        try {
+            const docSnap = await window.firestore.doc(window.db, 'settings', 'availableHours').get();
+            if (docSnap.exists) {
+                this.availableHours = docSnap.data().hours;
+            }
+        } catch (error) {
+            console.log('Usando horários padrão:', error);
         }
+    }
+    
+    async loadAvailableDaysFromFirebase() {
+        try {
+            const docSnap = await window.firestore.doc(window.db, 'settings', 'availableDays').get();
+            if (docSnap.exists) {
+                this.availableDays = docSnap.data().days;
+            }
+        } catch (error) {
+            console.log('Usando dias padrão:', error);
+        }
+    }
+    
+    async loadAppointmentsFromFirebase() {
+        try {
+            const querySnapshot = await window.firestore.getDocs(window.firestore.collection(window.db, 'appointments'));
+            this.appointments = [];
+            querySnapshot.forEach((doc) => {
+                this.appointments.push({ id: doc.id, ...doc.data() });
+            });
+        } catch (error) {
+            console.error('Erro ao carregar agendamentos:', error);
+        }
+    }
+    
+    setupRealtimeListeners() {
+        // Listener para agendamentos em tempo real (sem ordenação temporariamente)
+        const appointmentsQuery = window.firestore.collection(window.db, 'appointments');
         
-        // Destacar o formulário
-        const bookingForm = document.querySelector('.booking-form-container');
-        bookingForm.style.animation = 'none';
-        setTimeout(() => {
-            bookingForm.style.animation = 'fadeIn 0.5s ease';
-        }, 10);
+        window.firestore.onSnapshot(appointmentsQuery, (querySnapshot) => {
+            this.appointments = [];
+            querySnapshot.forEach((doc) => {
+                this.appointments.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Atualizar interface
+            this.updateAvailableHours(document.getElementById('appointmentDate')?.value || '', 0);
+            this.displayAppointments();
+        });
     }
-
-    // Carregar agendamentos do localStorage
-    loadAppointments() {
-        const saved = localStorage.getItem('appointments');
-        return saved ? JSON.parse(saved) : [];
-    }
-
-    // Salvar agendamentos
-    saveAppointments() {
-        localStorage.setItem('appointments', JSON.stringify(this.appointments));
-    }
-
-    // Configurar data mínima (hoje)
-    initializeDateInput() {
-        const dateInput = document.getElementById('appointmentDate');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.min = today;
+    
+    initializeInterface() {
+        // Formatação de telefone
+        document.getElementById('clientPhone')?.addEventListener('input', (e) => this.formatPhone(e));
         
-        // Definir data padrão para hoje
-        dateInput.value = today;
-        
-        // Carregar horários disponíveis para hoje
-        this.updateAvailableHours(today, 0);
-    }
-
-    // Configurar event listeners
-    setupEventListeners() {
-        // Formatação automática do telefone
-        document.getElementById('clientPhone').addEventListener('input', this.formatPhone);
-
-        // Atualizar horários quando a data mudar
-        document.getElementById('appointmentDate').addEventListener('change', (e) => {
+        // Listener para mudança de data
+        document.getElementById('appointmentDate')?.addEventListener('change', (e) => {
             const checkboxes = document.querySelectorAll('.service-checkbox:checked');
             let totalDuration = 0;
             checkboxes.forEach(cb => totalDuration += parseInt(cb.dataset.duration));
             this.updateAvailableHours(e.target.value, totalDuration);
         });
+        
+        // Listener para mudança de serviços
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('service-checkbox')) {
+                this.updateServiceSummary();
+                const dateInput = document.getElementById('appointmentDate');
+                if (dateInput?.value) {
+                    const checkboxes = document.querySelectorAll('.service-checkbox:checked');
+                    let totalDuration = 0;
+                    checkboxes.forEach(cb => totalDuration += parseInt(cb.dataset.duration));
+                    this.updateAvailableHours(dateInput.value, totalDuration);
+                }
+            }
+        });
 
         // Submit do formulário
-        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+        document.getElementById('bookingForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             this.submitAppointment();
         });
@@ -282,40 +167,115 @@ class AppointmentSystem {
         
         // Menu hambúrguer para mobile
         this.setupMobileMenu();
+        
+        // Renderizar serviços e agendamentos
+        this.renderServicesCheckboxes();
+        this.updateServiceSummary();
+        this.initializeDateInput();
+        this.displayAppointments();
     }
 
     // Formatar telefone automaticamente
     formatPhone(e) {
         let value = e.target.value.replace(/\D/g, '');
-        if (value.length <= 11) {
-            if (value.length <= 10) {
+        if (value.length >= 11) {
+            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        } else if (value.length >= 7) {
                 value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-            } else {
-                value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        } else if (value.length >= 3) {
+            value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
             }
             e.target.value = value;
-        }
     }
-
-    // Atualizar horários disponíveis
-    updateAvailableHours(selectedDate, totalDuration = 0) {
+    
+    // Renderizar checkboxes de serviços
+    renderServicesCheckboxes() {
+        const container = document.getElementById('servicesContainer');
+        if (!container) return;
+        
+        container.innerHTML = this.services.map(service => `
+            <div class="service-card">
+                <div class="service-icon">${service.icon}</div>
+                <h3>${service.name}</h3>
+                <p>${service.description}</p>
+                <div class="service-price">R$ ${service.price.toFixed(2)}</div>
+                <div class="service-duration">${service.duration} minutos</div>
+                <label class="service-checkbox-container">
+                    <input type="checkbox" class="service-checkbox" value="${service.name}" 
+                           data-price="${service.price}" data-duration="${service.duration}">
+                    <span class="checkmark"></span>
+                    Selecionar
+                </label>
+            </div>
+        `).join('');
+    }
+    
+    // Atualizar resumo de serviços
+    updateServiceSummary() {
+        const summaryContainer = document.getElementById('serviceSummary');
+        if (!summaryContainer) return;
+        
+        const checkboxes = document.querySelectorAll('.service-checkbox:checked');
+        
+        if (checkboxes.length === 0) {
+            summaryContainer.innerHTML = '<p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>';
+            return;
+        }
+        
+        let totalPrice = 0;
+        let totalDuration = 0;
+        let servicesHtml = '';
+        
+        checkboxes.forEach(checkbox => {
+            const price = parseFloat(checkbox.dataset.price);
+            const duration = parseInt(checkbox.dataset.duration);
+            totalPrice += price;
+            totalDuration += duration;
+            
+            servicesHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #444;">
+                    <span style="color: var(--white);">${checkbox.value}</span>
+                    <span style="color: var(--primary-color); font-weight: 600;">R$ ${price.toFixed(2)}</span>
+                </div>
+            `;
+        });
+        
+        summaryContainer.innerHTML = `
+            <div id="summaryContent" style="color: var(--white);">
+                <h4 style="color: var(--primary-color); margin-bottom: 1rem; text-align: center;">Resumo dos Serviços</h4>
+                ${servicesHtml}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-top: 2px solid var(--primary-color); margin-top: 1rem;">
+                    <strong style="color: var(--white);">Total:</strong>
+                    <strong style="color: var(--primary-color); font-size: 1.2rem;">R$ ${totalPrice.toFixed(2)}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+                    <span style="color: var(--white);">Duração:</span>
+                    <span style="color: var(--primary-color); font-weight: 600;">${totalDuration} minutos</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Atualizar horários disponíveis quando a data muda
+    updateAvailableHours(selectedDate, totalDuration) {
         const timeSelect = document.getElementById('appointmentTime');
+        if (!timeSelect) return;
         
         // Limpar opções existentes
         timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
         
         // Se não há serviço selecionado, não mostrar horários
         if (totalDuration === 0) {
-            const option = document.createElement('option');
-            option.value = '';
+                const option = document.createElement('option');
+                option.value = '';
             option.textContent = 'Selecione um serviço primeiro';
-            option.disabled = true;
-            option.style.color = '#999';
-            timeSelect.appendChild(option);
+                option.disabled = true;
+                option.style.color = '#999';
+                timeSelect.appendChild(option);
             return;
         }
         
-        // Calcular quantos slots de horário são necessários (arredondando para cima em blocos de 60 min)
+        // Calcular quantos slots de horário são necessários
         const slotsNeeded = Math.ceil(totalDuration / 60);
         
         // Verificar se a data é hoje para filtrar horários passados
@@ -372,33 +332,75 @@ class AppointmentSystem {
             const hourIndex = startIndex + i;
             if (hourIndex < this.availableHours.length) {
                 hoursToCheck.push(this.availableHours[hourIndex]);
-            } else {
-                return false; // Não há horários suficientes
             }
         }
         
-        // Verificar se todos esses horários estão livres
-        for (const hour of hoursToCheck) {
-            const isOccupied = this.appointments.some(apt => 
-                apt.date === date && apt.time === hour && !apt.completed
+        // Verificar se algum desses horários já está ocupado
+        return !hoursToCheck.some(hour => {
+            return this.appointments.some(appointment => 
+                appointment.date === date && 
+                appointment.time === hour && 
+                !appointment.completed
             );
-            if (isOccupied) {
-                return false;
-            }
-        }
-        
-        return true;
+        });
     }
-
-    // Verificar se horário está disponível
-    isTimeAvailable(date, time) {
-        return !this.appointments.some(apt => 
-            apt.date === date && apt.time === time && !apt.completed
-        );
+    
+    // Inicializar campo de data
+    initializeDateInput() {
+        const dateInput = document.getElementById('appointmentDate');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+            dateInput.value = today;
+            this.updateAvailableHours(today, 0);
+        }
+    }
+    
+    // Configurar dias disponíveis no campo de data
+    setupAvailableDays() {
+        const dateInput = document.getElementById('appointmentDate');
+        const availableDays = this.availableDays;
+        
+        // Definir data mínima como hoje
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+        
+        // Configurar validação de dias da semana
+        dateInput.addEventListener('change', (e) => {
+            const selectedDate = e.target.value;
+            if (selectedDate) {
+                const dayOfWeek = this.getDayOfWeek(selectedDate);
+                if (!availableDays[dayOfWeek]) {
+                    alert(`⚠️ A manicure não atende aos ${this.getDayName(dayOfWeek)}s.\n\nPor favor, escolha outro dia da semana.`);
+                    e.target.value = '';
+                }
+            }
+        });
+    }
+    
+    // Obter dia da semana de uma data
+    getDayOfWeek(dateString) {
+        const date = new Date(dateString);
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        return days[date.getDay()];
+    }
+    
+    // Obter nome do dia em português
+    getDayName(dayOfWeek) {
+        const dayNames = {
+            'monday': 'Segunda-feira',
+            'tuesday': 'Terça-feira',
+            'wednesday': 'Quarta-feira',
+            'thursday': 'Quinta-feira',
+            'friday': 'Sexta-feira',
+            'saturday': 'Sábado',
+            'sunday': 'Domingo'
+        };
+        return dayNames[dayOfWeek] || dayOfWeek;
     }
 
     // Submeter agendamento
-    submitAppointment() {
+    async submitAppointment() {
         const clientName = document.getElementById('clientName').value.trim();
         const phone = document.getElementById('clientPhone').value.trim();
         const email = document.getElementById('clientEmail').value.trim();
@@ -407,7 +409,7 @@ class AppointmentSystem {
         
         // Obter serviços selecionados
         const checkboxes = document.querySelectorAll('.service-checkbox:checked');
-        
+
         // Validações
         if (!clientName) {
             alert('Por favor, digite seu nome completo.');
@@ -422,7 +424,7 @@ class AppointmentSystem {
         // Validar formato de email apenas se fornecido
         if (email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+            if (!emailRegex.test(email)) {
             alert('Por favor, digite um e-mail válido.');
             return;
             }
@@ -471,40 +473,36 @@ class AppointmentSystem {
             return;
         }
 
-        // Criar um agendamento único com múltiplos serviços
-        const appointmentId = Date.now();
-        const appointment = {
-            id: appointmentId,
-            name: clientName, // Mudança para 'name' para compatibilidade
-            clientName, // Manter para compatibilidade com admin
+        // Criar agendamento
+        const appointmentData = {
+            name: clientName,
+            clientName,
             phone,
             email,
-            services: selectedServices, // Array de serviços
-            service: selectedServices.map(s => s.name).join(' + '), // Para compatibilidade
+            services: selectedServices,
+            service: selectedServices.map(s => s.name).join(' + '),
             date,
             time,
-            totalPrice: totalPrice, // Mudança para 'totalPrice' para compatibilidade
-            price: totalPrice, // Manter para compatibilidade com admin
-            totalDuration: totalDuration, // Mudança para 'totalDuration' para compatibilidade
-            duration: totalDuration, // Manter para compatibilidade com admin
-            slotsNeeded: slotsNeeded,
+            totalPrice,
+            price: totalPrice,
+            totalDuration,
+            duration: totalDuration,
+            slotsNeeded,
             completed: false,
             createdAt: new Date().toISOString()
         };
 
-        // Criar registros de bloqueio para cada slot de horário necessário
-        for (let i = 0; i < slotsNeeded; i++) {
-            const hourIndex = startIndex + i;
-            if (hourIndex < this.availableHours.length) {
-                const slotTime = this.availableHours[hourIndex];
-                
-                // Se for o primeiro slot, adicionar o agendamento completo
-                if (i === 0) {
-                    this.appointments.push(appointment);
-                } else {
-                    // Para slots adicionais, criar registros de bloqueio
-                    this.appointments.push({
-                        id: Date.now() + i,
+        try {
+            // Salvar no Firebase
+            await window.firestore.addDoc(window.firestore.collection(window.db, 'appointments'), appointmentData);
+            
+            // Criar registros de bloqueio para cada slot de horário necessário
+            for (let i = 1; i < slotsNeeded; i++) {
+                const hourIndex = startIndex + i;
+                if (hourIndex < this.availableHours.length) {
+                    const slotTime = this.availableHours[hourIndex];
+                    
+                    const blockSlotData = {
                         clientName,
                         phone,
                         email,
@@ -512,35 +510,32 @@ class AppointmentSystem {
                         services: selectedServices,
                         date,
                         time: slotTime,
-                        price: 0, // Não contar preço nos slots adicionais
+                        price: 0,
                         duration: 60,
                         slotsNeeded: 1,
                         completed: false,
-                        isBlockSlot: true, // Marcador para identificar slots de bloqueio
-                        mainAppointmentId: appointmentId,
+                        isBlockSlot: true,
                         createdAt: new Date().toISOString()
-                    });
+                    };
+                    
+                    await window.firestore.addDoc(window.firestore.collection(window.db, 'appointments'), blockSlotData);
                 }
             }
+            
+            // Mostrar modal de sucesso
+            this.showSuccessModal(appointmentData);
+
+            // Limpar formulário
+            document.getElementById('bookingForm').reset();
+            this.updateServiceSummary();
+            
+            // Reinicializar data para hoje
+            this.initializeDateInput();
+            
+        } catch (error) {
+            console.error('Erro ao salvar agendamento:', error);
+            alert('Erro ao salvar agendamento. Tente novamente.');
         }
-        
-        this.saveAppointments();
-
-        // Mostrar confirmação
-        this.showSuccessModal(appointment);
-
-        // Atualizar exibição de agendamentos
-        this.displayAppointments();
-
-        // Limpar formulário
-        document.getElementById('bookingForm').reset();
-        
-        // Desmarcar todos os checkboxes
-        checkboxes.forEach(cb => cb.checked = false);
-        this.updateServiceSummary();
-        
-        // Reinicializar data para hoje
-        this.initializeDateInput();
     }
 
     // Mostrar modal de sucesso
@@ -567,12 +562,21 @@ class AppointmentSystem {
             ${formattedDate} às ${appointment.time}<br>
             <br>
             <strong>Seus dados:</strong><br>
-            ${appointment.clientName}<br>
+            ${appointment.name}<br>
             ${appointment.phone}<br>
-            ${appointment.email}
+            ${appointment.email || 'E-mail não fornecido'}<br>
+            <br>
+            <strong>Status:</strong> ⏳ Pendente<br>
+            <br>
+            <em>Você receberá uma confirmação em breve!</em>
         `;
         
         modal.style.display = 'block';
+        
+        // Fechar modal após 5 segundos
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 5000);
     }
 
     // Formatar data
@@ -625,233 +629,169 @@ class AppointmentSystem {
             });
         }
     }
-}
-
-// Função mantida para compatibilidade (não mais utilizada)
-function selectService(serviceName, price, duration) {
-    if (window.appointmentSystem) {
-        appointmentSystem.selectServiceFromCard(serviceName);
-    }
-}
-
-// Fechar modal
-function closeModal() {
-    document.getElementById('successModal').style.display = 'none';
-}
-
-// Event listeners para o modal
-window.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('successModal');
-    const closeBtn = document.querySelector('.close');
     
-    // Fechar ao clicar no X
-    if (closeBtn) {
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-        };
-    }
-    
-    // Fechar ao clicar fora do modal
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
+    // Exibir agendamentos
+    displayAppointments() {
+        const appointmentsList = document.getElementById('appointmentsList');
+        const noAppointments = document.getElementById('noAppointments');
+        
+        if (!appointmentsList || !noAppointments) return;
+
+        // Filtrar apenas agendamentos principais (não slots de bloqueio)
+        const mainAppointments = this.appointments.filter(appointment => !appointment.isBlockSlot);
+
+        if (mainAppointments.length === 0) {
+            appointmentsList.style.display = 'none';
+            noAppointments.style.display = 'block';
+            return;
         }
-    };
-});
 
-// Animações de entrada
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+        appointmentsList.style.display = 'grid';
+        noAppointments.style.display = 'none';
 
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observar elementos para animação
-document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.service-card, .booking-form-container');
-    animatedElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(el);
-    });
-});
-
-// Adicionar métodos para gerenciar agendamentos na página principal
-AppointmentSystem.prototype.displayAppointments = function() {
-    const appointmentsList = document.getElementById('appointmentsList');
-    const noAppointments = document.getElementById('noAppointments');
-    
-    if (!appointmentsList || !noAppointments) return;
-
-    // Filtrar apenas agendamentos principais (não slots de bloqueio)
-    const mainAppointments = this.appointments.filter(appointment => !appointment.isBlockSlot);
-
-    if (mainAppointments.length === 0) {
-        appointmentsList.style.display = 'none';
-        noAppointments.style.display = 'block';
-        return;
-    }
-
-    appointmentsList.style.display = 'grid';
-    noAppointments.style.display = 'none';
-
-    appointmentsList.innerHTML = mainAppointments.map(appointment => `
-        <div class="appointment-card">
-            <div class="appointment-header">
-                <div class="appointment-info">
-                    <h3>${appointment.name || appointment.clientName || 'Cliente'}</h3>
-                    <div class="appointment-status ${appointment.completed ? 'completed' : 'pending'}">
-                        ${appointment.completed ? '✅ Concluído' : '⏳ Pendente'}
+        appointmentsList.innerHTML = mainAppointments.map(appointment => `
+            <div class="appointment-card">
+                <div class="appointment-header">
+                    <div class="appointment-info">
+                        <h3>${appointment.name || appointment.clientName || 'Cliente'}</h3>
+                        <div class="appointment-status ${appointment.completed ? 'completed' : 'pending'}">
+                            ${appointment.completed ? '✅ Concluído' : '⏳ Pendente'}
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="appointment-details">
-                <div class="detail-item">
-                    <span>📅</span>
-                    <span>${this.formatDate(appointment.date)}</span>
-                </div>
-                <div class="detail-item">
-                    <span>🕒</span>
-                    <span>${appointment.time}</span>
-                </div>
-                <div class="detail-item">
-                    <span>💅</span>
-                    <span>${this.formatServices(appointment)}</span>
-                </div>
-                <div class="detail-item">
-                    <span>⏱️</span>
-                    <span>${appointment.totalDuration || appointment.duration || 0} min</span>
-                </div>
-                <div class="detail-item">
-                    <span>💰</span>
-                    <span>R$ ${(appointment.totalPrice || appointment.price || 0).toFixed(2)}</span>
-                </div>
-                <div class="detail-item">
-                    <span>📱</span>
-                    <span>${appointment.phone}</span>
-                </div>
-                ${appointment.email ? `
-                <div class="detail-item">
-                    <span>📧</span>
-                    <span>${appointment.email}</span>
-                </div>
-                ` : ''}
-            </div>
-            
-            <div class="appointment-actions">
-                ${!appointment.completed ? `
-                    <button class="btn-complete" onclick="completeAppointment('${appointment.id}')">
-                        ✅ Marcar como Concluído
-                    </button>
-                    <button class="btn-delete" onclick="deleteAppointment('${appointment.id}')">
-                        🗑️ Cancelar Agendamento
-                    </button>
-                ` : `
-                    <div style="text-align: center; color: #4CAF50; font-weight: 500; padding: 1rem;">
-                        ✅ Serviço Concluído
+                
+                <div class="appointment-details">
+                    <div class="detail-item">
+                        <span>📅</span>
+                        <span>${this.formatDate(appointment.date)}</span>
                     </div>
-                `}
+                    <div class="detail-item">
+                        <span>🕒</span>
+                        <span>${appointment.time}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>💅</span>
+                        <span>${this.formatServices(appointment)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>⏱️</span>
+                        <span>${appointment.totalDuration || appointment.duration || 0} min</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>💰</span>
+                        <span>R$ ${(appointment.totalPrice || appointment.price || 0).toFixed(2)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>📱</span>
+                        <span>${appointment.phone}</span>
+                    </div>
+                    ${appointment.email ? `
+                    <div class="detail-item">
+                        <span>📧</span>
+                        <span>${appointment.email}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="appointment-actions">
+                    ${!appointment.completed ? `
+                        <button class="btn-complete" onclick="completeAppointment('${appointment.id}')">
+                            ✅ Marcar como Concluído
+                        </button>
+                        <button class="btn-delete" onclick="deleteAppointment('${appointment.id}')">
+                            🗑️ Cancelar Agendamento
+                        </button>
+                    ` : `
+                        <div style="text-align: center; color: #4CAF50; font-weight: 500; padding: 1rem;">
+                            ✅ Serviço Concluído
+                        </div>
+                    `}
+                </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
     
-};
-
-AppointmentSystem.prototype.formatDate = function(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    return date.toLocaleDateString('pt-BR', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-};
-
-AppointmentSystem.prototype.formatServices = function(appointment) {
-    // Se services é um array de objetos
-    if (appointment.services && Array.isArray(appointment.services)) {
-        return appointment.services.map(service => {
-            if (typeof service === 'object' && service.name) {
-                return service.name;
+    // Formatar serviços
+    formatServices(appointment) {
+        // Se services é um array de objetos
+        if (appointment.services && Array.isArray(appointment.services)) {
+            return appointment.services.map(service => {
+                if (typeof service === 'object' && service.name) {
+                    return service.name;
+                }
+                return service;
+            }).join(', ');
+        }
+        
+        // Se tem service (string)
+        if (appointment.service) {
+            return appointment.service;
+        }
+        
+        return 'Serviço não especificado';
+    }
+    
+    // Concluir agendamento
+    async completeAppointment(id) {
+        try {
+            await window.firestore.updateDoc(window.firestore.doc(window.db, 'appointments', id), {
+                completed: true
+            });
+            alert('✅ Agendamento concluído com sucesso!');
+        } catch (error) {
+            console.error('Erro ao concluir agendamento:', error);
+            alert('Erro ao concluir agendamento. Tente novamente.');
+        }
+    }
+    
+    // Deletar agendamento
+    async deleteAppointment(id) {
+        const appointment = this.appointments.find(apt => apt.id === id);
+        if (appointment) {
+            const confirmMessage = `Tem certeza que deseja cancelar o agendamento de ${appointment.name || appointment.clientName}?\n\n` +
+                                 `📅 Data: ${this.formatDate(appointment.date)}\n` +
+                                 `🕒 Horário: ${appointment.time}\n` +
+                                 `💅 Serviço: ${this.formatServices(appointment)}\n\n` +
+                                 `⚠️ Esta ação não pode ser desfeita!`;
+            
+            if (confirm(confirmMessage)) {
+                try {
+                    // Deletar agendamento principal
+                    await window.firestore.deleteDoc(window.firestore.doc(window.db, 'appointments', id));
+                    
+                    // Deletar slots de bloqueio relacionados
+                    const blockSlots = this.appointments.filter(apt => 
+                        apt.isBlockSlot && apt.mainAppointmentId === id
+                    );
+                    
+                    for (const slot of blockSlots) {
+                        await window.firestore.deleteDoc(window.firestore.doc(window.db, 'appointments', slot.id));
+                    }
+                    
+                    alert(`✅ Agendamento de ${appointment.name || appointment.clientName} foi cancelado com sucesso!`);
+                } catch (error) {
+                    console.error('Erro ao cancelar agendamento:', error);
+                    alert('Erro ao cancelar agendamento. Tente novamente.');
+                }
             }
-            return service;
-        }).join(', ');
+        }
     }
-    
-    // Se tem service (string)
-    if (appointment.service) {
-        return appointment.service;
-    }
-    
-    return 'Serviço não especificado';
-};
-
-AppointmentSystem.prototype.completeAppointment = function(id) {
-    const appointment = this.appointments.find(apt => apt.id == id);
-    
-    if (!appointment) return;
-
-    const clientName = appointment.name || appointment.clientName || 'Cliente';
-    
-    if (confirm(`Confirmar que o serviço para ${clientName} foi concluído?`)) {
-        appointment.completed = true;
-        appointment.completedAt = new Date().toISOString();
-        this.saveAppointments();
-        this.displayAppointments();
-        
-        // Mostrar confirmação
-        alert(`✅ Agendamento de ${clientName} marcado como concluído!`);
-    }
-};
-
-AppointmentSystem.prototype.deleteAppointment = function(id) {
-    const appointment = this.appointments.find(apt => apt.id == id);
-    
-    if (!appointment) return;
-
-    const clientName = appointment.name || appointment.clientName || 'Cliente';
-    
-    if (confirm(`Tem certeza que deseja cancelar o agendamento de ${clientName}?`)) {
-        this.appointments = this.appointments.filter(apt => apt.id != id);
-        this.saveAppointments();
-        this.displayAppointments();
-        
-        alert(`🗑️ Agendamento de ${clientName} foi cancelado.`);
-    }
-};
-
-// Variável global para o sistema de agendamento
-let appointmentSystem;
+}
 
 // Funções globais para os botões funcionarem
 function completeAppointment(id) {
-    if (appointmentSystem) {
+    if (window.appointmentSystem) {
         appointmentSystem.completeAppointment(id);
     }
 }
 
 function deleteAppointment(id) {
-    if (appointmentSystem) {
+    if (window.appointmentSystem) {
         appointmentSystem.deleteAppointment(id);
     }
 }
 
 // Inicializar sistema quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    appointmentSystem = new AppointmentSystem();
-    
-    // Garantir que os agendamentos sejam exibidos após carregamento completo
-    setTimeout(() => {
-        appointmentSystem.displayAppointments();
-    }, 100);
+document.addEventListener('DOMContentLoaded', () => {
+    window.appointmentSystem = new FirebaseAppointmentSystem();
 });

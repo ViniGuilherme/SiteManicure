@@ -47,49 +47,53 @@
         </div>
     </section>
 
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Nossos Serviços</h2>
+            <div id="servicesContainer" class="services-grid">
+                <!-- Serviços serão carregados dinamicamente -->
+            </div>
+        </div>
+    </section>
+
     <!-- Booking Section -->
     <section id="booking" class="booking">
         <div class="container">
             <h2 class="section-title">Agendar Horário</h2>
             <div class="booking-form-container">
-                <form id="bookingForm">
-                    <div class="form-group">
-                        <label for="clientName">Nome Completo *</label>
-                        <input type="text" id="clientName" required placeholder="Digite seu nome">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clientPhone">Telefone *</label>
-                        <input type="tel" id="clientPhone" required placeholder="(00) 00000-0000">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clientEmail">E-mail</label>
-                        <input type="email" id="clientEmail" placeholder="seu@email.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="servicesContainer">Serviços Desejados *</label>
-                        <div id="servicesContainer" style="background: #2A2A2A; padding: 1rem; border-radius: 10px; border: 2px solid var(--primary-color);">
-                            <!-- Serviços serão carregados dinamicamente como checkboxes -->
+                <div id="serviceSummary" class="service-summary">
+                    <p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>
+                </div>
+                
+                <form id="bookingForm" class="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientName">Nome Completo *</label>
+                            <input type="text" id="clientName" required placeholder="Digite seu nome completo">
                         </div>
-                        <div id="serviceSummary" style="margin-top: 1rem; padding: 1rem; background: #2A2A2A; border-radius: 10px; border: 2px solid var(--primary-color); display: none;">
-                            <strong style="color: var(--primary-color);">Resumo:</strong>
-                            <div id="summaryContent" style="margin-top: 0.5rem; color: var(--white);"></div>
+                        <div class="form-group">
+                            <label for="clientPhone">Telefone *</label>
+                            <input type="tel" id="clientPhone" required placeholder="(00) 00000-0000">
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="appointmentDate">Data *</label>
-                        <input type="date" id="appointmentDate" required>
+                        <label for="clientEmail">E-mail (opcional)</label>
+                        <input type="email" id="clientEmail" placeholder="email@exemplo.com">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="appointmentTime">Horário Disponível *</label>
-                        <select id="appointmentTime" required>
-                            <option value="">Selecione um horário</option>
-                        </select>
-                        <small style="color: #666; margin-top: 5px; display: block;">Selecione uma data para ver os horários disponíveis</small>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appointmentDate">Data *</label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentTime">Horário *</label>
+                            <select id="appointmentTime" required>
+                                <option value="">Selecione um serviço primeiro</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">Confirmar Agendamento</button>
@@ -118,38 +122,32 @@
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <h2 class="section-title">Nossos Serviços</h2>
-            <div class="services-grid">
-                <!-- Serviços serão carregados dinamicamente pelo JavaScript -->
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Contato</h3>
-                    <p><a href="https://wa.me/5519990066532" target="_blank" style="color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 8px;">📱 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjQ3MiAxNC4zODJjLS4xOTUtLjU0NS0xLjA1OC0uOTk3LTEuNTQ3LS4xMTgtLjE5NS4zNDQtLjU0NS40NDctLjgyNy43MzQtLjI4Mi4yODctLjM0NC41OTUtLjU4My44NzQtLjIzOS4yNzktLjQ4OS4zNDQtLjk5Ny4xMTgtMS41NTItLjE5NS0uNTQ1LS45OTctMi4wNjktMS4yOTctMi44NDktLjQ0Ny0uODc0LS45OTctLjE5NS0xLjI5Ny0uMzQ0LS4zNDQtLjE5NS0uOTk3LS44NzQtLjk5Ny0xLjI5Ny0uODc0LS4zNDQtLjE5NS0uNjgzLS4xOTUtMS4wMzEtLjE5NS0uMzQ0IDAtLjU0NS4xMTgtLjgyNy4zNDQtLjI4Mi4yODctMS4wNTggMi42NDYtLjgyNyA1Ljg0MyAxLjE5NyAyLjUxMSA0LjE3OCA0LjUyMyA3LjE1MiA1LjA2OC4zNDQuMDY5LjY4My4xMTggMS4wMzEuMTE4IDEuNTUyIDAgMi41MTEtLjg3NCAzLjQ0NC0xLjI5NyAxLjE5Ny0uNjgzIDEuNzY1LTEuNTUyIDEuNzY1LTIuNjQ2LS4wNjktLjM0NC0uMTE4LS42ODMtLjM0NC0uOTk3eiIgZmlsbD0iIzI1QzY0MiIvPgo8cGF0aCBkPSJNMTIgMEM1LjM3MyAwIDAgNS4zNzMgMCAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMlMxOC42MjcgMCAxMiAwem01LjE5NyAxNy4xOTdhNC4yNTQgNC4yNTQgMCAwIDEtNC4yNTQgNC4yNTRjLTEuMTk2IDAtMi4zOTItLjM5OC0zLjI5OC0xLjE5N2wtMi4zOTIgMi4zOTJhLjU5OS41OTkgMCAwIDEtLjg0Ny0uODQ3bDIuMzkyLTIuMzkyYy0uOC0uOTA2LTEuMTk3LTIuMTAyLTEuMTk3LTMuMjk4IDAtMi4zNDcgMS45MTEtNC4yNTQgNC4yNTQtNC4yNTRzNC4yNTQgMS45MDcgNC4yNTQgNC4yNTR6IiBmaWxsPSIjMjVDNjQyIi8+Cjwvc3ZnPg==" alt="WhatsApp" style="width: 20px; height: 20px;">+55 19 99006-6532</a></p>
-                    <p>📍 Rua Nathan Guilherme Costa 24, São José 1, Sala 1</p>
+                    <h3>Studio Laura Souza</h3>
+                    <p>Nail Designer Profissional</p>
+                    <p>Transformando suas unhas em obras de arte</p>
                 </div>
+                
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <p>📍 Rua Nathan Guilherme Costa 24, São José 1, Sala 1</p>
+                    <p>📱 <a href="https://wa.me/5519990066532" target="_blank" style="color: var(--primary-color); text-decoration: none;">+55 19 99006-6532</a></p>
+                    <p>📷 <a href="https://www.instagram.com/laurasouzanails_?igsh=aW90NXNkMWd4NzJl" target="_blank" style="color: var(--primary-color); text-decoration: none;">@laurasouzanails_</a></p>
+                </div>
+                
                 <div class="footer-section">
                     <h3>Horário de Funcionamento</h3>
-                    <p>Segunda a Sexta: 9h às 19h</p>
-                    <p>Sábado: 9h às 17h</p>
-                    <p>Domingo: Fechado</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Redes Sociais</h3>
-                    <p>📱 <a href="https://www.instagram.com/laurasouzanails_?igsh=aW90NXNkMWd4NzJl" target="_blank" style="color: var(--primary-color); text-decoration: none;">Instagram: @laurasouzanails_</a></p>
+                    <p>Segunda a Sábado</p>
+                    <p>09:00 às 18:00</p>
                 </div>
             </div>
+            
             <div class="footer-bottom">
-                <p>&copy; 2025 Studio Laura Souza. Todos os direitos reservados.</p>
+                <p>&copy; 2024 Studio Laura Souza. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
@@ -157,16 +155,24 @@
     <!-- Success Modal -->
     <div id="successModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <div class="modal-icon">✅</div>
-            <h2>Agendamento Confirmado!</h2>
-            <p>Seu horário foi agendado com sucesso.</p>
-            <p id="modalDetails"></p>
-            <button class="btn btn-primary" onclick="closeModal()">Fechar</button>
+            <span class="close" onclick="document.getElementById('successModal').style.display='none'">&times;</span>
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Agendamento Confirmado!</h2>
+                <div id="modalDetails" style="margin-bottom: 2rem; text-align: left; background: #f9f9f9; padding: 1rem; border-radius: 8px;"></div>
+                <button class="btn btn-primary" onclick="document.getElementById('successModal').style.display='none'">Fechar</button>
+            </div>
         </div>
     </div>
 
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Main Script -->
     <script src="script.js"></script>
 </body>
 </html>
-

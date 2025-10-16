@@ -50,61 +50,31 @@
             color: var(--white);
         }
         
-        .admin-header {
-            background: var(--background-gradient);
-            color: white;
-            padding: 1.5rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            border-bottom: 2px solid var(--primary-color);
-        }
-        
-        .admin-header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
         
         .stat-card {
-            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
             padding: 1.5rem;
             border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             text-align: center;
             border: 2px solid var(--primary-color);
-            color: var(--white);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .stat-card h3 {
             font-size: 2rem;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--primary-color);
             margin-bottom: 0.5rem;
         }
         
         .stat-card p {
-            color: var(--text-light);
+            color: #ccc;
             font-size: 0.9rem;
-        }
-        
-        .appointments-admin {
-            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border: 2px solid var(--primary-color);
         }
         
         .filters {
@@ -115,97 +85,76 @@
         }
         
         .filter-btn {
-            padding: 8px 20px;
-            border: 2px solid var(--primary-color);
             background: var(--primary-color);
             color: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            padding: 0.8rem 1.5rem;
             border-radius: 25px;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
         }
         
+        .filter-btn:hover,
         .filter-btn.active {
-            background: var(--primary-color);
-            color: var(--dark-bg);
-        }
-        
-        .filter-btn:hover {
             background: var(--primary-light);
             color: var(--dark-bg);
         }
         
-        .appointment-admin-card {
+        .appointments-admin {
             background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
-            border-left: 4px solid var(--primary-color);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            color: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
-        .appointment-admin-card:hover {
-            transform: translateX(5px);
-            box-shadow: var(--shadow);
+        .appointment-admin-card {
+            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .appointment-admin-header {
             display: flex;
             justify-content: space-between;
-            align-items: start;
+            align-items: center;
             margin-bottom: 1rem;
         }
         
-        .appointment-admin-info {
-            flex: 1;
+        .appointment-admin-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .appointment-admin-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
         }
         
         .appointment-admin-actions {
             display: flex;
-            gap: 0.5rem;
-        }
-        
-        .client-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-        
-        .service-badge {
-            display: inline-block;
-            background: var(--primary-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .appointment-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #ccc;
+            flex-wrap: wrap;
         }
         
         .btn-complete {
             background: var(--primary-color);
             color: var(--dark-bg);
             border: 2px solid var(--primary-color);
-            padding: 8px 16px;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 500;
@@ -218,10 +167,10 @@
         }
         
         .btn-delete {
-            background: var(--primary-color);
-            color: var(--dark-bg);
-            border: 2px solid var(--primary-color);
-            padding: 8px 16px;
+            background: #F44336;
+            color: white;
+            border: 2px solid #F44336;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 500;
@@ -229,502 +178,160 @@
         }
         
         .btn-delete:hover {
-            background: var(--primary-light);
-            color: var(--dark-bg);
-        }
-        
-        .no-appointments-admin {
-            text-align: center;
-            padding: 3rem;
-            color: #ccc;
-        }
-        
-        .appointment-completed {
-            opacity: 0.7;
-            border-left-color: #4CAF50;
-        }
-        
-        .back-link {
+            background: #d32f2f;
             color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        }
+        
+        .appointment-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
             font-weight: 500;
         }
         
-        .back-link:hover {
-            opacity: 0.8;
+        .appointment-status.pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
         }
         
-        @media (max-width: 768px) {
-            .admin-header-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .filters {
-                justify-content: center;
-            }
-            
-            .appointment-admin-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
+        .appointment-status.completed {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
         }
-    </style>
-</head>
-<body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="admin-login">
-        <div class="login-container">
-            <div class="login-header">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">💅</div>
-                <h1>Área da Manicure</h1>
-                <p style="color: var(--text-light);">Painel Administrativo</p>
-            </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="password">Senha de Acesso</label>
-                    <input type="password" id="password" required placeholder="Digite a senha">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Entrar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Admin Dashboard -->
-    <div id="adminDashboard" class="admin-dashboard">
-        <div class="admin-header">
-            <div class="admin-header-content">
-                <div>
-                    <h1>💅 Painel de Agendamentos</h1>
-                    <p>Gerencie todos os seus horários</p>
-                </div>
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <a href="index.html" class="back-link">← Voltar ao Site</a>
-                    <button onclick="adminManager.logout()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Sair</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <!-- Add Appointment and Settings Buttons -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <button onclick="adminManager.showSettingsModal()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">
-                        ⚙️ Configurações
-                    </button>
-                    <button onclick="adminManager.showResetModal()" class="btn btn-secondary" style="background: #F44336; color: white; border: 2px solid #F44336;">
-                        🗑️ Resetar Dados
-                    </button>
-                </div>
-                <button onclick="adminManager.showAddAppointmentModal()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">
-                    ➕ Adicionar Agendamento
-                </button>
-            </div>
-
-            <!-- Statistics -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3 id="totalAppointments">0</h3>
-                    <p>Total de Agendamentos</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="todayAppointments">0</h3>
-                    <p>Hoje</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="upcomingAppointments">0</h3>
-                    <p>Próximos</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="totalRevenue">R$ 0</h3>
-                    <p>Receita Total</p>
-                </div>
-            </div>
-
-            <!-- Appointments List -->
-            <div class="appointments-admin">
-                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.5rem;">Agendamentos</h2>
-                
-                <div class="filters">
-                    <button class="filter-btn active" onclick="adminManager.filterAppointments('all')">Todos</button>
-                    <button class="filter-btn" onclick="adminManager.filterAppointments('today')">Hoje</button>
-                    <button class="filter-btn" onclick="adminManager.filterAppointments('upcoming')">Próximos</button>
-                    <button class="filter-btn" onclick="adminManager.filterAppointments('completed')">Realizados</button>
-                </div>
-
-                <div id="appointmentsAdminList">
-                    <div class="no-appointments-admin">Carregando agendamentos...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Appointment Modal -->
-    <div id="addAppointmentModal" class="modal">
-        <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto; margin: 2% auto; background: linear-gradient(135deg, #1A1A1A, #2A2A2A); border: 2px solid var(--primary-color); color: var(--white);">
-            <span class="close" onclick="adminManager.closeAddAppointmentModal()">&times;</span>
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📝</div>
-                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">Adicionar Agendamento</h2>
-                <p style="color: #ccc; font-size: 0.9rem;">Preencha os dados do cliente</p>
-            </div>
-
-            <form id="addAppointmentForm" style="padding: 0 1rem;">
-                <div class="form-group" style="margin-bottom: 1.2rem;">
-                    <label for="addClientName" style="margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--white);">Nome do Cliente *</label>
-                    <input type="text" id="addClientName" required placeholder="Digite o nome completo" style="padding: 10px; background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1.2rem;">
-                    <label for="addClientPhone" style="margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--white);">Telefone *</label>
-                    <input type="tel" id="addClientPhone" required placeholder="(00) 00000-0000" style="padding: 10px; background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1.2rem;">
-                    <label for="addClientEmail" style="margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--white);">E-mail (opcional)</label>
-                    <input type="email" id="addClientEmail" placeholder="email@exemplo.com" style="padding: 10px; background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1.2rem;">
-                    <label style="margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--white);">Serviços *</label>
-                    <div id="addServicesContainer" style="background: #2A2A2A; padding: 1rem; border-radius: 10px; max-height: 200px; overflow-y: auto; border: 2px solid var(--primary-color);">
-                        <!-- Serviços serão carregados dinamicamente como checkboxes -->
-                    </div>
-                    <div id="addServiceSummary" style="margin-top: 0.8rem; padding: 0.8rem; background: #2A2A2A; border-radius: 8px; border: 2px solid var(--primary-color); display: none; color: var(--white);">
-                        <strong style="color: var(--primary-color); font-size: 0.9rem;">Resumo:</strong>
-                        <div id="addSummaryContent" style="margin-top: 0.4rem; color: #ccc; font-size: 0.85rem;"></div>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1.2rem;">
-                    <label for="addAppointmentDate" style="margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--white);">Data *</label>
-                    <input type="date" id="addAppointmentDate" required style="padding: 10px; background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="addAppointmentTime" style="margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--white);">Horário *</label>
-                    <select id="addAppointmentTime" required style="padding: 10px; background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px;">
-                        <option value="">Selecione um horário</option>
-                        <option value="09:00">09:00</option>
-                        <option value="10:00">10:00</option>
-                        <option value="11:00">11:00</option>
-                        <option value="12:00">12:00</option>
-                        <option value="14:00">14:00</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:00">16:00</option>
-                        <option value="17:00">17:00</option>
-                        <option value="18:00">18:00</option>
-                    </select>
-                    <small style="color: #ccc; margin-top: 5px; display: block; font-size: 0.8rem;" id="timeAvailabilityMsg"></small>
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem; padding: 1rem 0;">
-                    <button type="button" onclick="adminManager.closeAddAppointmentModal()" class="btn btn-secondary" style="flex: 1; padding: 12px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary" style="flex: 1; padding: 12px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">
-                        Confirmar Agendamento
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="modal">
-        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto; margin: 2% auto; background: linear-gradient(135deg, #1A1A1A, #2A2A2A); border: 2px solid var(--primary-color); color: var(--white);">
-            <span class="close" onclick="adminManager.closeSettingsModal()">&times;</span>
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚙️</div>
-                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">Configurações do Sistema</h2>
-                <p style="color: #ccc; font-size: 0.9rem;">Gerencie serviços e horários disponíveis</p>
-            </div>
-
-            <!-- Tabs -->
-            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #444;">
-                <button class="settings-tab active" onclick="adminManager.showSettingsTab('services')" data-tab="services">
-                    💅 Serviços
-                </button>
-                <button class="settings-tab" onclick="adminManager.showSettingsTab('hours')" data-tab="hours">
-                    🕒 Horários
-                </button>
-                <button class="settings-tab" onclick="adminManager.showSettingsTab('days')" data-tab="days">
-                    📅 Dias da Semana
-                </button>
-            </div>
-
-            <!-- Services Tab -->
-            <div id="servicesTab" class="settings-tab-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h3 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Serviços Disponíveis</h3>
-                    <button onclick="adminManager.showAddServiceForm()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">➕ Adicionar Serviço</button>
-                </div>
-                
-                <div id="servicesList"></div>
-                
-                <!-- Add Service Form (Hidden by default) -->
-                <div id="addServiceForm" style="display: none; background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; border: 2px solid var(--primary-color); color: var(--white);">
-                    <h4 style="margin-bottom: 1rem;">Novo Serviço</h4>
-                    <form id="newServiceForm">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="form-group">
-                                <label>Nome do Serviço *</label>
-                                <input type="text" id="serviceName" required placeholder="Ex: Manicure Básica" style="background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px; padding: 10px;">
-                            </div>
-                            <div class="form-group">
-                                <label>Ícone (Emoji) *</label>
-                                <input type="text" id="serviceIcon" required placeholder="Ex: 💅" maxlength="2" style="background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px; padding: 10px;">
-                            </div>
-                            <div class="form-group">
-                                <label>Preço (R$) *</label>
-                                <input type="number" id="servicePrice" required placeholder="35.00" step="0.01" min="0" style="background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px; padding: 10px;">
-                            </div>
-                            <div class="form-group">
-                                <label>Duração (minutos) *</label>
-                                <input type="number" id="serviceDuration" required placeholder="45" step="5" min="5" style="background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px; padding: 10px;">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Descrição *</label>
-                            <textarea id="serviceDescription" required placeholder="Descreva o serviço..." rows="2" style="background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px; padding: 10px;"></textarea>
-                        </div>
-                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                            <button type="button" onclick="adminManager.hideAddServiceForm()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Cancelar</button>
-                            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Salvar Serviço</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Hours Tab -->
-            <div id="hoursTab" class="settings-tab-content" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h3 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Horários de Atendimento</h3>
-                    <button onclick="adminManager.showAddHourForm()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">➕ Adicionar Horário</button>
-                </div>
-                
-                <div id="hoursList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;"></div>
-                
-                <!-- Add Hour Form (Hidden by default) -->
-                <div id="addHourForm" style="display: none; background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; border: 2px solid var(--primary-color); color: var(--white);">
-                    <h4 style="margin-bottom: 1rem;">Novo Horário</h4>
-                    <form id="newHourForm">
-                        <div class="form-group">
-                            <label>Horário *</label>
-                            <input type="time" id="newHourInput" required style="background: #2A2A2A; color: var(--white); border: 2px solid #444444; border-radius: 8px; padding: 10px;">
-                            <small style="color: #666; display: block; margin-top: 5px;">Selecione um horário de atendimento</small>
-                        </div>
-                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                            <button type="button" onclick="adminManager.hideAddHourForm()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Cancelar</button>
-                            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Adicionar Horário</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Days Tab -->
-            <div id="daysTab" class="settings-tab-content" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h3 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Dias de Funcionamento</h3>
-                    <button onclick="adminManager.resetDaysToDefault()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">🔄 Restaurar Padrão</button>
-                </div>
-                
-                <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 10px; border: 2px solid var(--primary-color);">
-                    <p style="color: #ccc; margin-bottom: 1.5rem; font-size: 0.9rem;">Marque os dias da semana em que o salão funciona:</p>
-                    
-                    <div id="daysList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                        <!-- Dias serão carregados dinamicamente -->
-                    </div>
-                    
-                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #444;">
-                        <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between;">
-                            <div>
-                                <strong style="color: var(--white);">Resumo:</strong>
-                                <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;" id="daysSummary">Carregando...</p>
-                            </div>
-                            <button onclick="adminManager.saveDaysConfiguration()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">💾 Salvar Configuração</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
-                <button onclick="adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .settings-tab {
-            padding: 12px 24px;
-            border: none;
-            background: transparent;
-            color: #ccc;
-            font-weight: 500;
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: var(--white);
+        }
+        
+        .close {
+            color: var(--primary-color);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: var(--primary-light);
+        }
+        
+        .settings-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #444;
+            padding-bottom: 1rem;
+        }
+        
+        .settings-tab {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--primary-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
         
+        .settings-tab:hover,
         .settings-tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
+            background: var(--primary-color);
+            color: var(--dark-bg);
         }
         
-        .settings-tab:hover {
-            color: var(--primary-color);
+        .settings-tab-content {
+            display: none;
         }
         
-        .service-item {
+        .service-item,
+        .hour-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
             background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
-            padding: 1.5rem;
             border-radius: 10px;
             margin-bottom: 1rem;
-            border-left: 4px solid var(--primary-color);
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 1.5rem;
-            align-items: center;
-            transition: all 0.3s ease;
-            color: var(--white);
+            border: 1px solid #444;
         }
         
-        .service-item:hover {
-            box-shadow: var(--shadow);
-        }
-        
-        .service-icon-large {
-            font-size: 2.5rem;
-        }
-        
-        .service-info h4 {
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-        
-        .service-details {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-            color: #ccc;
-        }
-        
-        .service-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .hour-item {
-            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid var(--primary-color);
-            position: relative;
-            transition: all 0.3s ease;
-            color: var(--white);
-        }
-        
-        .hour-item:hover {
-            box-shadow: var(--shadow);
-            transform: translateY(-2px);
-        }
-        
-        .hour-time {
-            font-size: 1.3rem;
-            font-weight: 600;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-        
-        .hour-delete {
-            background: var(--primary-color);
-            color: var(--dark-bg);
-            border: 2px solid var(--primary-color);
-            padding: 4px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .hour-delete:hover {
-            background: var(--primary-light);
-            color: var(--dark-bg);
-        }
-        
-        .btn-edit-service {
-            background: var(--primary-color);
-            color: var(--dark-bg);
-            border: 2px solid var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-edit-service:hover {
-            background: var(--primary-light);
-            color: var(--dark-bg);
-        }
-        
-        .btn-delete-service {
-            background: var(--primary-color);
-            color: var(--dark-bg);
-            border: 2px solid var(--primary-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-delete-service:hover {
-            background: var(--primary-light);
-            color: var(--dark-bg);
-        }
-        
-        .day-item {
-            background: linear-gradient(135deg, #3A3A3A, #4A4A4A);
-            padding: 1rem;
-            border-radius: 10px;
-            border: 2px solid #666;
+        .service-info {
             display: flex;
             align-items: center;
             gap: 1rem;
-            transition: all 0.3s ease;
+        }
+        
+        .service-icon {
+            font-size: 1.5rem;
+        }
+        
+        .service-name {
+            font-weight: 600;
+            color: var(--white);
+        }
+        
+        .service-price,
+        .service-duration {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .day-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         .day-item:hover {
+            background: linear-gradient(135deg, #3A3A3A, #4A4A4A);
             border-color: var(--primary-color);
-            transform: translateY(-2px);
         }
         
         .day-item.active {
             border-color: var(--primary-color);
-            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+            background: linear-gradient(135deg, rgba(255, 220, 0, 0.1), rgba(255, 220, 0, 0.05));
         }
         
         .day-checkbox {
+            position: relative;
+        }
+        
+        .day-checkbox-input {
             width: 20px;
             height: 20px;
-            cursor: pointer;
+            accent-color: var(--primary-color);
         }
         
         .day-info {
@@ -746,65 +353,146 @@
             color: var(--primary-color);
         }
     </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div id="loginContainer" class="admin-login">
+        <div class="login-container">
+            <div class="login-header">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💅</div>
+                <h1>Área da Manicure</h1>
+                <p style="color: var(--text-light);">Painel Administrativo</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="password">Senha de Acesso</label>
+                    <input type="password" id="password" required placeholder="Digite a senha">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Entrar</button>
+            </form>
+        </div>
+    </div>
 
-    <!-- Reset Modal -->
-    <div id="resetModal" class="modal">
-        <div class="modal-content" style="max-width: 600px; background: linear-gradient(135deg, #1A1A1A, #2A2A2A); border: 2px solid var(--primary-color); color: var(--white);">
-            <span class="close" onclick="adminManager.closeResetModal()">&times;</span>
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗑️</div>
-                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">Resetar Dados</h2>
-                <p style="color: #ccc; font-size: 0.9rem;">Escolha quais dados deseja resetar</p>
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Painel Administrativo</h1>
+                <button id="logoutBtn" class="btn btn-secondary" style="background: #F44336; color: white; border: 2px solid #F44336;">Sair</button>
             </div>
 
-            <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
-                <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 10px; border: 2px solid var(--primary-color);">
-                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">📅 Agendamentos</h3>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <button onclick="adminManager.resetData('completed')" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); flex: 1; min-width: 150px;">
-                            ✅ Apenas Concluídos
-                        </button>
-                        <button onclick="adminManager.resetData('pending')" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); flex: 1; min-width: 150px;">
-                            ⏳ Apenas Pendentes
-                        </button>
-                        <button onclick="adminManager.resetData('all')" class="btn btn-secondary" style="background: #F44336; color: white; border: 2px solid #F44336; flex: 1; min-width: 150px;">
-                            🗑️ Todos
-                        </button>
-                    </div>
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalAppointments">0</h3>
+                    <p>Total de Agendamentos</p>
                 </div>
-
-                <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 10px; border: 2px solid var(--primary-color);">
-                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">⚙️ Configurações</h3>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <button onclick="adminManager.resetData('services')" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); flex: 1; min-width: 150px;">
-                            💅 Serviços
-                        </button>
-                        <button onclick="adminManager.resetData('hours')" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); flex: 1; min-width: 150px;">
-                            🕒 Horários
-                        </button>
-                        <button onclick="adminManager.resetData('days')" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); flex: 1; min-width: 150px;">
-                            📅 Dias
-                        </button>
-                    </div>
+                <div class="stat-card">
+                    <h3 id="todayAppointments">0</h3>
+                    <p>Agendamentos de Hoje</p>
                 </div>
+                <div class="stat-card">
+                    <h3 id="upcomingAppointments">0</h3>
+                    <p>Próximos Agendamentos</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalRevenue">R$ 0,00</h3>
+                    <p>Receita Total</p>
+                </div>
+            </div>
 
-                <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 10px; border: 2px solid #F44336;">
-                    <h3 style="color: #F44336; margin-bottom: 1rem;">⚠️ Reset Completo</h3>
-                    <p style="color: #ccc; margin-bottom: 1rem; font-size: 0.9rem;">Remove TODOS os dados: agendamentos, configurações, estatísticas</p>
-                    <button onclick="adminManager.resetData('everything')" class="btn btn-secondary" style="background: #F44336; color: white; border: 2px solid #F44336; width: 100%;">
-                        🚨 Resetar Tudo
+            <!-- Filters -->
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="today">Hoje</button>
+                <button class="filter-btn" data-filter="upcoming">Próximos</button>
+                <button class="filter-btn" data-filter="completed">Concluídos</button>
+            </div>
+
+            <!-- Add Appointment and Settings Buttons -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button id="settingsBtn" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">
+                        ⚙️ Configurações
+                    </button>
+                    <button id="resetBtn" class="btn btn-secondary" style="background: #F44336; color: white; border: 2px solid #F44336;">
+                        🗑️ Resetar Dados
                     </button>
                 </div>
+                <button id="addAppointmentBtn" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">
+                    ➕ Adicionar Agendamento
+                </button>
             </div>
 
-            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
-                <button onclick="adminManager.closeResetModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Cancelar</button>
+            <!-- Appointments List -->
+            <div class="appointments-admin">
+                <h2 style="color: var(--primary-color); margin-bottom: 2rem; text-align: center;">Agendamentos</h2>
+                <div id="appointmentsAdminList">
+                    <!-- Agendamentos serão carregados dinamicamente -->
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeSettingsModal()">&times;</span>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚙️</div>
+                <h2 style="background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">Configurações do Sistema</h2>
+                <p style="color: #ccc; font-size: 0.9rem;">Gerencie serviços, horários e dias de funcionamento</p>
+            </div>
+
+            <div class="settings-tabs">
+                <button class="settings-tab" onclick="adminManager.showSettingsTab('services')" data-tab="services">💅 Serviços</button>
+                <button class="settings-tab" onclick="adminManager.showSettingsTab('hours')" data-tab="hours">🕒 Horários</button>
+                <button class="settings-tab" onclick="adminManager.showSettingsTab('days')" data-tab="days">📅 Dias da Semana</button>
+            </div>
+
+            <!-- Services Tab -->
+            <div id="servicesTab" class="settings-tab-content">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Serviços Disponíveis</h3>
+                <div id="servicesList">
+                    <!-- Serviços serão carregados dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Hours Tab -->
+            <div id="hoursTab" class="settings-tab-content">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Horários Disponíveis</h3>
+                <div id="hoursList">
+                    <!-- Horários serão carregados dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Days Tab -->
+            <div id="daysTab" class="settings-tab-content">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Dias de Funcionamento</h3>
+                <div id="daysList">
+                    <!-- Dias serão carregados dinamicamente -->
+                </div>
+                <div id="daysSummary" style="text-align: center; margin-top: 1rem; color: var(--primary-color); font-weight: 600;"></div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
+                    <button onclick="adminManager.resetDaysToDefault()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Restaurar Padrão</button>
+                    <button onclick="adminManager.saveDaysConfiguration()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Salvar Configuração</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
+                <button onclick="adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Admin Script -->
     <script src="admin.js"></script>
 </body>
 </html>
-
-
