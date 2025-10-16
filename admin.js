@@ -593,6 +593,47 @@ class FirebaseAdminManager {
         document.getElementById('addAppointmentModal').style.display = 'none';
     }
     
+    // Configurar validação de dias da semana no painel admin
+    setupAdminAvailableDays() {
+        const dateInput = document.getElementById('addAppointmentDate');
+        if (!dateInput) return;
+        
+        dateInput.addEventListener('change', (e) => {
+            const selectedDate = e.target.value;
+            if (selectedDate) {
+                const dayOfWeek = this.getDayOfWeek(selectedDate);
+                
+                if (!this.availableDays[dayOfWeek]) {
+                    alert(`⚠️ A manicure não atende aos ${this.getDayName(dayOfWeek)}s.\n\nPor favor, escolha outro dia da semana.`);
+                    e.target.value = '';
+                }
+            }
+        });
+    }
+    
+    // Obter dia da semana de uma data
+    getDayOfWeek(dateString) {
+        // Garantir que a data seja interpretada corretamente (formato YYYY-MM-DD)
+        const [year, month, day] = dateString.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        return days[date.getDay()];
+    }
+    
+    // Obter nome do dia em português
+    getDayName(dayOfWeek) {
+        const dayNames = {
+            'monday': 'Segunda-feira',
+            'tuesday': 'Terça-feira',
+            'wednesday': 'Quarta-feira',
+            'thursday': 'Quinta-feira',
+            'friday': 'Sexta-feira',
+            'saturday': 'Sábado',
+            'sunday': 'Domingo'
+        };
+        return dayNames[dayOfWeek] || dayOfWeek;
+    }
+    
     renderAddServicesCheckboxes() {
         const container = document.getElementById('addServicesContainer');
         if (!container) return;

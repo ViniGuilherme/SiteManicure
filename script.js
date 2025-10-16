@@ -444,6 +444,7 @@ class FirebaseAppointmentSystem {
             const selectedDate = e.target.value;
             if (selectedDate) {
                 const dayOfWeek = this.getDayOfWeek(selectedDate);
+                
                 if (!availableDays[dayOfWeek]) {
                     alert(`⚠️ A manicure não atende aos ${this.getDayName(dayOfWeek)}s.\n\nPor favor, escolha outro dia da semana.`);
                     e.target.value = '';
@@ -454,7 +455,9 @@ class FirebaseAppointmentSystem {
     
     // Obter dia da semana de uma data
     getDayOfWeek(dateString) {
-        const date = new Date(dateString);
+        // Garantir que a data seja interpretada corretamente (formato YYYY-MM-DD)
+        const [year, month, day] = dateString.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         return days[date.getDay()];
     }
