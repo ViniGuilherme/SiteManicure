@@ -902,11 +902,11 @@ class FirebaseAdminManager {
                     </div>
                 </div>
                 <div class="service-actions">
-                    <button class="service-btn service-btn-edit" onclick="adminManager.editService('${service.id}')">
+                    <button class="service-btn service-btn-edit" onclick="editService('${service.id}')">
                         <span>✏️</span>
                         Editar
                     </button>
-                    <button class="service-btn service-btn-delete" onclick="adminManager.deleteService('${service.id}')">
+                    <button class="service-btn service-btn-delete" onclick="deleteService('${service.id}')">
                         <span>🗑️</span>
                         Excluir
                     </button>
@@ -920,15 +920,102 @@ class FirebaseAdminManager {
         const container = document.getElementById('hoursList');
         if (!container) return;
         
-        container.innerHTML = this.availableHours.map(hour => `
-            <div class="hour-item">
-                <span style="color: white; font-weight: 700; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">🕒 ${hour}</span>
-                <button class="btn-delete" onclick="adminManager.deleteHour('${hour}')">
-                    <span>🗑️</span>
-                    Excluir
-                </button>
+        if (this.availableHours.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #ccc; font-style: italic;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⏰</div>
+                    <p style="font-size: 1.2rem; margin: 0;">Nenhum horário disponível</p>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Adicione horários usando o formulário abaixo</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Organizar horários em grupos (manhã, tarde, noite)
+        const morningHours = this.availableHours.filter(hour => {
+            const hourNum = parseInt(hour.split(':')[0]);
+            return hourNum >= 6 && hourNum < 12;
+        });
+        
+        const afternoonHours = this.availableHours.filter(hour => {
+            const hourNum = parseInt(hour.split(':')[0]);
+            return hourNum >= 12 && hourNum < 18;
+        });
+        
+        const eveningHours = this.availableHours.filter(hour => {
+            const hourNum = parseInt(hour.split(':')[0]);
+            return hourNum >= 18 && hourNum < 24;
+        });
+        
+        container.innerHTML = `
+            <div style="display: grid; gap: 2rem;">
+                ${morningHours.length > 0 ? `
+                    <div class="hour-group">
+                        <h4 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
+                            <span>🌅</span>
+                            <span>Manhã</span>
+                        </h4>
+                        <div class="hours-grid">
+                            ${morningHours.map(hour => `
+                                <div class="hour-card">
+                                    <div class="hour-time">
+                                        <span class="hour-icon">🕒</span>
+                                        <span class="hour-text">${hour}</span>
+                                    </div>
+                                    <button class="hour-delete-btn" onclick="deleteHour('${hour}')" title="Excluir horário">
+                                        <span>🗑️</span>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${afternoonHours.length > 0 ? `
+                    <div class="hour-group">
+                        <h4 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
+                            <span>☀️</span>
+                            <span>Tarde</span>
+                        </h4>
+                        <div class="hours-grid">
+                            ${afternoonHours.map(hour => `
+                                <div class="hour-card">
+                                    <div class="hour-time">
+                                        <span class="hour-icon">🕒</span>
+                                        <span class="hour-text">${hour}</span>
+                                    </div>
+                                    <button class="hour-delete-btn" onclick="deleteHour('${hour}')" title="Excluir horário">
+                                        <span>🗑️</span>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${eveningHours.length > 0 ? `
+                    <div class="hour-group">
+                        <h4 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
+                            <span>🌙</span>
+                            <span>Noite</span>
+                        </h4>
+                        <div class="hours-grid">
+                            ${eveningHours.map(hour => `
+                                <div class="hour-card">
+                                    <div class="hour-time">
+                                        <span class="hour-icon">🕒</span>
+                                        <span class="hour-text">${hour}</span>
+                                    </div>
+                                    <button class="hour-delete-btn" onclick="deleteHour('${hour}')" title="Excluir horário">
+                                        <span>🗑️</span>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
             </div>
-        `).join('');
+        `;
     }
     
     // Função para deletar horário
@@ -974,7 +1061,7 @@ class FirebaseAdminManager {
                     <div class="form-group">
                         <label for="editServiceName" style="color: var(--white);">Nome do Serviço</label>
                         <input type="text" id="editServiceName" value="${service.name}" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
-                    </div>
+            </div>
                     <div class="form-group">
                         <label for="editServiceIcon" style="color: var(--white);">Ícone (emoji)</label>
                         <input type="text" id="editServiceIcon" value="${service.icon}" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
@@ -994,7 +1081,7 @@ class FirebaseAdminManager {
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                        <button type="button" class="btn btn-primary" onclick="adminManager.saveEditedService('${serviceId}', this.parentElement.parentElement)" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600;">💾 Salvar</button>
+                        <button type="button" class="btn btn-primary" onclick="saveEditedService('${serviceId}', this.parentElement.parentElement)" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600;">💾 Salvar</button>
                         <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="background: #666; color: var(--white); border: 2px solid #666; padding: 12px 24px; border-radius: 10px; font-weight: 600;">❌ Cancelar</button>
                     </div>
                 </form>
@@ -1150,3 +1237,20 @@ class FirebaseAdminManager {
 
 // Inicializar gerenciador admin
 const adminManager = new FirebaseAdminManager();
+
+// Funções globais para garantir que funcionem
+window.editService = function(serviceId) {
+    return adminManager.editService(serviceId);
+};
+
+window.deleteService = function(serviceId) {
+    return adminManager.deleteService(serviceId);
+};
+
+window.saveEditedService = function(serviceId, modal) {
+    return adminManager.saveEditedService(serviceId, modal);
+};
+
+window.deleteHour = function(hour) {
+    return adminManager.deleteHour(hour);
+};

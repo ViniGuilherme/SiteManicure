@@ -186,7 +186,7 @@ class FirebaseAppointmentSystem {
             value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
             }
             e.target.value = value;
-    }
+        }
     
     // Renderizar checkboxes de serviços
     renderServicesCheckboxes() {
@@ -196,7 +196,6 @@ class FirebaseAppointmentSystem {
             return;
         }
         
-        console.log('Renderizando serviços:', this.services);
         
         container.innerHTML = this.services.map(service => `
             <div class="service-card" data-service-id="${service.id}">
@@ -224,11 +223,9 @@ class FirebaseAppointmentSystem {
     // Configurar event listeners para os checkboxes de serviços
     setupServiceCheckboxes() {
         const checkboxes = document.querySelectorAll('.service-checkbox');
-        console.log('Configurando checkboxes:', checkboxes.length);
         
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
-                console.log('Checkbox alterado:', checkbox.checked, checkbox.value);
                 this.updateServiceSummary();
                 this.updateCheckboxVisual(checkbox);
             });

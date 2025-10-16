@@ -423,6 +423,101 @@
             box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
         }
         
+        /* Layout dos horários organizados */
+        .hour-group {
+            margin-bottom: 2rem;
+        }
+        
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .hour-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.5rem;
+            background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+            border-radius: 12px;
+            border: 2px solid #444;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hour-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 220, 0, 0.2);
+        }
+        
+        .hour-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+        
+        .hour-card:hover::before {
+            opacity: 0.05;
+        }
+        
+        .hour-time {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hour-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .hour-text {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hour-delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+        }
+        
+        .hour-delete-btn:hover {
+            background: #ff3742;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+        }
+        
+        .hour-delete-btn span {
+            font-size: 1rem;
+        }
+        
+        /* Layout antigo para compatibilidade */
         .hour-item {
             display: flex;
             justify-content: space-between;
@@ -653,6 +748,35 @@
                 font-size: 0.8rem !important;
             }
             
+            /* Horários responsivos */
+            .hours-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+                gap: 0.8rem !important;
+            }
+            
+            .hour-card {
+                padding: 1rem !important;
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .hour-time {
+                flex-direction: column;
+                gap: 0.5rem !important;
+            }
+            
+            .hour-text {
+                font-size: 1.1rem !important;
+            }
+            
+            .hour-delete-btn {
+                padding: 0.5rem !important;
+                min-width: 35px !important;
+                height: 35px !important;
+            }
+            
+            /* Layout antigo para compatibilidade */
             .hour-item {
                 flex-direction: column;
                 gap: 1rem;
@@ -718,12 +842,12 @@
             </div>
 
             <!-- Filters -->
-            <div class="filters">
+                <div class="filters">
                 <button class="filter-btn active" data-filter="all">Todos</button>
                 <button class="filter-btn" data-filter="today">Hoje</button>
                 <button class="filter-btn" data-filter="upcoming">Próximos</button>
                 <button class="filter-btn" data-filter="completed">Concluídos</button>
-            </div>
+                </div>
 
             <!-- Add Appointment and Settings Buttons -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
@@ -773,7 +897,7 @@
                     <span style="font-size: 1.8rem; margin-right: 0.8rem;">📅</span>
                     <span style="font-size: 1.1rem; font-weight: 600;">Dias de Funcionamento</span>
                 </button>
-            </div>
+                </div>
 
             <!-- Services Tab -->
             <div id="servicesTab" class="settings-tab-content">
@@ -784,7 +908,7 @@
                 <div id="servicesList">
                     <!-- Serviços serão carregados dinamicamente -->
                 </div>
-            </div>
+                </div>
 
             <!-- Hours Tab -->
             <div id="hoursTab" class="settings-tab-content">
@@ -794,9 +918,9 @@
                 </h3>
                 <div id="hoursList">
                     <!-- Horários serão carregados dinamicamente -->
+                    </div>
                 </div>
-                </div>
-                
+
             <!-- Days Tab -->
             <div id="daysTab" class="settings-tab-content">
                 <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
@@ -805,19 +929,19 @@
                 </h3>
                 <div id="daysList">
                     <!-- Dias serão carregados dinamicamente -->
-                        </div>
+                </div>
                 <div id="daysSummary" style="text-align: center; margin-top: 1rem; color: var(--primary-color); font-weight: 600;"></div>
                 <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
                     <button onclick="adminManager.resetDaysToDefault()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Restaurar Padrão</button>
                     <button onclick="adminManager.saveDaysConfiguration()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Salvar Configuração</button>
                 </div>
-            </div>
+                </div>
 
             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
                 <button onclick="adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
-            </div>
-                            </div>
-                            </div>
+                </div>
+        </div>
+    </div>
 
     <!-- Add Appointment Modal -->
     <div id="addAppointmentModal" class="modal">
@@ -827,8 +951,8 @@
                 <div style="font-size: 3rem; margin-bottom: 0.5rem;">📅</div>
                 <h2 style="color: var(--primary-color); margin: 0; font-size: 2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Adicionar Agendamento</h2>
                 <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;">Preencha os dados do cliente e selecione os serviços</p>
-                            </div>
-            
+            </div>
+
             <form id="addAppointmentForm">
                 <!-- Seção de Dados do Cliente -->
                 <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 2px solid var(--primary-color);">
@@ -839,19 +963,19 @@
                             <div class="form-group">
                             <label for="addClientName" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Nome Completo *</label>
                             <input type="text" id="addClientName" required placeholder="Digite o nome completo" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                        </div>
-                        
+            </div>
+
                         <div class="form-group">
                             <label for="addClientPhone" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Telefone *</label>
                             <input type="tel" id="addClientPhone" required placeholder="(00) 00000-0000" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                        </div>
-                        
+                </div>
+                
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label for="addClientEmail" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">E-mail (opcional)</label>
                             <input type="email" id="addClientEmail" placeholder="Digite o e-mail" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                </div>
-            </div>
-                </div>
+                            </div>
+                            </div>
+                            </div>
                 
                 <!-- Seção de Data e Horário -->
                 <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 2px solid var(--primary-color);">
@@ -859,10 +983,10 @@
                         🕒 Data e Horário
                     </h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
+                            <div class="form-group">
                             <label for="addAppointmentDate" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Data *</label>
                             <input type="date" id="addAppointmentDate" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                        </div>
+                            </div>
                         
                         <div class="form-group">
                             <label for="addAppointmentTime" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Horário *</label>
@@ -870,9 +994,9 @@
                                 <option value="">Selecione um horário</option>
                             </select>
                         </div>
-                    </div>
                 </div>
-                
+            </div>
+
                 <!-- Seção de Serviços -->
                 <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 2px solid var(--primary-color);">
                     <h3 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
@@ -880,8 +1004,8 @@
                     </h3>
                     <div id="addServicesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; max-height: 250px; overflow-y: auto; padding: 1rem; background: #1A1A1A; border-radius: 10px; border: 1px solid #444;">
                         <!-- Serviços serão carregados dinamicamente -->
-                    </div>
-                    
+                </div>
+                
                     <!-- Resumo dos Serviços -->
                     <div id="addServiceSummary" style="margin-top: 1rem; padding: 1.5rem; background: linear-gradient(135deg, #1A1A1A, #2A2A2A); border-radius: 12px; border: 2px solid var(--primary-color); color: var(--white);">
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
@@ -889,9 +1013,9 @@
                             <h4 style="color: var(--primary-color); margin: 0; font-size: 1.2rem;">Resumo do Agendamento</h4>
                         </div>
                         <p style="color: #ccc; text-align: center; margin: 0; font-style: italic;">Nenhum serviço selecionado</p>
-                    </div>
                 </div>
-                
+            </div>
+
                 <!-- Botões de Ação -->
                 <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
                     <button type="submit" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 15px 30px; font-size: 1.1rem; font-weight: 600; border-radius: 12px; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;">
@@ -902,7 +1026,7 @@
                         <span style="font-size: 1.2rem;">❌</span>
                         Cancelar
                     </button>
-                </div>
+            </div>
             </form>
         </div>
     </div>
