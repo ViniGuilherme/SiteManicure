@@ -1326,6 +1326,103 @@ class FirebaseAdminManager {
     }
     
     // Funções para gerenciar serviços
+    showAddServiceModal() {
+        // Criar modal de adição de serviço
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 500px;">
+                <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 2rem;">➕ Adicionar Novo Serviço</h2>
+                <form id="addServiceForm">
+                    <div class="form-group">
+                        <label for="addServiceName" style="color: var(--white);">Nome do Serviço</label>
+                        <input type="text" id="addServiceName" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="Ex: Manicure Premium">
+                    </div>
+                    <div class="form-group">
+                        <label for="addServiceIcon" style="color: var(--white);">Ícone (emoji)</label>
+                        <input type="text" id="addServiceIcon" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="💅">
+                    </div>
+                    <div class="form-group">
+                        <label for="addServiceDescription" style="color: var(--white);">Descrição</label>
+                        <textarea id="addServiceDescription" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; min-height: 80px; resize: vertical; box-sizing: border-box;" placeholder="Descreva o serviço oferecido..."></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="addServicePrice" style="color: var(--white);">Preço (R$)</label>
+                            <input type="number" id="addServicePrice" required min="0" step="0.01" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="addServiceDuration" style="color: var(--white);">Duração (minutos)</label>
+                            <input type="number" id="addServiceDuration" required min="15" step="15" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="60">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <button type="button" class="btn btn-primary" onclick="adminManager.saveNewService(this.parentElement.parentElement)" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600;">💾 Salvar Serviço</button>
+                        <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="background: #666; color: var(--white); border: 2px solid #666; padding: 12px 24px; border-radius: 10px; font-weight: 600;">❌ Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    async saveNewService(modal) {
+        // Validar campos obrigatórios
+        const name = document.getElementById('addServiceName').value.trim();
+        const icon = document.getElementById('addServiceIcon').value.trim();
+        const description = document.getElementById('addServiceDescription').value.trim();
+        const price = parseFloat(document.getElementById('addServicePrice').value);
+        const duration = parseInt(document.getElementById('addServiceDuration').value);
+        
+        if (!name || !icon || !description || isNaN(price) || isNaN(duration)) {
+            alert('❌ Por favor, preencha todos os campos corretamente.');
+            return;
+        }
+        
+        if (price < 0 || duration < 15) {
+            alert('❌ Preço deve ser maior que 0 e duração deve ser pelo menos 15 minutos.');
+            return;
+        }
+        
+        const serviceData = {
+            name: name,
+            icon: icon,
+            description: description,
+            price: price,
+            duration: duration
+        };
+        
+        try {
+            console.log('Criando novo serviço:', serviceData);
+            
+            // Criar novo serviço no Firebase
+            const docRef = await window.firestore.addDoc(
+                window.firestore.collection(window.db, 'services'),
+                serviceData
+            );
+            
+            console.log('Novo serviço criado com ID:', docRef.id);
+            
+            // Adicionar localmente
+            const newService = { id: docRef.id, ...serviceData };
+            this.services.push(newService);
+            
+            // Re-renderizar os serviços
+            this.renderServices();
+            
+            alert('✅ Novo serviço criado com sucesso!');
+            modal.closest('.modal').remove();
+            
+        } catch (error) {
+            console.error('Erro ao criar serviço:', error);
+            console.error('Detalhes do erro:', error.message);
+            alert(`❌ Erro ao criar serviço: ${error.message}`);
+        }
+    }
+    
     editService(serviceId) {
         const service = this.services.find(s => s.id === serviceId);
         if (!service) return;
@@ -1557,6 +1654,10 @@ window.deleteService = function(serviceId) {
 
 window.saveEditedService = function(serviceId, modal) {
     return adminManager.saveEditedService(serviceId, modal);
+};
+
+window.saveNewService = function(modal) {
+    return adminManager.saveNewService(modal);
 };
 
 window.deleteHour = function(hour) {
