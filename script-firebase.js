@@ -24,7 +24,7 @@ class FirebaseAppointmentSystem {
         this.appointments = [];
         this.init();
     }
-    
+
     async init() {
         // Aguardar Firebase carregar
         await this.waitForFirebase();
@@ -54,7 +54,7 @@ class FirebaseAppointmentSystem {
             checkFirebase();
         });
     }
-    
+
     async loadServicesFromFirebase() {
         try {
             const querySnapshot = await window.firestore.getDocs(window.firestore.collection(window.db, 'services'));
@@ -71,9 +71,8 @@ class FirebaseAppointmentSystem {
     
     async loadAvailableHoursFromFirebase() {
         try {
-            const docRef = window.firestore.doc(window.db, 'settings', 'availableHours');
-            const docSnap = await window.firestore.getDoc(docRef);
-            if (docSnap.exists()) {
+            const docSnap = await window.firestore.doc(window.db, 'settings', 'availableHours').get();
+            if (docSnap.exists) {
                 this.availableHours = docSnap.data().hours;
             }
         } catch (error) {
@@ -83,9 +82,8 @@ class FirebaseAppointmentSystem {
     
     async loadAvailableDaysFromFirebase() {
         try {
-            const docRef = window.firestore.doc(window.db, 'settings', 'availableDays');
-            const docSnap = await window.firestore.getDoc(docRef);
-            if (docSnap.exists()) {
+            const docSnap = await window.firestore.doc(window.db, 'settings', 'availableDays').get();
+            if (docSnap.exists) {
                 this.availableDays = docSnap.data().days;
             }
         } catch (error) {
@@ -106,12 +104,8 @@ class FirebaseAppointmentSystem {
     }
     
     setupRealtimeListeners() {
-        // Listener para agendamentos em tempo real
-        const appointmentsQuery = window.firestore.query(
-            window.firestore.collection(window.db, 'appointments'),
-            window.firestore.orderBy('date', 'asc'),
-            window.firestore.orderBy('time', 'asc')
-        );
+        // Listener para agendamentos em tempo real (sem ordenação temporariamente)
+        const appointmentsQuery = window.firestore.collection(window.db, 'appointments');
         
         window.firestore.onSnapshot(appointmentsQuery, (querySnapshot) => {
             this.appointments = [];
@@ -150,7 +144,7 @@ class FirebaseAppointmentSystem {
                 }
             }
         });
-        
+
         // Submit do formulário
         document.getElementById('bookingForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -167,7 +161,7 @@ class FirebaseAppointmentSystem {
             // Configurar dias disponíveis baseado na configuração da manicure
             this.setupAvailableDays();
         }
-        
+
         // Smooth scroll para navegação
         this.setupSmoothScroll();
         
@@ -180,18 +174,18 @@ class FirebaseAppointmentSystem {
         this.initializeDateInput();
         this.displayAppointments();
     }
-    
+
     // Formatar telefone automaticamente
     formatPhone(e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length >= 11) {
             value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
         } else if (value.length >= 7) {
-            value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
         } else if (value.length >= 3) {
             value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
-        }
-        e.target.value = value;
+            }
+            e.target.value = value;
     }
     
     // Renderizar checkboxes de serviços
@@ -272,12 +266,12 @@ class FirebaseAppointmentSystem {
         
         // Se não há serviço selecionado, não mostrar horários
         if (totalDuration === 0) {
-            const option = document.createElement('option');
-            option.value = '';
+                const option = document.createElement('option');
+                option.value = '';
             option.textContent = 'Selecione um serviço primeiro';
-            option.disabled = true;
-            option.style.color = '#999';
-            timeSelect.appendChild(option);
+                option.disabled = true;
+                option.style.color = '#999';
+                timeSelect.appendChild(option);
             return;
         }
         
@@ -404,7 +398,7 @@ class FirebaseAppointmentSystem {
         };
         return dayNames[dayOfWeek] || dayOfWeek;
     }
-    
+
     // Submeter agendamento
     async submitAppointment() {
         const clientName = document.getElementById('clientName').value.trim();
@@ -415,7 +409,7 @@ class FirebaseAppointmentSystem {
         
         // Obter serviços selecionados
         const checkboxes = document.querySelectorAll('.service-checkbox:checked');
-        
+
         // Validações
         if (!clientName) {
             alert('Por favor, digite seu nome completo.');
@@ -429,10 +423,10 @@ class FirebaseAppointmentSystem {
 
         // Validar formato de email apenas se fornecido
         if (email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                alert('Por favor, digite um e-mail válido.');
-                return;
+            alert('Por favor, digite um e-mail válido.');
+            return;
             }
         }
 
@@ -530,7 +524,7 @@ class FirebaseAppointmentSystem {
             
             // Mostrar modal de sucesso
             this.showSuccessModal(appointmentData);
-            
+
             // Limpar formulário
             document.getElementById('bookingForm').reset();
             this.updateServiceSummary();
@@ -543,7 +537,7 @@ class FirebaseAppointmentSystem {
             alert('Erro ao salvar agendamento. Tente novamente.');
         }
     }
-    
+
     // Mostrar modal de sucesso
     showSuccessModal(appointment) {
         const modal = document.getElementById('successModal');
@@ -584,13 +578,13 @@ class FirebaseAppointmentSystem {
             modal.style.display = 'none';
         }, 5000);
     }
-    
+
     // Formatar data
     formatDate(dateString) {
         const [year, month, day] = dateString.split('-');
         return `${day}/${month}/${year}`;
     }
-    
+
     // Configurar smooth scroll
     setupSmoothScroll() {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

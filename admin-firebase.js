@@ -18,7 +18,7 @@ class FirebaseAdminManager {
         
         this.init();
     }
-    
+
     async init() {
         // Aguardar Firebase carregar
         await this.waitForFirebase();
@@ -46,15 +46,11 @@ class FirebaseAdminManager {
             checkFirebase();
         });
     }
-    
+
     async loadDataFromFirebase() {
         try {
-            // Carregar agendamentos
-            const appointmentsQuery = window.firestore.query(
-                window.firestore.collection(window.db, 'appointments'),
-                window.firestore.orderBy('date', 'asc'),
-                window.firestore.orderBy('time', 'asc')
-            );
+            // Carregar agendamentos (sem ordenação temporariamente)
+            const appointmentsQuery = window.firestore.collection(window.db, 'appointments');
             const appointmentsSnapshot = await window.firestore.getDocs(appointmentsQuery);
             this.appointments = [];
             appointmentsSnapshot.forEach((doc) => {
@@ -74,14 +70,14 @@ class FirebaseAdminManager {
             }
             
             // Carregar horários disponíveis
-            const hoursDoc = await window.firestore.getDoc(window.firestore.doc(window.db, 'settings', 'availableHours'));
-            if (hoursDoc.exists()) {
+            const hoursDoc = await window.firestore.doc(window.db, 'settings', 'availableHours').get();
+            if (hoursDoc.exists) {
                 this.availableHours = hoursDoc.data().hours;
             }
             
             // Carregar dias disponíveis
-            const daysDoc = await window.firestore.getDoc(window.firestore.doc(window.db, 'settings', 'availableDays'));
-            if (daysDoc.exists()) {
+            const daysDoc = await window.firestore.doc(window.db, 'settings', 'availableDays').get();
+            if (daysDoc.exists) {
                 this.availableDays = daysDoc.data().days;
             }
             
@@ -93,12 +89,8 @@ class FirebaseAdminManager {
     }
     
     setupRealtimeListeners() {
-        // Listener para agendamentos em tempo real
-        const appointmentsQuery = window.firestore.query(
-            window.firestore.collection(window.db, 'appointments'),
-            window.firestore.orderBy('date', 'asc'),
-            window.firestore.orderBy('time', 'asc')
-        );
+        // Listener para agendamentos em tempo real (sem ordenação temporariamente)
+        const appointmentsQuery = window.firestore.collection(window.db, 'appointments');
         
         window.firestore.onSnapshot(appointmentsQuery, (querySnapshot) => {
             this.appointments = [];
@@ -111,7 +103,7 @@ class FirebaseAdminManager {
     }
     
     setupEventListeners() {
-        // Login
+    // Login
         document.getElementById('loginForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             this.login();
@@ -160,25 +152,25 @@ class FirebaseAdminManager {
             document.getElementById('password').value = '';
         }
     }
-    
+
     logout() {
         this.isLoggedIn = false;
-        sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminLoggedIn');
         this.showLogin();
     }
     
     showLogin() {
         document.getElementById('loginContainer').style.display = 'flex';
-        document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
     }
-    
+
     showDashboard() {
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('adminDashboard').style.display = 'block';
         this.updateStatistics();
         this.displayAppointments();
     }
-    
+
     // Atualizar estatísticas
     updateStatistics() {
         const today = new Date().toISOString().split('T')[0];
@@ -207,7 +199,7 @@ class FirebaseAdminManager {
             .reduce((sum, apt) => sum + (apt.price || 0), 0);
         document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2)}`;
     }
-    
+
     // Filtrar agendamentos
     filterAppointments(filter) {
         this.currentFilter = filter;
@@ -217,10 +209,10 @@ class FirebaseAdminManager {
             btn.classList.remove('active');
         });
         document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-        
+
         this.displayAppointments();
     }
-    
+
     // Exibir agendamentos
     displayAppointments() {
         const container = document.getElementById('appointmentsAdminList');
@@ -262,7 +254,7 @@ class FirebaseAdminManager {
 
         container.innerHTML = filteredAppointments.map(appointment => this.createAppointmentCard(appointment)).join('');
     }
-    
+
     // Criar card de agendamento
     createAppointmentCard(appointment) {
         const formattedDate = this.formatDate(appointment.date);
@@ -272,7 +264,7 @@ class FirebaseAdminManager {
         
         const totalDuration = appointment.totalDuration || appointment.duration || 0;
         const totalPrice = appointment.totalPrice || appointment.price || 0;
-        
+
         return `
             <div class="appointment-admin-card">
                 <div class="appointment-admin-header">
@@ -283,54 +275,54 @@ class FirebaseAdminManager {
                 </div>
                 <div class="appointment-admin-details">
                     <div class="detail-row">
-                        <span>📅</span>
+                                <span>📅</span>
                         <span>${formattedDate}</span>
                     </div>
                     <div class="detail-row">
                         <span>🕒</span>
                         <span>${appointment.time}</span>
-                    </div>
+                            </div>
                     <div class="detail-row">
                         <span>💅</span>
                         <span>${servicesText}</span>
-                    </div>
+                            </div>
                     <div class="detail-row">
                         <span>⏱️</span>
                         <span>${totalDuration} minutos</span>
-                    </div>
+                            </div>
                     <div class="detail-row">
-                        <span>💰</span>
+                                <span>💰</span>
                         <span>R$ ${totalPrice.toFixed(2)}</span>
-                    </div>
+                            </div>
                     <div class="detail-row">
-                        <span>📱</span>
+                                <span>📱</span>
                         <span>${appointment.phone}</span>
-                    </div>
+                            </div>
                     ${appointment.email ? `
                     <div class="detail-row">
                         <span>📧</span>
                         <span>${appointment.email}</span>
                     </div>
                     ` : ''}
-                </div>
-                <div class="appointment-admin-actions">
-                    ${!appointment.completed ? `
-                        <button class="btn-complete" onclick="adminManager.completeAppointment('${appointment.id}')">
-                            ✓ Concluir
-                        </button>
+                    </div>
+                    <div class="appointment-admin-actions">
+                        ${!appointment.completed ? `
+                            <button class="btn-complete" onclick="adminManager.completeAppointment('${appointment.id}')">
+                                ✓ Concluir
+                            </button>
                         <button class="btn-delete" onclick="adminManager.deleteAppointment('${appointment.id}')">
                             🗑️ Cancelar Agendamento
                         </button>
                     ` : `
                         <div style="text-align: center; color: #4CAF50; font-weight: 600; padding: 1rem; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border: 1px solid #4CAF50;">
                             ✅ Serviço Concluído
-                        </div>
+                    </div>
                     `}
                 </div>
             </div>
         `;
     }
-    
+
     // Concluir agendamento
     async completeAppointment(id) {
         try {
@@ -338,12 +330,12 @@ class FirebaseAdminManager {
                 completed: true
             });
             alert('✅ Agendamento concluído com sucesso!');
-        } catch (error) {
+                } catch (error) {
             console.error('Erro ao concluir agendamento:', error);
             alert('Erro ao concluir agendamento. Tente novamente.');
         }
     }
-    
+
     // Excluir agendamento
     async deleteAppointment(id) {
         const appointment = this.appointments.find(apt => apt.id === id);

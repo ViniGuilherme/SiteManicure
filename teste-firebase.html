@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 200px;
+        }
+        .log {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Teste Firebase</h1>
+        
+        <h3>1. Status do Firebase:</h3>
+        <div id="firebaseStatus">Verificando...</div>
+        
+        <h3>2. Teste de Escrita:</h3>
+        <input type="text" id="testName" placeholder="Digite seu nome" value="Teste">
+        <button onclick="testWrite()">Salvar no Firebase</button>
+        
+        <h3>3. Teste de Leitura:</h3>
+        <button onclick="testRead()">Ler do Firebase</button>
+        
+        <h3>4. Limpar Dados:</h3>
+        <button onclick="clearData()">Limpar Tudo</button>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <script>
+        let db;
+        const log = document.getElementById('log');
+        const status = document.getElementById('firebaseStatus');
+        
+        function addLog(message, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            log.innerHTML += `<span class="${type}">[${time}] ${message}</span>\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Aguardar Firebase carregar
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                if (window.firebase) {
+                    addLog('✅ Firebase CDN carregado', 'success');
+                    resolve();
+                } else {
+                    addLog('⏳ Aguardando Firebase CDN...', 'info');
+                    setTimeout(() => waitForFirebase().then(resolve), 100);
+                }
+            });
+        }
+        
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await waitForFirebase();
+                
+                // Inicializar Firebase
+                const app = firebase.initializeApp({
+                    apiKey: "AIzaSyCUMiQv4A1Mo-BTdmhrPZDC5qs-iuaEqKs",
+                    authDomain: "studio-laura-souza.firebaseapp.com",
+                    projectId: "studio-laura-souza",
+                    storageBucket: "studio-laura-souza.firebasestorage.app",
+                    messagingSenderId: "594832278771",
+                    appId: "1:594832278771:web:08b48dba7dcfdef7252386"
+                });
+                
+                db = firebase.firestore();
+                
+                status.innerHTML = '<span class="success">✅ Firebase Inicializado!</span>';
+                addLog('✅ Firebase inicializado com sucesso!', 'success');
+                
+                // Testar conexão
+                await testConnection();
+                
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Erro ao inicializar Firebase</span>';
+                addLog('❌ Erro: ' + error.message, 'error');
+            }
+        });
+        
+        async function testConnection() {
+            try {
+                addLog('🔍 Testando conexão com Firestore...', 'info');
+                
+                // Tentar ler uma coleção vazia para testar conexão
+                const snapshot = await db.collection('test').limit(1).get();
+                addLog('✅ Conexão com Firestore OK!', 'success');
+                
+            } catch (error) {
+                addLog('❌ Erro na conexão: ' + error.message, 'error');
+            }
+        }
+        
+        async function testWrite() {
+            try {
+                const name = document.getElementById('testName').value;
+                if (!name) {
+                    addLog('❌ Digite um nome para testar', 'error');
+                    return;
+                }
+                
+                addLog('💾 Salvando no Firebase...', 'info');
+                
+                const docRef = await db.collection('test').add({
+                    name: name,
+                    timestamp: new Date(),
+                    test: true
+                });
+                
+                addLog(`✅ Salvo com ID: ${docRef.id}`, 'success');
+                
+            } catch (error) {
+                addLog('❌ Erro ao salvar: ' + error.message, 'error');
+            }
+        }
+        
+        async function testRead() {
+            try {
+                addLog('📖 Lendo do Firebase...', 'info');
+                
+                const snapshot = await db.collection('test').orderBy('timestamp', 'desc').limit(5).get();
+                
+                if (snapshot.empty) {
+                    addLog('📭 Nenhum documento encontrado', 'info');
+                } else {
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        addLog(`📄 ${data.name} - ${data.timestamp.toDate().toLocaleString()}`, 'success');
+                    });
+                }
+                
+            } catch (error) {
+                addLog('❌ Erro ao ler: ' + error.message, 'error');
+            }
+        }
+        
+        async function clearData() {
+            try {
+                addLog('🗑️ Limpando dados de teste...', 'info');
+                
+                const snapshot = await db.collection('test').get();
+                const batch = db.batch();
+                
+                snapshot.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+                
+                await batch.commit();
+                addLog('✅ Dados limpos com sucesso!', 'success');
+                
+            } catch (error) {
+                addLog('❌ Erro ao limpar: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
