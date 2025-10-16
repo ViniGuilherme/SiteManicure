@@ -194,9 +194,9 @@ class FirebaseAppointmentSystem {
                 value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
         } else if (value.length >= 3) {
             value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+            }
+            e.target.value = value;
         }
-        e.target.value = value;
-    }
     
     // Normalizar telefone para comparação (remover formatação)
     normalizePhone(phone) {
@@ -219,6 +219,7 @@ class FirebaseAppointmentSystem {
     getCurrentBrowserId() {
         return this.generateBrowserId();
     }
+    
     
     // Renderizar checkboxes de serviços
     renderServicesCheckboxes() {
@@ -570,7 +571,7 @@ class FirebaseAppointmentSystem {
             // Salvar no Firebase
             await window.firestore.addDoc(window.firestore.collection(window.db, 'appointments'), appointmentData);
 
-        // Criar registros de bloqueio para cada slot de horário necessário
+        // Criar registros de bloqueio apenas para os slots necessários (sem ocupar horários anteriores)
             for (let i = 1; i < slotsNeeded; i++) {
             const hourIndex = startIndex + i;
             if (hourIndex < this.availableHours.length) {
