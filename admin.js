@@ -552,12 +552,12 @@ class FirebaseAdminManager {
     
     getDefaultServices() {
         return [
-            { id: 1, name: 'Manicure Básica', icon: '💅', price: 35, duration: 45, description: 'Manicure tradicional com esmaltação' },
-            { id: 2, name: 'Manicure com Gel', icon: '✨', price: 65, duration: 60, description: 'Unha em gel com acabamento profissional e duradouro' },
-            { id: 3, name: 'Pedicure', icon: '🦶', price: 40, duration: 60, description: 'Cuidados completos para os pés com hidratação' },
-            { id: 4, name: 'Mão e Pé', icon: '💎', price: 70, duration: 90, description: 'Pacote completo com manicure e pedicure' },
-            { id: 5, name: 'Alongamento de Unhas', icon: '🎨', price: 120, duration: 120, description: 'Alongamento em gel ou fibra de vidro' },
-            { id: 6, name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
+            { id: 'default-1', name: 'Manicure Básica', icon: '💅', price: 35, duration: 45, description: 'Manicure tradicional com esmaltação' },
+            { id: 'default-2', name: 'Manicure com Gel', icon: '✨', price: 65, duration: 60, description: 'Unha em gel com acabamento profissional e duradouro' },
+            { id: 'default-3', name: 'Pedicure', icon: '🦶', price: 40, duration: 60, description: 'Cuidados completos para os pés com hidratação' },
+            { id: 'default-4', name: 'Mão e Pé', icon: '💎', price: 70, duration: 90, description: 'Pacote completo com manicure e pedicure' },
+            { id: 'default-5', name: 'Alongamento de Unhas', icon: '🎨', price: 120, duration: 120, description: 'Alongamento em gel ou fibra de vidro' },
+            { id: 'default-6', name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
         ];
     }
     
@@ -886,7 +886,11 @@ class FirebaseAdminManager {
     // Renderizar serviços
     renderServices() {
         const container = document.getElementById('servicesList');
-        if (!container) return;
+        if (!container) {
+            console.error('Container servicesList não encontrado');
+            return;
+        }
+        
         
         container.innerHTML = this.services.map(service => `
             <div class="service-item">
@@ -1016,6 +1020,45 @@ class FirebaseAdminManager {
                 ` : ''}
             </div>
         `;
+    }
+    
+    // Função para adicionar novo horário
+    async addNewHour() {
+        const newHourInput = document.getElementById('newHour');
+        const newHour = newHourInput.value;
+        
+        if (!newHour) {
+            alert('❌ Por favor, selecione um horário para adicionar.');
+            return;
+        }
+        
+        // Verificar se o horário já existe
+        if (this.availableHours.includes(newHour)) {
+            alert('⚠️ Este horário já está disponível!');
+            return;
+        }
+        
+        try {
+            // Adicionar ao Firebase
+            const hoursRef = window.firestore.doc(window.db, 'settings', 'availableHours');
+            const updatedHours = [...this.availableHours, newHour].sort();
+            await window.firestore.setDoc(hoursRef, { hours: updatedHours });
+            
+            // Atualizar localmente
+            this.availableHours = updatedHours;
+            
+            // Limpar o campo de input
+            newHourInput.value = '';
+            
+            // Re-renderizar os horários
+            this.renderHours();
+            
+            alert('✅ Horário adicionado com sucesso!');
+            
+        } catch (error) {
+            console.error('Erro ao adicionar horário:', error);
+            alert('❌ Erro ao adicionar horário. Tente novamente.');
+        }
     }
     
     // Função para deletar horário
@@ -1223,16 +1266,6 @@ class FirebaseAdminManager {
     }
     
     // Obter serviços padrão
-    getDefaultServices() {
-        return [
-            { id: 1, name: 'Manicure Básica', icon: '💅', price: 35, duration: 45, description: 'Manicure tradicional com esmaltação' },
-            { id: 2, name: 'Manicure com Gel', icon: '✨', price: 65, duration: 60, description: 'Unha em gel com acabamento profissional e duradouro' },
-            { id: 3, name: 'Pedicure', icon: '🦶', price: 40, duration: 60, description: 'Cuidados completos para os pés com hidratação' },
-            { id: 4, name: 'Mão e Pé', icon: '💎', price: 70, duration: 90, description: 'Pacote completo com manicure e pedicure' },
-            { id: 5, name: 'Alongamento de Unhas', icon: '🎨', price: 120, duration: 120, description: 'Alongamento em gel ou fibra de vidro' },
-            { id: 6, name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
-        ];
-    }
 }
 
 // Inicializar gerenciador admin
@@ -1253,4 +1286,27 @@ window.saveEditedService = function(serviceId, modal) {
 
 window.deleteHour = function(hour) {
     return adminManager.deleteHour(hour);
+};
+
+window.addNewHour = function() {
+    return adminManager.addNewHour();
+};
+
+window.testServiceFunctions = function() {
+    console.log('=== TESTE DE FUNÇÕES DE SERVIÇOS ===');
+    console.log('adminManager:', adminManager);
+    console.log('adminManager.services:', adminManager.services);
+    console.log('window.editService:', window.editService);
+    console.log('window.deleteService:', window.deleteService);
+    
+    if (adminManager.services && adminManager.services.length > 0) {
+        const firstService = adminManager.services[0];
+        console.log('Primeiro serviço:', firstService);
+        console.log('Testando editService com ID:', firstService.id);
+        // Não vamos chamar a função real para evitar abrir o modal
+        console.log('Função editService disponível:', typeof window.editService === 'function');
+        console.log('Função deleteService disponível:', typeof window.deleteService === 'function');
+    } else {
+        console.log('Nenhum serviço encontrado para testar');
+    }
 };

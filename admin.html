@@ -776,6 +776,17 @@
                 height: 35px !important;
             }
             
+            /* Formulário de adicionar horário responsivo */
+            #hoursTab div[style*="grid-template-columns: 1fr auto"] {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            
+            #hoursTab button[onclick="addNewHour()"] {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            
             /* Layout antigo para compatibilidade */
             .hour-item {
                 flex-direction: column;
@@ -908,6 +919,13 @@
                 <div id="servicesList">
                     <!-- Serviços serão carregados dinamicamente -->
                 </div>
+                
+                <!-- Botão de teste temporário -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="testServiceFunctions()" style="background: #666; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        🧪 Testar Funções de Serviços
+                    </button>
+                </div>
                 </div>
 
             <!-- Hours Tab -->
@@ -916,9 +934,35 @@
                     <span style="font-size: 2.5rem;">🕒</span>
                     <span>Horários Disponíveis</span>
                 </h3>
+                
+                <!-- Formulário para adicionar horário -->
+                <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid var(--primary-color);">
+                    <h4 style="color: var(--primary-color); margin-bottom: 1.5rem; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">➕</span>
+                        <span>Adicionar Novo Horário</span>
+                    </h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end;">
+                        <div class="form-group">
+                            <label for="newHour" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Horário</label>
+                            <input type="time" id="newHour" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
+                    </div>
+                        <button type="button" onclick="addNewHour()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                            <span>➕</span>
+                            <span>Adicionar</span>
+                        </button>
+                </div>
+
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 220, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 220, 0, 0.2);">
+                        <p style="color: #ccc; margin: 0; font-size: 0.9rem; text-align: center;">
+                            💡 <strong>Dica:</strong> Adicione horários de 30 em 30 minutos para melhor organização (ex: 08:00, 08:30, 09:00)
+                        </p>
+                    </div>
+                </div>
+
                 <div id="hoursList">
                     <!-- Horários serão carregados dinamicamente -->
-                    </div>
+                </div>
                 </div>
 
             <!-- Days Tab -->
@@ -934,14 +978,14 @@
                 <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
                     <button onclick="adminManager.resetDaysToDefault()" class="btn btn-secondary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Restaurar Padrão</button>
                     <button onclick="adminManager.saveDaysConfiguration()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Salvar Configuração</button>
-                </div>
-                </div>
+        </div>
+    </div>
 
             <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
                 <button onclick="adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
-                </div>
+            </div>
         </div>
-    </div>
+            </div>
 
     <!-- Add Appointment Modal -->
     <div id="addAppointmentModal" class="modal">
@@ -951,31 +995,31 @@
                 <div style="font-size: 3rem; margin-bottom: 0.5rem;">📅</div>
                 <h2 style="color: var(--primary-color); margin: 0; font-size: 2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Adicionar Agendamento</h2>
                 <p style="color: #ccc; margin-top: 0.5rem; font-size: 0.9rem;">Preencha os dados do cliente e selecione os serviços</p>
-            </div>
-
+                </div>
+                
             <form id="addAppointmentForm">
                 <!-- Seção de Dados do Cliente -->
                 <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 2px solid var(--primary-color);">
                     <h3 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                         👤 Dados do Cliente
                     </h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div class="form-group">
                             <label for="addClientName" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Nome Completo *</label>
                             <input type="text" id="addClientName" required placeholder="Digite o nome completo" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-            </div>
+                            </div>
 
-                        <div class="form-group">
+                            <div class="form-group">
                             <label for="addClientPhone" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Telefone *</label>
                             <input type="tel" id="addClientPhone" required placeholder="(00) 00000-0000" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                </div>
+                            </div>
                 
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label for="addClientEmail" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">E-mail (opcional)</label>
                             <input type="email" id="addClientEmail" placeholder="Digite o e-mail" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
                             </div>
                             </div>
-                            </div>
+                        </div>
                 
                 <!-- Seção de Data e Horário -->
                 <div style="background: linear-gradient(135deg, #2A2A2A, #3A3A3A); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 2px solid var(--primary-color);">
@@ -983,10 +1027,10 @@
                         🕒 Data e Horário
                     </h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div class="form-group">
+                        <div class="form-group">
                             <label for="addAppointmentDate" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Data *</label>
                             <input type="date" id="addAppointmentDate" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
-                            </div>
+                        </div>
                         
                         <div class="form-group">
                             <label for="addAppointmentTime" style="color: var(--white); font-weight: 600; margin-bottom: 0.5rem; display: block;">Horário *</label>
