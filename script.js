@@ -322,7 +322,7 @@ class FirebaseAppointmentSystem {
             
             servicesHtml += `
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #444;">
-                    <span style="color: var(--white);">${checkbox.value}</span>
+                    <span style="color: var(--text-dark);">${checkbox.value}</span>
                     <span style="color: var(--primary-color); font-weight: 600;">R$ ${price.toFixed(2)}</span>
             </div>
         `;
@@ -333,11 +333,11 @@ class FirebaseAppointmentSystem {
                 <h4 style="color: var(--primary-color); margin-bottom: 1rem; text-align: center;">Resumo dos Serviços</h4>
                 ${servicesHtml}
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-top: 2px solid var(--primary-color); margin-top: 1rem;">
-                    <strong style="color: var(--white);">Total:</strong>
+                    <strong style="color: var(--text-dark);">Total:</strong>
                     <strong style="color: var(--primary-color); font-size: 1.2rem;">R$ ${totalPrice.toFixed(2)}</strong>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
-                    <span style="color: var(--white);">Duração:</span>
+                    <span style="color: var(--text-dark);">Duração:</span>
                     <span style="color: var(--primary-color); font-weight: 600;">${totalDuration} minutos</span>
                 </div>
             </div>
@@ -661,7 +661,6 @@ class FirebaseAppointmentSystem {
             <br>
             <strong>Status:</strong> ⏳ Pendente<br>
             <br>
-            <em>Você receberá uma confirmação em breve!</em>
         `;
         
         modal.style.display = 'block';

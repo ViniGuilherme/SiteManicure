@@ -669,7 +669,7 @@ nav a:hover {
     align-items: center;
     gap: 0.8rem;
     font-size: 0.95rem;
-    color: var(--white);
+    color: var(--text-dark);
 }
 
 .detail-item span:first-child {
