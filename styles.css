@@ -34,20 +34,21 @@ body {
 }
 
 :root {
-    --primary-color: #FFDC00;
-    --primary-dark: #D4B300;
-    --primary-light: #FFF4B3;
-    --secondary-color: #FFD700;
-    --accent-color: #FFC107;
-    --dark-bg: #000000;
-    --text-dark: #1A1A1A;
-    --text-light: #666666;
+    --primary-color: #8A56E2;
+    --primary-dark: #6B3FA8;
+    --primary-light: #B08DF7;
+    --secondary-color: #A787F7;
+    --accent-color: #8A56E2;
+    --dark-bg: #FFFFFF;
+    --text-dark: #2C2C2C;
+    --text-light: #4A4A4A;
+    --text-muted: #6B6B6B;
     --background-light: #FAFAFA;
-    --background-gradient: linear-gradient(135deg, #000000, #1A1A1A);
-    --gold-gradient: linear-gradient(135deg, #FFDC00, #FFD700);
+    --background-gradient: linear-gradient(135deg, #FFFFFF, #F8F9FA);
+    --purple-gradient: linear-gradient(135deg, #8A56E2, #B08DF7);
     --white: #FFFFFF;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+    --shadow: 0 4px 6px rgba(138, 86, 226, 0.1);
+    --shadow-lg: 0 10px 25px rgba(138, 86, 226, 0.2);
 }
 
 body {
@@ -67,13 +68,13 @@ body {
 
 /* Header */
 header {
-    background: var(--background-gradient);
-    color: var(--white);
+    background: var(--white);
+    color: var(--text-dark);
     padding: 1.2rem 0;
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(138, 86, 226, 0.1);
     backdrop-filter: blur(10px);
     border-bottom: 2px solid var(--primary-color);
 }
@@ -92,11 +93,11 @@ header .container {
 .logo h1 {
     font-size: 1.6rem;
     font-weight: 700;
-    background: var(--gold-gradient);
+    background: var(--purple-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2px 4px rgba(138, 86, 226, 0.1);
 }
 
 nav ul {
@@ -106,36 +107,38 @@ nav ul {
 }
 
 nav a {
-    color: var(--white);
+    color: var(--text-dark);
     text-decoration: none;
     font-weight: 500;
-    transition: opacity 0.3s ease;
+    transition: color 0.3s ease;
 }
 
 nav a:hover {
-    opacity: 0.8;
+    color: var(--primary-color);
 }
 
 .admin-link {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--primary-color);
+    color: var(--white);
     padding: 8px 16px;
     border-radius: 25px;
     transition: all 0.3s ease;
 }
 
 .admin-link:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--primary-dark);
+    color: var(--white);
     opacity: 1 !important;
 }
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, #1A1A1A, #000000);
+    background: var(--white);
     padding: 120px 0;
     text-align: center;
     position: relative;
     overflow: hidden;
-    color: var(--white);
+    color: var(--text-dark);
 }
 
 .hero-background {
@@ -189,14 +192,11 @@ nav a:hover {
 
 .hero-content h2 {
     font-size: 3.5rem;
-    background: var(--gold-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-weight: 800;
     line-height: 1.2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px rgba(138, 86, 226, 0.1);
 }
 
 .hero-content p {
@@ -219,9 +219,9 @@ nav a:hover {
 }
 
 .btn-primary {
-    background: var(--gold-gradient);
-    color: var(--dark-bg);
-    box-shadow: 0 4px 15px rgba(255, 220, 0, 0.4);
+    background: var(--primary-light);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(176, 141, 247, 0.4);
     border: none;
     position: relative;
     overflow: hidden;
@@ -244,29 +244,27 @@ nav a:hover {
 }
 
 .btn-primary:hover {
+    background: var(--primary-color);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 25px rgba(138, 86, 226, 0.3);
 }
 
 .btn-secondary {
     background: var(--primary-color);
-    color: var(--dark-bg);
+    color: var(--white);
     border: 2px solid var(--primary-color);
 }
 
 .btn-secondary:hover {
-    background: var(--primary-light);
-    color: var(--dark-bg);
+    background: var(--primary-dark);
+    color: var(--white);
 }
 
 /* Section Title */
 .section-title {
     text-align: center;
     font-size: 3rem;
-    background: var(--gold-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-color);
     margin-bottom: 3rem;
     font-weight: 800;
     position: relative;
@@ -280,15 +278,15 @@ nav a:hover {
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background: var(--gold-gradient);
+    background: var(--purple-gradient);
     border-radius: 2px;
 }
 
 /* Services Section */
 .services {
     padding: 80px 0;
-    background: var(--dark-bg);
-    color: var(--white);
+    background: var(--white);
+    color: var(--text-dark);
 }
 
 .services-grid {
@@ -298,16 +296,16 @@ nav a:hover {
 }
 
 .service-card {
-    background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    background: var(--white);
     border-radius: 25px;
     padding: 2.5rem;
     text-align: center;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(138, 86, 226, 0.1);
     transition: all 0.4s ease;
     border: 2px solid var(--primary-color);
     position: relative;
     overflow: hidden;
-    color: var(--white);
+    color: var(--text-dark);
 }
 
 .service-card::before {
@@ -317,7 +315,7 @@ nav a:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #F6A8B1, #FE8C54);
+    background: var(--purple-gradient);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: -1;
@@ -325,7 +323,7 @@ nav a:hover {
 
 .service-card:hover {
     transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(255, 220, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(138, 86, 226, 0.3);
     border-color: var(--primary-color);
 }
 
@@ -339,10 +337,7 @@ nav a:hover {
 }
 
 .service-card h3 {
-    background: var(--gold-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-color);
     font-size: 1.6rem;
     margin-bottom: 0.8rem;
     font-weight: 700;
@@ -362,10 +357,7 @@ nav a:hover {
 
 .service-price {
     font-size: 1.8rem;
-    background: var(--gold-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-color);
     font-weight: 800;
     margin-bottom: 1.5rem;
 }
@@ -393,14 +385,14 @@ nav a:hover {
 
 .service-btn-edit {
     background: var(--primary-color);
-    color: var(--dark-bg);
+    color: var(--white);
     border: 2px solid var(--primary-color);
 }
 
 .service-btn-edit:hover {
-    background: var(--primary-light);
+    background: var(--primary-dark);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 220, 0, 0.3);
+    box-shadow: 0 5px 15px rgba(138, 86, 226, 0.3);
 }
 
 .service-btn-delete {
@@ -472,14 +464,14 @@ nav a:hover {
 
 .service-btn-select {
     background: var(--primary-color);
-    color: var(--dark-bg);
+    color: var(--white);
 }
 
-.service-btn-select:hover {
-    background: var(--primary-light);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 220, 0, 0.3);
-}
+        .service-btn-select:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(138, 86, 226, 0.3);
+        }
 
 .checkbox-icon {
     font-size: 1.2rem;
@@ -494,8 +486,8 @@ nav a:hover {
 /* Booking Section */
 .booking {
     padding: 100px 0;
-    background: var(--dark-bg);
-    color: var(--white);
+    background: var(--white);
+    color: var(--text-dark);
     position: relative;
 }
 
@@ -513,14 +505,14 @@ nav a:hover {
 .booking-form-container {
     max-width: 650px;
     margin: 0 auto;
-    background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    background: var(--white);
     padding: 3.5rem;
     border-radius: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(138, 86, 226, 0.1);
     position: relative;
     z-index: 1;
     border: 2px solid var(--primary-color);
-    color: var(--white);
+    color: var(--text-dark);
 }
 
 .form-group {
@@ -530,7 +522,7 @@ nav a:hover {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--white);
+    color: var(--text-dark);
     font-weight: 500;
 }
 
@@ -539,13 +531,13 @@ nav a:hover {
 .form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #444444;
+    border: 2px solid #E0E0E0;
     border-radius: 10px;
     font-size: 1rem;
     font-family: 'Poppins', sans-serif;
     transition: border-color 0.3s ease;
-    background: #2A2A2A;
-    color: var(--white);
+    background: var(--white);
+    color: var(--text-dark);
 }
 
 .form-group input:focus,
@@ -553,7 +545,7 @@ nav a:hover {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(255, 220, 0, 0.3);
+    box-shadow: 0 0 10px rgba(138, 86, 226, 0.3);
 }
 
 .form-group textarea {
@@ -568,8 +560,8 @@ nav a:hover {
 /* Appointments Section */
 .appointments {
     padding: 80px 0;
-    background: var(--dark-bg);
-    color: var(--white);
+    background: var(--white);
+    color: var(--text-dark);
 }
 
 .appointments-container {
@@ -585,13 +577,14 @@ nav a:hover {
 
 .no-appointments {
     text-align: center;
-    color: #ccc;
+    color: var(--text-light);
     padding: 3rem;
     font-size: 1.2rem;
-    background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+    background: var(--white);
     border-radius: 15px;
     border: 2px solid var(--primary-color);
     margin-top: 2rem;
+    box-shadow: 0 8px 25px rgba(138, 86, 226, 0.1);
 }
 
 .appointments-grid {
@@ -602,11 +595,11 @@ nav a:hover {
 }
 
 .appointment-card {
-    background: linear-gradient(135deg, #2A2A2A, #3A3A3A);
+    background: var(--white);
     border: 2px solid var(--primary-color);
     border-radius: 15px;
     padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(138, 86, 226, 0.1);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -619,7 +612,7 @@ nav a:hover {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 220, 0, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(138, 86, 226, 0.1), transparent);
     transition: left 0.5s ease;
 }
 
@@ -629,7 +622,7 @@ nav a:hover {
 
 .appointment-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(255, 220, 0, 0.2);
+    box-shadow: 0 15px 30px rgba(138, 86, 226, 0.2);
 }
 
 .appointment-header {
@@ -694,7 +687,7 @@ nav a:hover {
 
 .btn-complete {
     background: var(--primary-color);
-    color: var(--dark-bg);
+    color: var(--white);
     border: 2px solid var(--primary-color);
     padding: 8px 16px;
     border-radius: 20px;
@@ -705,13 +698,13 @@ nav a:hover {
 }
 
 .btn-complete:hover {
-    background: var(--primary-light);
-    color: var(--dark-bg);
+    background: var(--primary-dark);
+    color: var(--white);
 }
 
 .btn-delete {
     background: var(--primary-color);
-    color: var(--dark-bg);
+    color: var(--white);
     border: 2px solid var(--primary-color);
     padding: 8px 16px;
     border-radius: 20px;
@@ -722,12 +715,12 @@ nav a:hover {
 }
 
 .btn-delete:hover {
-    background: var(--primary-light);
-    color: var(--dark-bg);
+    background: var(--primary-dark);
+    color: var(--white);
 }
 
 .appointment-info p {
-    color: #ccc;
+    color: var(--text-light);
     margin-bottom: 0.3rem;
 }
 
@@ -759,8 +752,8 @@ nav a:hover {
 
 /* Footer */
 footer {
-    background: var(--background-gradient);
-    color: var(--white);
+    background: var(--white);
+    color: var(--text-dark);
     padding: 4rem 0 2rem;
     position: relative;
     overflow: hidden;
@@ -792,7 +785,7 @@ footer::before {
 
 .footer-section p {
     margin-bottom: 0.5rem;
-    opacity: 0.9;
+    color: var(--text-light);
 }
 
 .footer-section a {
@@ -852,7 +845,7 @@ footer::before {
 }
 
 .modal-content h2 {
-    color: var(--primary-dark);
+    color: var(--primary-color);
     margin-bottom: 1rem;
 }
 
@@ -869,7 +862,7 @@ footer::before {
 }
 
 .close {
-    color: #aaa;
+    color: var(--text-light);
     float: right;
     font-size: 28px;
     font-weight: bold;

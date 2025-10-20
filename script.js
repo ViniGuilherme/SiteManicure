@@ -306,7 +306,7 @@ class FirebaseAppointmentSystem {
         const checkboxes = document.querySelectorAll('.service-checkbox:checked');
         
         if (checkboxes.length === 0) {
-            summaryContainer.innerHTML = '<p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>';
+            summaryContainer.innerHTML = '<p style="color: var(--text-light); text-align: center;">Nenhum serviço selecionado</p>';
             return;
         }
         
@@ -358,7 +358,7 @@ class FirebaseAppointmentSystem {
             option.value = '';
             option.textContent = 'Selecione um serviço primeiro';
             option.disabled = true;
-            option.style.color = '#999';
+            option.style.color = 'var(--text-light)';
             timeSelect.appendChild(option);
             return;
         }
@@ -402,7 +402,7 @@ class FirebaseAppointmentSystem {
             option.value = '';
             option.textContent = 'Nenhum horário disponível nesta data para esta duração';
             option.disabled = true;
-            option.style.color = '#999';
+            option.style.color = 'var(--text-light)';
             timeSelect.appendChild(option);
         }
     }
@@ -773,7 +773,7 @@ class FirebaseAppointmentSystem {
             // Atualizar mensagem baseada se há dados no formulário
             if (currentClientPhone || currentClientName) {
                 noAppointments.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: #ccc;">
+                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
                         <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento encontrado</p>
                         <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Para ${currentClientName || 'este telefone'} neste navegador</p>
@@ -781,7 +781,7 @@ class FirebaseAppointmentSystem {
                 `;
             } else {
                 noAppointments.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: #ccc;">
+                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">💻</div>
                         <p style="font-size: 1.2rem; margin: 0;">Nenhum agendamento neste navegador</p>
                         <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Faça seu agendamento na seção acima</p>

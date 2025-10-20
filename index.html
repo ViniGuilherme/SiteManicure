@@ -63,7 +63,7 @@
             <h2 class="section-title">Agendar Horário</h2>
             <div class="booking-form-container">
                 <div id="serviceSummary" class="service-summary">
-                    <p style="color: #ccc; text-align: center;">Nenhum serviço selecionado</p>
+                    <p style="color: var(--text-light); text-align: center;">Nenhum serviço selecionado</p>
                 </div>
                 
                 <form id="bookingForm" class="booking-form">
@@ -108,7 +108,7 @@
             <h2 class="section-title">
                 <span>💻</span>
                 Meus Agendamentos
-                <small style="display: block; font-size: 0.8rem; color: #ccc; margin-top: 0.5rem; font-weight: normal;">
+                <small style="display: block; font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem; font-weight: normal;">
                     📱 Agendamentos feitos neste navegador/dispositivo
                 </small>
             </h2>
@@ -117,9 +117,9 @@
                     <!-- Agendamentos serão carregados dinamicamente -->
                 </div>
                 <div id="noAppointments" class="no-appointments" style="display: none;">
-                    <div style="text-align: center; padding: 3rem; color: #ccc;">
+                    <div style="text-align: center; padding: 3rem; color: var(--text-light);">
                         <div style="font-size: 4rem; margin-bottom: 1rem;">📅</div>
-                        <h3 style="color: var(--white); margin-bottom: 1rem;">Nenhum agendamento encontrado</h3>
+                        <h3 style="color: var(--text-dark); margin-bottom: 1rem;">Nenhum agendamento encontrado</h3>
                         <p style="margin-bottom: 2rem;">Você ainda não fez nenhum agendamento.</p>
                         <a href="#booking" class="btn btn-primary">Fazer Primeiro Agendamento</a>
                     </div>
@@ -140,15 +140,15 @@
                 
                 <div class="footer-section">
                     <h3>Contato</h3>
-                    <p>📍 Rua Nathan Guilherme Costa 24, São José 1, Sala 1</p>
                     <p>📱 <a href="https://wa.me/5519990066532" target="_blank" style="color: var(--primary-color); text-decoration: none;">+55 19 99006-6532</a></p>
                     <p>📷 <a href="https://www.instagram.com/laurasouzanails_?igsh=aW90NXNkMWd4NzJl" target="_blank" style="color: var(--primary-color); text-decoration: none;">@laurasouzanails_</a></p>
                 </div>
                 
                 <div class="footer-section">
                     <h3>Horário de Funcionamento</h3>
-                    <p>Segunda a Sábado</p>
-                    <p>08:30 às 18:00</p>
+                    <p>Segunda a Sexta</p>
+                    <p>08:30 às 17:00</p>
+                    <p>Sabado - 08:30 às 12:30</p>
                 </div>
             </div>
             
@@ -165,7 +165,7 @@
             <div style="text-align: center;">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
                 <h2 style="color: var(--primary-color); margin-bottom: 1rem;">Agendamento Confirmado!</h2>
-                <div id="modalDetails" style="margin-bottom: 2rem; text-align: left; background: #f9f9f9; padding: 1rem; border-radius: 8px;"></div>
+                <div id="modalDetails" style="margin-bottom: 2rem; text-align: left; background: #f9f9f9; padding: 1rem; border-radius: 8px; color: var(--text-dark);"></div>
                 <button class="btn btn-primary" onclick="document.getElementById('successModal').style.display='none'">Fechar</button>
             </div>
         </div>

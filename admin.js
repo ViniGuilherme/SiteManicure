@@ -287,7 +287,7 @@ class FirebaseAdminManager {
         });
 
         if (filteredAppointments.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: #ccc; padding: 2rem;">Nenhum agendamento encontrado.</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Nenhum agendamento encontrado.</p>';
             return;
         }
 
@@ -836,10 +836,10 @@ class FirebaseAdminManager {
         if (!container) return;
         
         container.innerHTML = this.services.map(service => `
-            <div class="add-service-card" style="background: linear-gradient(135deg, #1A1A1A, #2A2A2A); border: 2px solid #444; border-radius: 12px; padding: 1rem; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;">
+            <div class="add-service-card" style="background: var(--white); border: 2px solid #E0E0E0; border-radius: 12px; padding: 1rem; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;">
                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); opacity: 0; transition: opacity 0.3s ease; z-index: 0;"></div>
                 
-                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; position: relative; z-index: 1; color: var(--white);">
+                <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; position: relative; z-index: 1; color: var(--text-dark);">
                     <div style="position: relative;">
                         <input type="checkbox" class="add-service-checkbox" value="${service.name}" 
                                data-price="${service.price}" data-duration="${service.duration}" 
@@ -856,11 +856,11 @@ class FirebaseAdminManager {
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 1rem;">
                                 <span style="color: var(--primary-color); font-weight: 700; font-size: 1.1rem;">R$ ${service.price.toFixed(2)}</span>
-                                <span style="color: #ccc; font-size: 0.9rem;">⏱️ ${service.duration} min</span>
+                                <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ ${service.duration} min</span>
                             </div>
                         </div>
                         
-                        <p style="margin: 0.5rem 0 0 0; color: #ccc; font-size: 0.85rem; line-height: 1.3;">${service.description}</p>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-light); font-size: 0.85rem; line-height: 1.3;">${service.description}</p>
                     </div>
                 </label>
             </div>
@@ -974,7 +974,7 @@ class FirebaseAdminManager {
                     <span style="font-size: 1.5rem;">📊</span>
                     <h4 style="color: var(--primary-color); margin: 0; font-size: 1.2rem;">Resumo do Agendamento</h4>
                 </div>
-                <p style="color: #ccc; text-align: center; margin: 0; font-style: italic;">Nenhum serviço selecionado</p>
+                <p style="color: var(--text-light); text-align: center; margin: 0; font-style: italic;">Nenhum serviço selecionado</p>
             `;
             return;
         }
@@ -1018,12 +1018,12 @@ class FirebaseAdminManager {
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div style="background: rgba(255, 220, 0, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 220, 0, 0.2); text-align: center;">
-                        <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">💰 Preço Total</div>
+                        <div style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">💰 Preço Total</div>
                         <div style="color: var(--primary-color); font-size: 1.5rem; font-weight: 700;">R$ ${totalPrice.toFixed(2)}</div>
                     </div>
                     
                     <div style="background: rgba(255, 220, 0, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255, 220, 0, 0.2); text-align: center;">
-                        <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 0.5rem;">⏱️ Duração Total</div>
+                        <div style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">⏱️ Duração Total</div>
                         <div style="color: var(--primary-color); font-size: 1.5rem; font-weight: 700;">${durationText}</div>
                     </div>
                 </div>
@@ -1139,7 +1139,7 @@ class FirebaseAdminManager {
                         <p>${service.description}</p>
                         <div style="display: flex; gap: 1rem; align-items: center;">
                             <span class="service-price">R$ ${service.price.toFixed(2)}</span>
-                            <span style="color: #ccc; font-size: 0.9rem;">⏱️ ${service.duration} min</span>
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ ${service.duration} min</span>
                         </div>
                     </div>
                 </div>
@@ -1164,7 +1164,7 @@ class FirebaseAdminManager {
         
         if (this.availableHours.length === 0) {
             container.innerHTML = `
-                <div style="text-align: center; padding: 3rem; color: #ccc; font-style: italic;">
+                <div style="text-align: center; padding: 3rem; color: var(--text-light); font-style: italic;">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⏰</div>
                     <p style="font-size: 1.2rem; margin: 0;">Nenhum horário disponível</p>
                     <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Adicione horários usando o formulário abaixo</p>
@@ -1338,24 +1338,24 @@ class FirebaseAdminManager {
                 <form id="addServiceForm">
                     <div class="form-group">
                         <label for="addServiceName" style="color: var(--white);">Nome do Serviço</label>
-                        <input type="text" id="addServiceName" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="Ex: Manicure Premium">
+                        <input type="text" id="addServiceName" required style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;" placeholder="Ex: Manicure Premium">
                     </div>
                     <div class="form-group">
                         <label for="addServiceIcon" style="color: var(--white);">Ícone (emoji)</label>
-                        <input type="text" id="addServiceIcon" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="💅">
+                        <input type="text" id="addServiceIcon" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;" placeholder="💅">
                     </div>
                     <div class="form-group">
                         <label for="addServiceDescription" style="color: var(--white);">Descrição</label>
-                        <textarea id="addServiceDescription" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; min-height: 80px; resize: vertical; box-sizing: border-box;" placeholder="Descreva o serviço oferecido..."></textarea>
+                        <textarea id="addServiceDescription" required style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; min-height: 80px; resize: vertical; box-sizing: border-box;" placeholder="Descreva o serviço oferecido..."></textarea>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div class="form-group">
                             <label for="addServicePrice" style="color: var(--white);">Preço (R$)</label>
-                            <input type="number" id="addServicePrice" required min="0" step="0.01" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="0.00">
+                            <input type="number" id="addServicePrice" required min="0" step="0.01" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;" placeholder="0.00">
                         </div>
                         <div class="form-group">
                             <label for="addServiceDuration" style="color: var(--white);">Duração (minutos)</label>
-                            <input type="number" id="addServiceDuration" required min="15" step="15" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;" placeholder="60">
+                            <input type="number" id="addServiceDuration" required min="15" step="15" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;" placeholder="60">
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
@@ -1438,24 +1438,24 @@ class FirebaseAdminManager {
                 <form id="editServiceForm">
                     <div class="form-group">
                         <label for="editServiceName" style="color: var(--white);">Nome do Serviço</label>
-                        <input type="text" id="editServiceName" value="${service.name}" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                        <input type="text" id="editServiceName" value="${service.name}" required style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;">
             </div>
                     <div class="form-group">
                         <label for="editServiceIcon" style="color: var(--white);">Ícone (emoji)</label>
-                        <input type="text" id="editServiceIcon" value="${service.icon}" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                        <input type="text" id="editServiceIcon" value="${service.icon}" required maxlength="2" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;">
                     </div>
                     <div class="form-group">
                         <label for="editServiceDescription" style="color: var(--white);">Descrição</label>
-                        <textarea id="editServiceDescription" required style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; min-height: 80px; resize: vertical; box-sizing: border-box;">${service.description}</textarea>
+                        <textarea id="editServiceDescription" required style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; min-height: 80px; resize: vertical; box-sizing: border-box;">${service.description}</textarea>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div class="form-group">
                             <label for="editServicePrice" style="color: var(--white);">Preço (R$)</label>
-                            <input type="number" id="editServicePrice" value="${service.price}" required min="0" step="0.01" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                            <input type="number" id="editServicePrice" value="${service.price}" required min="0" step="0.01" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;">
                         </div>
                         <div class="form-group">
                             <label for="editServiceDuration" style="color: var(--white);">Duração (minutos)</label>
-                            <input type="number" id="editServiceDuration" value="${service.duration}" required min="15" step="15" style="width: 100%; padding: 12px 16px; border: 2px solid #444; border-radius: 10px; background: #1A1A1A; color: var(--white); font-size: 1rem; box-sizing: border-box;">
+                            <input type="number" id="editServiceDuration" value="${service.duration}" required min="15" step="15" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;">
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
