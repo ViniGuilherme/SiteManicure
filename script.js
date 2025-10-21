@@ -10,7 +10,15 @@ class FirebaseAppointmentSystem {
             { id: 6, name: 'Nail Art', icon: '🌸', price: 50, duration: 45, description: 'Decoração personalizada e criativa' }
         ];
         
-        this.availableHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+        // Horários para dias da semana (segunda a sexta)
+        this.weekdayHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+        
+        // Horários para sábados (diferentes dos outros dias)
+        this.saturdayHours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+        
+        // Manter compatibilidade com código existente
+        this.availableHours = this.weekdayHours;
+        
         this.availableDays = {
             'monday': true,
             'tuesday': true,
@@ -71,10 +79,20 @@ class FirebaseAppointmentSystem {
     
     async loadAvailableHoursFromFirebase() {
         try {
-            const docSnap = await window.firestore.doc(window.db, 'settings', 'availableHours').get();
-            if (docSnap.exists) {
-                this.availableHours = docSnap.data().hours;
+            // Carregar horários para dias da semana
+            const weekdayDoc = await window.firestore.doc(window.db, 'settings', 'weekdayHours').get();
+            if (weekdayDoc.exists) {
+                this.weekdayHours = weekdayDoc.data().hours;
             }
+            
+            // Carregar horários para sábados
+            const saturdayDoc = await window.firestore.doc(window.db, 'settings', 'saturdayHours').get();
+            if (saturdayDoc.exists) {
+                this.saturdayHours = saturdayDoc.data().hours;
+            }
+            
+            // Manter compatibilidade com código existente
+            this.availableHours = this.weekdayHours;
         } catch (error) {
             console.log('Usando horários padrão:', error);
         }
@@ -197,6 +215,9 @@ class FirebaseAppointmentSystem {
         this.updateServiceSummary();
         this.initializeDateInput();
         this.displayAppointments();
+        
+        // Testar horários por dia (para debug - pode ser removido em produção)
+        this.testHoursByDay();
     }
 
     // Formatar telefone automaticamente
@@ -363,6 +384,10 @@ class FirebaseAppointmentSystem {
             return;
         }
         
+        // Obter horários baseado no dia da semana
+        const dayOfWeek = this.getDayOfWeek(selectedDate);
+        const availableHoursForDay = dayOfWeek === 'saturday' ? this.saturdayHours : this.weekdayHours;
+        
         // Calcular quantos slots de horário são necessários
         const slotsNeeded = Math.ceil(totalDuration / 60);
         
@@ -371,7 +396,7 @@ class FirebaseAppointmentSystem {
         const now = new Date();
         
         // Adicionar apenas horários que têm slots consecutivos livres suficientes
-        this.availableHours.forEach((hour, index) => {
+        availableHoursForDay.forEach((hour, index) => {
             // Se for hoje, verificar se o horário já passou
             if (selectedDate === today) {
                 const [hourStr, minuteStr] = hour.split(':');
@@ -388,7 +413,7 @@ class FirebaseAppointmentSystem {
                 }
             }
             
-            if (this.isTimeSlotAvailable(selectedDate, hour, slotsNeeded, index)) {
+            if (this.isTimeSlotAvailable(selectedDate, hour, slotsNeeded, index, availableHoursForDay)) {
                 const option = document.createElement('option');
                 option.value = hour;
                 option.textContent = hour;
@@ -408,9 +433,12 @@ class FirebaseAppointmentSystem {
     }
     
     // Verificar se há slots consecutivos disponíveis
-    isTimeSlotAvailable(date, startTime, slotsNeeded, startIndex) {
+    isTimeSlotAvailable(date, startTime, slotsNeeded, startIndex, availableHours = null) {
+        // Usar horários específicos se fornecidos, senão usar os padrão
+        const hoursToUse = availableHours || this.availableHours;
+        
         // Verificar se há horários suficientes depois deste
-        if (startIndex + slotsNeeded > this.availableHours.length) {
+        if (startIndex + slotsNeeded > hoursToUse.length) {
             return false;
         }
         
@@ -418,8 +446,8 @@ class FirebaseAppointmentSystem {
         const hoursToCheck = [];
         for (let i = 0; i < slotsNeeded; i++) {
             const hourIndex = startIndex + i;
-            if (hourIndex < this.availableHours.length) {
-                hoursToCheck.push(this.availableHours[hourIndex]);
+            if (hourIndex < hoursToUse.length) {
+                hoursToCheck.push(hoursToUse[hourIndex]);
             }
         }
         
@@ -489,6 +517,26 @@ class FirebaseAppointmentSystem {
         };
         return dayNames[dayOfWeek] || dayOfWeek;
     }
+    
+    // Função para testar horários por dia da semana (para debug)
+    testHoursByDay() {
+        console.log('=== TESTE DE HORÁRIOS POR DIA ===');
+        console.log('Horários para dias da semana (segunda a sexta):', this.weekdayHours);
+        console.log('Horários para sábados:', this.saturdayHours);
+        
+        // Testar com diferentes datas
+        const testDates = [
+            '2024-01-15', // Segunda-feira
+            '2024-01-16', // Terça-feira
+            '2024-01-20'  // Sábado
+        ];
+        
+        testDates.forEach(date => {
+            const dayOfWeek = this.getDayOfWeek(date);
+            const hours = dayOfWeek === 'saturday' ? this.saturdayHours : this.weekdayHours;
+            console.log(`${this.getDayName(dayOfWeek)} (${date}):`, hours);
+        });
+    }
 
     // Submeter agendamento
     async submitAppointment() {
@@ -553,12 +601,16 @@ class FirebaseAppointmentSystem {
             });
         });
         
+        // Obter horários baseado no dia da semana
+        const dayOfWeek = this.getDayOfWeek(date);
+        const availableHoursForDay = dayOfWeek === 'saturday' ? this.saturdayHours : this.weekdayHours;
+        
         // Calcular quantos slots de horário serão ocupados
         const slotsNeeded = Math.ceil(totalDuration / 60);
-        const startIndex = this.availableHours.indexOf(time);
+        const startIndex = availableHoursForDay.indexOf(time);
         
         // Verificar disponibilidade de todos os slots
-        if (!this.isTimeSlotAvailable(date, time, slotsNeeded, startIndex)) {
+        if (!this.isTimeSlotAvailable(date, time, slotsNeeded, startIndex, availableHoursForDay)) {
             alert('Este horário não está mais disponível. Por favor, selecione outro horário.');
             this.updateAvailableHours(date, totalDuration);
             return;
@@ -591,8 +643,8 @@ class FirebaseAppointmentSystem {
         // Criar registros de bloqueio apenas para os slots necessários (sem ocupar horários anteriores)
             for (let i = 1; i < slotsNeeded; i++) {
             const hourIndex = startIndex + i;
-            if (hourIndex < this.availableHours.length) {
-                const slotTime = this.availableHours[hourIndex];
+            if (hourIndex < availableHoursForDay.length) {
+                const slotTime = availableHoursForDay[hourIndex];
                 
                     const blockSlotData = {
                         clientName,

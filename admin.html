@@ -938,25 +938,36 @@
                     <span>Horários Disponíveis</span>
                 </h3>
                 
-                <!-- Formulário para adicionar horário -->
+                <!-- Informações sobre configuração de horários -->
                 <div style="background: var(--white); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; border: 2px solid var(--primary-color);">
                     <h4 style="color: var(--primary-color); margin-bottom: 1.5rem; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                        <span style="font-size: 1.5rem;">➕</span>
-                        <span>Adicionar Novo Horário</span>
+                        <span style="font-size: 1.5rem;">ℹ️</span>
+                        <span>Configuração de Horários</span>
                     </h4>
                     
-                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end;">
-                        <div class="form-group">
-                            <label for="newHour" style="color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem; display: block;">Horário</label>
-                            <input type="time" id="newHour" style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; transition: border-color 0.3s ease; box-sizing: border-box;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div style="background: rgba(138, 86, 226, 0.1); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(138, 86, 226, 0.2);">
+                            <h5 style="color: var(--primary-color); margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>📅</span>
+                                <span>Dias da Semana</span>
+                            </h5>
+                            <p style="color: var(--text-light); margin: 0; font-size: 0.9rem; line-height: 1.4;">
+                                Configure os horários para segunda a sexta-feira. Use os botões "Adicionar" nas seções abaixo para gerenciar os horários.
+                            </p>
+                        </div>
+                        
+                        <div style="background: rgba(138, 86, 226, 0.1); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(138, 86, 226, 0.2);">
+                            <h5 style="color: var(--primary-color); margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🗓️</span>
+                                <span>Sábados</span>
+                            </h5>
+                            <p style="color: var(--text-light); margin: 0; font-size: 0.9rem; line-height: 1.4;">
+                                Configure horários específicos para sábados. Podem ser diferentes dos dias da semana.
+                            </p>
+                        </div>
                     </div>
-                        <button type="button" onclick="addNewHour()" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
-                            <span>➕</span>
-                            <span>Adicionar</span>
-                        </button>
-                </div>
-
-                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(138, 86, 226, 0.1); border-radius: 8px; border: 1px solid rgba(138, 86, 226, 0.2);">
+                    
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border: 1px solid rgba(255, 193, 7, 0.2);">
                         <p style="color: var(--text-light); margin: 0; font-size: 0.9rem; text-align: center;">
                             💡 <strong>Dica:</strong> Adicione horários de 30 em 30 minutos para melhor organização (ex: 08:00, 08:30, 09:00)
                         </p>

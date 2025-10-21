@@ -3,7 +3,15 @@ class FirebaseAdminManager {
     constructor() {
         this.appointments = [];
         this.services = [];
-        this.availableHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+        // Horários para dias da semana (segunda a sexta)
+        this.weekdayHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+        
+        // Horários para sábados
+        this.saturdayHours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+        
+        // Manter compatibilidade com código existente
+        this.availableHours = this.weekdayHours;
+        
         this.availableDays = {
             'monday': true,
             'tuesday': true,
@@ -20,25 +28,41 @@ class FirebaseAdminManager {
     }
     
     async init() {
+        console.log('Inicializando sistema administrativo...');
         // Aguardar Firebase carregar
         await this.waitForFirebase();
+        console.log('Firebase carregado');
         
         if (this.isLoggedIn) {
+            console.log('Usuário já logado, carregando dashboard...');
             await this.loadDataFromFirebase();
             this.setupRealtimeListeners();
             this.showDashboard();
         } else {
+            console.log('Usuário não logado, mostrando tela de login...');
             this.showLogin();
         }
         
+        console.log('Configurando event listeners...');
         this.setupEventListeners();
+        console.log('Sistema administrativo inicializado');
     }
     
     async waitForFirebase() {
         return new Promise((resolve) => {
+            let attempts = 0;
+            const maxAttempts = 100; // 10 segundos máximo
+            
             const checkFirebase = () => {
+                attempts++;
+                console.log(`Tentativa ${attempts} de carregar Firebase...`);
+                
                 if (window.db && window.firestore) {
+                    console.log('Firebase carregado com sucesso!');
                     resolve();
+                } else if (attempts >= maxAttempts) {
+                    console.error('Timeout ao carregar Firebase');
+                    resolve(); // Continuar mesmo sem Firebase
                 } else {
                     setTimeout(checkFirebase, 100);
                 }
@@ -92,11 +116,20 @@ class FirebaseAdminManager {
                 }
             }
             
-            // Carregar horários disponíveis
-            const hoursDoc = await window.firestore.doc(window.db, 'settings', 'availableHours').get();
-            if (hoursDoc.exists) {
-                this.availableHours = hoursDoc.data().hours;
+            // Carregar horários para dias da semana
+            const weekdayDoc = await window.firestore.doc(window.db, 'settings', 'weekdayHours').get();
+            if (weekdayDoc.exists) {
+                this.weekdayHours = weekdayDoc.data().hours;
             }
+            
+            // Carregar horários para sábados
+            const saturdayDoc = await window.firestore.doc(window.db, 'settings', 'saturdayHours').get();
+            if (saturdayDoc.exists) {
+                this.saturdayHours = saturdayDoc.data().hours;
+            }
+            
+            // Manter compatibilidade com código existente
+            this.availableHours = this.weekdayHours;
             
             // Carregar dias disponíveis
             const daysDoc = await window.firestore.doc(window.db, 'settings', 'availableDays').get();
@@ -142,11 +175,29 @@ class FirebaseAdminManager {
     }
     
     setupEventListeners() {
-    // Login
-        document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+        // Login
+        const loginForm = document.getElementById('loginForm');
+        console.log('Login form encontrado:', loginForm);
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-            this.login();
-        });
+                console.log('Formulário de login submetido');
+                this.login();
+            });
+            
+            // Adicionar listener adicional no botão para garantir que funcione
+            const submitButton = loginForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('Botão de login clicado');
+                    this.login();
+                });
+            }
+        } else {
+            console.error('Formulário de login não encontrado!');
+        }
         
         // Logout
         document.getElementById('logoutBtn')?.addEventListener('click', () => {
@@ -178,15 +229,25 @@ class FirebaseAdminManager {
     }
     
     login() {
+        console.log('Função login chamada');
         const password = document.getElementById('password').value;
+        console.log('Senha digitada:', password);
         
         if (password === 'admin123') {
+            console.log('Senha correta, fazendo login...');
             this.isLoggedIn = true;
             sessionStorage.setItem('adminLoggedIn', 'true');
             this.showDashboard();
-            this.loadDataFromFirebase();
-            this.setupRealtimeListeners();
+            
+            // Carregar dados do Firebase de forma assíncrona
+            this.loadDataFromFirebase().then(() => {
+                this.setupRealtimeListeners();
+            }).catch(error => {
+                console.error('Erro ao carregar dados do Firebase:', error);
+                // Continuar mesmo com erro no Firebase
+            });
         } else {
+            console.log('Senha incorreta');
             alert('Senha incorreta!');
             document.getElementById('password').value = '';
         }
@@ -416,22 +477,149 @@ class FirebaseAdminManager {
     
     // Mostrar modal de configurações
     showSettingsModal() {
-        document.getElementById('settingsModal').style.display = 'block';
+        console.log('Tentando abrir modal de configurações...');
+        console.log('DOM completo?', document.readyState);
+        console.log('Body carregado?', document.body);
+        
+        // Função para tentar abrir o modal
+        const tryOpenModal = () => {
+            // Tentar diferentes formas de encontrar o modal
+            let modal = document.getElementById('settingsModal');
+            
+            if (!modal) {
+                // Tentar por classe
+                modal = document.querySelector('.modal[id="settingsModal"]');
+            }
+            
+            if (!modal) {
+                // Tentar por seletor mais amplo
+                modal = document.querySelector('[id*="settings"]');
+            }
+            
+            console.log('Modal encontrado:', modal);
+            console.log('Todos os elementos com ID:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
+            console.log('Todos os modais:', Array.from(document.querySelectorAll('.modal')).map(el => el.id || 'sem-id'));
+            
+            if (modal) {
+                modal.style.display = 'block';
+                this.showSettingsTab('services');
+                console.log('Modal aberto com sucesso!');
+            } else {
+                console.error('Modal de configurações não encontrado!');
+                console.log('Criando modal dinamicamente...');
+                this.createSettingsModal();
+            }
+        };
+        
+        // Aguardar um pouco mais para garantir que tudo está carregado
+        setTimeout(tryOpenModal, 500);
+    }
+    
+    // Criar modal de configurações dinamicamente
+    createSettingsModal() {
+        console.log('Criando modal de configurações dinamicamente...');
+        
+        const modal = document.createElement('div');
+        modal.id = 'settingsModal';
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 1400px; max-height: 88vh; overflow-y: auto; padding: 3rem;">
+                <span class="close" onclick="window.adminManager.closeSettingsModal()">&times;</span>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">⚙️</div>
+                    <h2 style="color: var(--primary-color); margin-bottom: 0.5rem; font-size: 2.5rem;">Configurações do Sistema</h2>
+                    <p style="color: var(--text-light); font-size: 1.1rem; margin-top: 0.5rem;">Gerencie serviços, horários e dias de funcionamento</p>
+                </div>
+
+                <div class="settings-tabs" style="margin-bottom: 2rem;">
+                    <button class="settings-tab" onclick="window.adminManager.showSettingsTab('services')" data-tab="services">
+                        <span style="font-size: 1.8rem; margin-right: 0.8rem;">💅</span>
+                        <span style="font-size: 1.1rem; font-weight: 600;">Serviços Disponíveis</span>
+                    </button>
+                    <button class="settings-tab" onclick="window.adminManager.showSettingsTab('hours')" data-tab="hours">
+                        <span style="font-size: 1.8rem; margin-right: 0.8rem;">🕒</span>
+                        <span style="font-size: 1.1rem; font-weight: 600;">Horários Disponíveis</span>
+                    </button>
+                    <button class="settings-tab" onclick="window.adminManager.showSettingsTab('days')" data-tab="days">
+                        <span style="font-size: 1.8rem; margin-right: 0.8rem;">📅</span>
+                        <span style="font-size: 1.1rem; font-weight: 600;">Dias de Funcionamento</span>
+                    </button>
+                </div>
+
+                <!-- Services Tab -->
+                <div id="servicesTab" class="settings-tab-content">
+                    <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem;">
+                        <span style="font-size: 2.5rem;">💅</span>
+                        <span>Serviços Disponíveis</span>
+                    </h3>
+                    <div id="servicesList">
+                        <!-- Serviços serão carregados dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Hours Tab -->
+                <div id="hoursTab" class="settings-tab-content">
+                    <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem;">
+                        <span style="font-size: 2.5rem;">🕒</span>
+                        <span>Horários Disponíveis</span>
+                    </h3>
+                    <div id="hoursList">
+                        <!-- Horários serão carregados dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Days Tab -->
+                <div id="daysTab" class="settings-tab-content">
+                    <h3 style="color: var(--primary-color); margin-bottom: 2.5rem; text-align: center; font-size: 2.2rem;">
+                        <span style="font-size: 2.5rem;">📅</span>
+                        <span>Dias de Funcionamento</span>
+                    </h3>
+                    <div id="daysList">
+                        <!-- Dias serão carregados dinamicamente -->
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #444; text-align: center;">
+                    <button onclick="window.adminManager.closeSettingsModal()" class="btn btn-primary" style="min-width: 150px; background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color);">Fechar</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        console.log('Modal criado e adicionado ao DOM');
+        
+        // Mostrar a aba de serviços
         this.showSettingsTab('services');
     }
     
     // Fechar modal de configurações
     closeSettingsModal() {
-        document.getElementById('settingsModal').style.display = 'none';
+        const modal = document.getElementById('settingsModal');
+        if (modal) {
+            modal.style.display = 'none';
+        } else {
+            console.error('Modal de configurações não encontrado para fechar!');
+        }
     }
     
     // Funções do modal de reset
     showResetModal() {
-        document.getElementById('resetModal').style.display = 'block';
+        const modal = document.getElementById('resetModal');
+        if (modal) {
+            modal.style.display = 'block';
+        } else {
+            console.error('Modal de reset não encontrado!');
+        }
     }
     
     closeResetModal() {
-        document.getElementById('resetModal').style.display = 'none';
+        const modal = document.getElementById('resetModal');
+        if (modal) {
+            modal.style.display = 'none';
+        } else {
+            console.error('Modal de reset não encontrado para fechar!');
+        }
     }
     
     async resetData(type) {
@@ -527,10 +715,23 @@ class FirebaseAdminManager {
                 
             case 'hours':
                 // Resetar horários para padrão
+                const defaultWeekdayHours = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+                const defaultSaturdayHours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+                
                 await window.firestore.setDoc(
-                    window.firestore.doc(window.db, 'settings', 'availableHours'),
-                    { hours: ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'] }
+                    window.firestore.doc(window.db, 'settings', 'weekdayHours'),
+                    { hours: defaultWeekdayHours }
                 );
+                
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'saturdayHours'),
+                    { hours: defaultSaturdayHours }
+                );
+                
+                // Atualizar localmente
+                this.weekdayHours = defaultWeekdayHours;
+                this.saturdayHours = defaultSaturdayHours;
+                this.availableHours = this.weekdayHours;
                 break;
                 
             case 'days':
@@ -564,10 +765,15 @@ class FirebaseAdminManager {
                     { services: this.getDefaultServices() }
                 );
                 
-                // Resetar horários
+                // Resetar horários (reutilizar as variáveis já declaradas)
                 await window.firestore.setDoc(
-                    window.firestore.doc(window.db, 'settings', 'availableHours'),
-                    { hours: ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00', '18:00'] }
+                    window.firestore.doc(window.db, 'settings', 'weekdayHours'),
+                    { hours: defaultWeekdayHours }
+                );
+                
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'saturdayHours'),
+                    { hours: defaultSaturdayHours }
                 );
                 
                 // Resetar dias
@@ -787,7 +993,12 @@ class FirebaseAdminManager {
     }
     
     closeAddAppointmentModal() {
-        document.getElementById('addAppointmentModal').style.display = 'none';
+        const modal = document.getElementById('addAppointmentModal');
+        if (modal) {
+            modal.style.display = 'none';
+        } else {
+            console.error('Modal de adicionar agendamento não encontrado para fechar!');
+        }
     }
     
     // Configurar validação de dias da semana no painel admin
@@ -1162,105 +1373,95 @@ class FirebaseAdminManager {
         const container = document.getElementById('hoursList');
         if (!container) return;
         
-        if (this.availableHours.length === 0) {
+        // Verificar se há horários configurados
+        const hasWeekdayHours = this.weekdayHours && this.weekdayHours.length > 0;
+        const hasSaturdayHours = this.saturdayHours && this.saturdayHours.length > 0;
+        
+        if (!hasWeekdayHours && !hasSaturdayHours) {
             container.innerHTML = `
                 <div style="text-align: center; padding: 3rem; color: var(--text-light); font-style: italic;">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⏰</div>
-                    <p style="font-size: 1.2rem; margin: 0;">Nenhum horário disponível</p>
-                    <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Adicione horários usando o formulário abaixo</p>
+                    <p style="font-size: 1.2rem; margin: 0;">Nenhum horário configurado</p>
+                    <p style="font-size: 0.9rem; margin: 0.5rem 0 0 0;">Configure os horários para dias da semana e sábados</p>
                 </div>
             `;
             return;
         }
         
-        // Organizar horários em grupos (manhã, tarde, noite)
-        const morningHours = this.availableHours.filter(hour => {
-            const hourNum = parseInt(hour.split(':')[0]);
-            return hourNum >= 6 && hourNum < 12;
-        });
-        
-        const afternoonHours = this.availableHours.filter(hour => {
-            const hourNum = parseInt(hour.split(':')[0]);
-            return hourNum >= 12 && hourNum < 18;
-        });
-        
-        const eveningHours = this.availableHours.filter(hour => {
-            const hourNum = parseInt(hour.split(':')[0]);
-            return hourNum >= 18 && hourNum < 24;
-        });
-        
         container.innerHTML = `
-            <div style="display: grid; gap: 2rem;">
-                ${morningHours.length > 0 ? `
-                    <div class="hour-group">
-                        <h4 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
-                            <span>🌅</span>
-                            <span>Manhã</span>
-                        </h4>
+            <div style="display: grid; gap: 3rem;">
+                <!-- Horários dos Dias da Semana -->
+                <div style="background: var(--white); padding: 2rem; border-radius: 15px; border: 2px solid var(--primary-color);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 0.8rem; font-size: 1.5rem;">
+                            <span style="font-size: 2rem;">📅</span>
+                            <span>Dias da Semana (Segunda a Sexta)</span>
+                        </h3>
+                        <button onclick="adminManager.showAddHourModal('weekday')" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 8px 16px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>➕</span>
+                            <span>Adicionar</span>
+                        </button>
+                    </div>
+                    
+                    ${hasWeekdayHours ? `
                         <div class="hours-grid">
-                            ${morningHours.map(hour => `
+                            ${this.weekdayHours.map(hour => `
                                 <div class="hour-card">
                                     <div class="hour-time">
                                         <span class="hour-icon">🕒</span>
                                         <span class="hour-text">${hour}</span>
                                     </div>
-                                    <button class="hour-delete-btn" onclick="deleteHour('${hour}')" title="Excluir horário">
+                                    <button class="hour-delete-btn" onclick="adminManager.deleteHourFromType('${hour}', 'weekday')" title="Excluir horário">
                                         <span>🗑️</span>
                                     </button>
                                 </div>
                             `).join('')}
                         </div>
-                    </div>
-                ` : ''}
+                    ` : `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-light); font-style: italic;">
+                            <p>Nenhum horário configurado para dias da semana</p>
+                        </div>
+                    `}
+                </div>
                 
-                ${afternoonHours.length > 0 ? `
-                    <div class="hour-group">
-                        <h4 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
-                            <span>☀️</span>
-                            <span>Tarde</span>
-                        </h4>
+                <!-- Horários dos Sábados -->
+                <div style="background: var(--white); padding: 2rem; border-radius: 15px; border: 2px solid var(--primary-color);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 0.8rem; font-size: 1.5rem;">
+                            <span style="font-size: 2rem;">🗓️</span>
+                            <span>Sábados</span>
+                        </h3>
+                        <button onclick="adminManager.showAddHourModal('saturday')" class="btn btn-primary" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 8px 16px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>➕</span>
+                            <span>Adicionar</span>
+                        </button>
+                    </div>
+                    
+                    ${hasSaturdayHours ? `
                         <div class="hours-grid">
-                            ${afternoonHours.map(hour => `
+                            ${this.saturdayHours.map(hour => `
                                 <div class="hour-card">
                                     <div class="hour-time">
                                         <span class="hour-icon">🕒</span>
                                         <span class="hour-text">${hour}</span>
                                     </div>
-                                    <button class="hour-delete-btn" onclick="deleteHour('${hour}')" title="Excluir horário">
+                                    <button class="hour-delete-btn" onclick="adminManager.deleteHourFromType('${hour}', 'saturday')" title="Excluir horário">
                                         <span>🗑️</span>
                                     </button>
                                 </div>
                             `).join('')}
                         </div>
-                    </div>
-                ` : ''}
-                
-                ${eveningHours.length > 0 ? `
-                    <div class="hour-group">
-                        <h4 style="color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem;">
-                            <span>🌙</span>
-                            <span>Noite</span>
-                        </h4>
-                        <div class="hours-grid">
-                            ${eveningHours.map(hour => `
-                                <div class="hour-card">
-                                    <div class="hour-time">
-                                        <span class="hour-icon">🕒</span>
-                                        <span class="hour-text">${hour}</span>
-                                    </div>
-                                    <button class="hour-delete-btn" onclick="deleteHour('${hour}')" title="Excluir horário">
-                                        <span>🗑️</span>
-                                    </button>
-                                </div>
-                            `).join('')}
+                    ` : `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-light); font-style: italic;">
+                            <p>Nenhum horário configurado para sábados</p>
                         </div>
-                    </div>
-                ` : ''}
+                    `}
+                </div>
             </div>
         `;
     }
     
-    // Função para adicionar novo horário
+    // Função para adicionar novo horário (compatibilidade)
     async addNewHour() {
         const newHourInput = document.getElementById('newHour');
         const newHour = newHourInput.value;
@@ -1270,23 +1471,68 @@ class FirebaseAdminManager {
             return;
         }
         
+        // Adicionar aos horários dos dias da semana por padrão
+        await this.addHourToType(newHour, 'weekday');
+    }
+    
+    // Mostrar modal para adicionar horário por tipo
+    showAddHourModal(type) {
+        const typeName = type === 'weekday' ? 'Dias da Semana' : 'Sábados';
+        const typeIcon = type === 'weekday' ? '📅' : '🗓️';
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 500px;">
+                <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                <h2 style="color: var(--primary-color); text-align: center; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                    <span style="font-size: 2rem;">${typeIcon}</span>
+                    <span>Adicionar Horário - ${typeName}</span>
+                </h2>
+                <form id="addHourForm">
+                    <div class="form-group">
+                        <label for="newHourInput" style="color: var(--text-dark); font-weight: 600; margin-bottom: 0.5rem; display: block;">Horário</label>
+                        <input type="time" id="newHourInput" required style="width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 10px; background: var(--white); color: var(--text-dark); font-size: 1rem; box-sizing: border-box;">
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <button type="button" class="btn btn-primary" onclick="adminManager.addHourToTypeFromModal('${type}')" style="background: var(--primary-color); color: var(--dark-bg); border: 2px solid var(--primary-color); padding: 12px 24px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>➕</span>
+                            <span>Adicionar</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="background: #666; color: var(--white); border: 2px solid #666; padding: 12px 24px; border-radius: 10px; font-weight: 600;">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    // Adicionar horário a um tipo específico
+    async addHourToType(hour, type) {
+        const targetArray = type === 'weekday' ? this.weekdayHours : this.saturdayHours;
+        const docName = type === 'weekday' ? 'weekdayHours' : 'saturdayHours';
+        
         // Verificar se o horário já existe
-        if (this.availableHours.includes(newHour)) {
-            alert('⚠️ Este horário já está disponível!');
+        if (targetArray.includes(hour)) {
+            alert('⚠️ Este horário já está disponível para ' + (type === 'weekday' ? 'dias da semana' : 'sábados') + '!');
             return;
         }
         
         try {
-            // Adicionar ao Firebase
-            const hoursRef = window.firestore.doc(window.db, 'settings', 'availableHours');
-            const updatedHours = [...this.availableHours, newHour].sort();
-            await window.firestore.setDoc(hoursRef, { hours: updatedHours });
+            // Adicionar ao array local
+            targetArray.push(hour);
+            targetArray.sort();
             
-            // Atualizar localmente
-            this.availableHours = updatedHours;
+            // Salvar no Firebase
+            const hoursRef = window.firestore.doc(window.db, 'settings', docName);
+            await window.firestore.setDoc(hoursRef, { hours: targetArray });
             
-            // Limpar o campo de input
-            newHourInput.value = '';
+            // Atualizar availableHours para compatibilidade
+            this.availableHours = this.weekdayHours;
             
             // Re-renderizar os horários
             this.renderHours();
@@ -1299,19 +1545,61 @@ class FirebaseAdminManager {
         }
     }
     
-    // Função para deletar horário
+    // Adicionar horário do modal
+    async addHourToTypeFromModal(type) {
+        const newHourInput = document.getElementById('newHourInput');
+        const newHour = newHourInput.value;
+        
+        if (!newHour) {
+            alert('❌ Por favor, selecione um horário para adicionar.');
+            return;
+        }
+        
+        await this.addHourToType(newHour, type);
+        
+        // Fechar modal
+        const modal = document.querySelector('.modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+    
+    // Função para deletar horário (compatibilidade)
     async deleteHour(hour) {
-        const confirmMessage = `Tem certeza que deseja excluir o horário "${hour}"?\n\n⚠️ Esta ação não pode ser desfeita!`;
+        // Verificar em qual tipo o horário existe
+        if (this.weekdayHours.includes(hour)) {
+            await this.deleteHourFromType(hour, 'weekday');
+        } else if (this.saturdayHours.includes(hour)) {
+            await this.deleteHourFromType(hour, 'saturday');
+        } else {
+            alert('❌ Horário não encontrado!');
+        }
+    }
+    
+    // Deletar horário de um tipo específico
+    async deleteHourFromType(hour, type) {
+        const typeName = type === 'weekday' ? 'dias da semana' : 'sábados';
+        const confirmMessage = `Tem certeza que deseja excluir o horário "${hour}" dos ${typeName}?\n\n⚠️ Esta ação não pode ser desfeita!`;
         
         if (confirm(confirmMessage)) {
             try {
-                // Remover do Firebase
-                const hoursRef = window.firestore.doc(window.db, 'settings', 'availableHours');
-                const updatedHours = this.availableHours.filter(h => h !== hour);
+                const targetArray = type === 'weekday' ? this.weekdayHours : this.saturdayHours;
+                const docName = type === 'weekday' ? 'weekdayHours' : 'saturdayHours';
+                
+                // Remover do array local
+                const updatedHours = targetArray.filter(h => h !== hour);
+                
+                // Salvar no Firebase
+                const hoursRef = window.firestore.doc(window.db, 'settings', docName);
                 await window.firestore.setDoc(hoursRef, { hours: updatedHours });
                 
-                // Remover localmente
-                this.availableHours = this.availableHours.filter(h => h !== hour);
+                // Atualizar array local
+                if (type === 'weekday') {
+                    this.weekdayHours = updatedHours;
+                    this.availableHours = this.weekdayHours; // Atualizar para compatibilidade
+                } else {
+                    this.saturdayHours = updatedHours;
+                }
                 
                 // Re-renderizar os horários
                 this.renderHours();
@@ -1640,30 +1928,91 @@ class FirebaseAdminManager {
     // Obter serviços padrão
 }
 
-// Inicializar gerenciador admin
-const adminManager = new FirebaseAdminManager();
+// Função para inicializar o sistema
+function initializeAdminSystem() {
+    console.log('Inicializando sistema administrativo...');
+    console.log('Estado do DOM:', document.readyState);
+    console.log('Body existe?', !!document.body);
+    console.log('Head existe?', !!document.head);
+    
+    // Verificar se todos os elementos necessários existem
+    const requiredElements = [
+        'settingsModal',
+        'resetModal', 
+        'addAppointmentModal',
+        'loginForm'
+    ];
+    
+    console.log('Verificando elementos necessários...');
+    const missingElements = [];
+    const foundElements = [];
+    
+    requiredElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            foundElements.push(id);
+            console.log(`✓ ${id} encontrado:`, element);
+        } else {
+            missingElements.push(id);
+            console.log(`✗ ${id} NÃO encontrado`);
+        }
+    });
+    
+    if (missingElements.length > 0) {
+        console.error('Elementos não encontrados:', missingElements);
+        console.log('Elementos encontrados:', foundElements);
+        console.log('Todos os elementos com ID:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
+        
+        // Tentar novamente após um delay
+        setTimeout(() => {
+            console.log('Tentando novamente após delay...');
+            const stillMissing = requiredElements.filter(id => !document.getElementById(id));
+            if (stillMissing.length > 0) {
+                console.error('Ainda faltam elementos:', stillMissing);
+            } else {
+                console.log('Agora todos os elementos foram encontrados!');
+            }
+        }, 1000);
+    } else {
+        console.log('Todos os elementos necessários foram encontrados!');
+    }
+    
+    const adminManager = new FirebaseAdminManager();
+    console.log('FirebaseAdminManager criado:', adminManager);
+    
+    // Tornar disponível globalmente
+    window.adminManager = adminManager;
+}
+
+// Inicializar quando o DOM estiver carregado
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAdminSystem);
+} else {
+    // DOM já carregado
+    initializeAdminSystem();
+}
 
 // Funções globais para garantir que funcionem
 window.editService = function(serviceId) {
-    return adminManager.editService(serviceId);
+    return window.adminManager?.editService(serviceId);
 };
 
 window.deleteService = function(serviceId) {
-    return adminManager.deleteService(serviceId);
+    return window.adminManager?.deleteService(serviceId);
 };
 
 window.saveEditedService = function(serviceId, modal) {
-    return adminManager.saveEditedService(serviceId, modal);
+    return window.adminManager?.saveEditedService(serviceId, modal);
 };
 
 window.saveNewService = function(modal) {
-    return adminManager.saveNewService(modal);
+    return window.adminManager?.saveNewService(modal);
 };
 
 window.deleteHour = function(hour) {
-    return adminManager.deleteHour(hour);
+    return window.adminManager?.deleteHour(hour);
 };
 
 window.addNewHour = function() {
-    return adminManager.addNewHour();
+    return window.adminManager?.addNewHour();
 };

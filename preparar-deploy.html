@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preparar Deploy - Sistema de Agendamento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .step h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .code {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Preparação para Deploy</h1>
+        <p style="text-align: center; color: #666;">Sistema de Agendamento - Guia de Deploy</p>
+
+        <div class="step">
+            <h3>1. 📁 Arquivos Necessários</h3>
+            <p>Certifique-se de ter todos estes arquivos:</p>
+            <ul class="checklist">
+                <li>index.html (página principal)</li>
+                <li>admin.html (painel administrativo)</li>
+                <li>script.js (lógica principal)</li>
+                <li>admin.js (lógica administrativa)</li>
+                <li>styles.css (estilos)</li>
+                <li>firebase-config.js (configuração Firebase)</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>2. 🔥 Configuração do Firebase</h3>
+            <p>Antes do deploy, configure o Firebase:</p>
+            <ol>
+                <li>Acesse <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+                <li>Vá em Authentication → Settings → Authorized domains</li>
+                <li>Adicione seu domínio: <code>seu-dominio.com.br</code></li>
+                <li>Adicione também: <code>www.seu-dominio.com.br</code></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>3. 🌐 Opções de Hospedagem</h3>
+            
+            <h4>Opção 1: Netlify (Recomendado - Gratuito)</h4>
+            <ol>
+                <li>Acesse <a href="https://netlify.com" target="_blank">netlify.com</a></li>
+                <li>Crie conta gratuita</li>
+                <li>Clique em "Deploy manually"</li>
+                <li>Arraste a pasta com todos os arquivos</li>
+                <li>Configure domínio personalizado</li>
+            </ol>
+
+            <h4>Opção 2: Vercel (Alternativa Gratuita)</h4>
+            <ol>
+                <li>Acesse <a href="https://vercel.com" target="_blank">vercel.com</a></li>
+                <li>Crie conta gratuita</li>
+                <li>Importe projeto</li>
+                <li>Configure domínio personalizado</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>4. 🔧 Configuração DNS no Registro.br</h3>
+            
+            <h4>Para Netlify:</h4>
+            <div class="code">
+                Tipo: CNAME<br>
+                Nome: www<br>
+                Valor: [seu-site].netlify.app<br><br>
+                Tipo: A<br>
+                Nome: @<br>
+                Valor: 75.2.60.5
+            </div>
+
+            <h4>Para Vercel:</h4>
+            <div class="code">
+                Tipo: CNAME<br>
+                Nome: www<br>
+                Valor: [seu-site].vercel.app<br><br>
+                Tipo: A<br>
+                Nome: @<br>
+                Valor: 76.76.19.61
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Importante:</strong>
+            <ul>
+                <li>Faça backup de todos os arquivos antes do deploy</li>
+                <li>Teste todas as funcionalidades após o deploy</li>
+                <li>DNS pode levar até 24h para propagar completamente</li>
+                <li>Certifique-se de que HTTPS está funcionando</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>5. ✅ Checklist Final</h3>
+            <ul class="checklist">
+                <li>Domínio comprado no Registro.br</li>
+                <li>DNS configurado corretamente</li>
+                <li>Arquivos enviados para hospedagem</li>
+                <li>SSL/HTTPS ativado</li>
+                <li>Firebase configurado com novo domínio</li>
+                <li>Teste de funcionamento completo</li>
+                <li>Backup dos arquivos realizado</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <strong>🎉 Parabéns!</strong><br>
+            Seu sistema de agendamento estará online com domínio personalizado!
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <p><strong>Precisa de ajuda?</strong> Me chame que te ajudo com qualquer etapa!</p>
+        </div>
+    </div>
+</body>
+</html>
